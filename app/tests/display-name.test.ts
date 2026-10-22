@@ -23,6 +23,16 @@ describe("displayAgentName", () => {
     );
   });
 
+  test("the shipped Knowledge Bot is translated, a user-made one is not", () => {
+    expect(displayAgentName({ name: "Knowledge", systemOwned: true }, zh)).toBe(
+      "知识库",
+    );
+    expect(
+      displayAgentName({ name: "Knowledge", systemOwned: false }, zh),
+    ).toBe("Knowledge");
+    expect(displayAgentName({ name: "Knowledge" }, zh)).toBe("Knowledge");
+  });
+
   test("any other name is shown as the person chose it", () => {
     expect(
       displayAgentName({ name: "Research Pal", systemOwned: false }, zh),
