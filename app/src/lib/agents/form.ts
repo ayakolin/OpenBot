@@ -23,6 +23,24 @@ export const agentFormSchema = z.object({
     .max(1000, "What it does must be 1000 characters or fewer."),
   visibility: z.enum(["public", "private"]),
   /**
+   * The model this Bot runs on. Empty means the deployment's own, which is what every Bot did before
+   * a Bot could be given one.
+   *
+   * Empty and untouched are the same value here on purpose: this form always submits the whole
+   * object, so it cannot say "leave it alone", and it does not need to — the field is filled from
+   * what the server reports, so submitting it back unchanged is the leave-alone case.
+   */
+  /*
+   * Defaulted rather than required, so every existing caller that builds a partial object — a test, a
+   * screen that only edits a title — keeps working and means "the deployment's model".
+   */
+  model: z
+    .string()
+    .trim()
+    .max(200, "Model must be at most 200 characters.")
+    .refine((value) => !/[\r\n]/.test(value), "Model must be one line.")
+    .default(""),
+  /**
    * The AG-UI endpoint this coworker runs on. Empty means the Bot in the box.
    *
    * Only URL shape is checked here; deployment allow/deny rules are server-side.
@@ -50,6 +68,7 @@ export const emptyAgentForm: AgentFormValues = {
   visibility: "private",
   endpoint: "",
   authValue: "",
+  model: "",
 };
 
 /** Convert form values to API input; omit an empty key so editing preserves the current credential. */
@@ -60,6 +79,12 @@ export function agentInputFrom(values: AgentFormValues) {
     roleDescription: values.roleDescription,
     visibility: values.visibility,
     endpoint: values.endpoint,
+    /*
+     * Sent always, and empty means "the deployment's model" rather than "leave it alone". The form
+     * fills this from what the server reports, so an untouched field travels back as the value that
+     * is already stored and an emptied one arrives as the clear it is.
+     */
+    model: values.model,
     ...(values.authValue.trim()
       ? { auth: { header: "Authorization", value: values.authValue.trim() } }
       : {}),
@@ -86,6 +111,8 @@ export function profileUpdateInput(
     visibility: profile.visibility,
     endpoint: profile.builtIn ? "" : (profile.endpoint ?? ""),
     authValue: "",
+    // What the server says it runs on, so an edit that touches the title does not clear it.
+    model: profile.model ?? "",
     ...patch,
   });
 }

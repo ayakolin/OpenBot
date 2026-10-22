@@ -37,6 +37,10 @@ import {
   createBotLifecycleStore,
 } from "./agents/lifecycle";
 import { createBotReset } from "./agents/lifecycle-reset";
+import {
+  createModelCatalogue,
+  parseModelChoices,
+} from "./agents/model-catalogue";
 import { createAgentProfileStore } from "./agents/profile-store";
 import type { AgentActor } from "./agents/profile-types";
 import { createRuntimeAgentLoader } from "./agents/runtime-agents";
@@ -2472,6 +2476,30 @@ const app = createApp(
       profiles: agentProfileStore,
       auditStore: bootAuditStore,
     },
+    /*
+     * What the Setup screen's model picker offers.
+     *
+     * Built here because this is where the deployment's credential is resolvable: the same
+     * `resolveModelApiKey` every run uses, so a key rotated a minute ago is the key this asks with.
+     * The catalogue memoises for a few minutes rather than per request, because a screen opened twice
+     * should not spend two provider calls.
+     */
+    modelCatalogue: createModelCatalogue({
+      provider: runtimeModel.provider,
+      defaultModel: runtimeModel.defaultModel,
+      choices: parseModelChoices(process.env.OPENBOT_MODEL_CHOICES),
+      ...(process.env.OPENAI_BASE_URL?.trim()
+        ? { baseUrl: process.env.OPENAI_BASE_URL.trim() }
+        : {}),
+      apiKey: () =>
+        resolveModelApiKey({
+          encryptionKey: config.keyEncryptionKey,
+          reader: credentialStore,
+          provider: runtimeModel.provider,
+          keyId: tenantPackage.model.credentialSecretRef,
+          environment: process.env,
+        }),
+    }),
   },
   createSelfHostBanner({
     enabled: config.selfHostBanner,

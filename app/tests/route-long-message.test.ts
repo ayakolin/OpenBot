@@ -68,6 +68,7 @@ function serve() {
         pinned: false,
         systemOwned: false,
         endpoint: null,
+        model: null,
         hasAuth: false,
         hasCallbackToken: false,
       })),

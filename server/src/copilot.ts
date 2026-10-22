@@ -92,6 +92,14 @@ type RegisteredBuiltInAgent = {
   name: string;
   type: "built_in";
   systemPrompt: string;
+  /**
+   * The model this Bot answers on, when somebody chose one for it.
+   *
+   * Absent means the deployment's configured model. Set, it overrides that for this Bot alone, and
+   * only the model name: the provider and the credential still come from the deployment, so this
+   * cannot point one Bot at a key the deployment does not hold.
+   */
+  model?: string;
 };
 
 type RegisteredRemoteAgentFacts = {
@@ -250,11 +258,27 @@ export function runtimeModelForEnvironment(
   };
 }
 
+/** The model name in a stored configuration or override object, or undefined. */
+function modelNameIn(value: Record<string, unknown>): string | undefined {
+  const chosen = value.model;
+  return typeof chosen === "string" && chosen.trim()
+    ? chosen.trim()
+    : undefined;
+}
+
 type RuntimeAgentRow = {
   id: string;
   name: string;
   type: "built_in" | "remote_ag_ui" | "remote_mastra";
   configuration: unknown;
+  /**
+   * An administrator's change to a Bot the tenant package ships.
+   *
+   * The package rewrites `configuration` on every start, so a change written there would not
+   * survive a deploy. This is the column it does not touch, and it carries only what an
+   * administrator may change on a package Bot: currently, the model.
+   */
+  override?: unknown;
   title: string;
   roleDescription: string;
 };
@@ -270,12 +294,31 @@ export function registeredAgentFromRow(
     const systemPrompt = configuration?.systemPrompt;
     const trimmedSystemPrompt =
       typeof systemPrompt === "string" ? systemPrompt.trim() : "";
+    /*
+     * The model this Bot was given, if it was given one.
+     *
+     * Read here rather than at build time because this is the one place a stored row is turned into
+     * the agent that runs; a second read elsewhere could disagree. A blank or non-string value is
+     * the deployment's model, which is the same thing as absent.
+     */
+    /*
+     * The override first: an administrator who put this Bot on a model meant it, and the package's
+     * configuration is what they were overriding. Both are read with the same rule, so a cleared
+     * override falls back to whatever the package declares.
+     */
+    const fromOverride = isPlainObject(row.override)
+      ? modelNameIn(row.override)
+      : undefined;
+    const chosen = fromOverride ?? configuration.model;
+    const model =
+      typeof chosen === "string" && chosen.trim() ? chosen.trim() : undefined;
     return trimmedSystemPrompt.length > 0
       ? {
           id: row.id,
           name: row.name,
           type: "built_in",
           systemPrompt: trimmedSystemPrompt,
+          ...(model ? { model } : {}),
         }
       : null;
   }
@@ -970,7 +1013,19 @@ async function buildAgent(
    * A built-in Bot takes its tools in its configuration, so narrowing means building it again once
    * the message is known. The guidance it is given is generated from the tools passed here, which is
    * what keeps a narrowed run from being told it holds something it was not offered.
+   *
+   * AND THIS BOT'S MODEL, WHICH MAY NOT BE THE DEPLOYMENT'S. `agent.model` is a name somebody chose
+   * for this one coworker. The provider and the credential stay the deployment's, so this replaces
+   * the model name and nothing else: a deployment pointed at an OpenAI-compatible endpoint keeps
+   * spending that endpoint's key, and a name it does not serve fails the way any unknown model does,
+   * at the call, with the model named. A plan model, when one is configured, still wins: it is a
+   * whole other transport.
    */
+  const agentModel: RuntimeModel =
+    agent.type === "built_in" && agent.model
+      ? { ...model, defaultModel: agent.model }
+      : model;
+
   const withTools = (
     tools: GrantedTool[],
     input?: RunAgentInput,
@@ -980,7 +1035,7 @@ async function buildAgent(
     new BuiltInAgentWithSaneHistory(
       builtInAgentConfiguration(
         agent,
-        model,
+        agentModel,
         apiKey,
         tools,
         computerGuidance,

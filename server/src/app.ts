@@ -19,6 +19,7 @@ import {
 } from "./agents/lifecycle-routes";
 import type { BotAccessCheck } from "./agents/profile-policy";
 import type { AgentProfileStore } from "./agents/profile-store";
+import type { ModelCatalogue } from "./agents/model-catalogue";
 import { createAgentRoutes } from "./agents/routes";
 import { createApprovalRoutes } from "./approvals/routes";
 import type { ApprovalService } from "./approvals/service";
@@ -436,6 +437,14 @@ export function createApp(
     teamBots?: TeamBots;
     /** Pause, reset, Activity and attention for a person's own Bots. See agents/lifecycle.ts. */
     lifecycle?: BotLifecycleServices;
+    /**
+     * The models a built-in Bot may be put on, for the picker on its Setup screen.
+     *
+     * A function rather than a list because asking costs a provider call and the answer changes when
+     * somebody else changes it; the caller memoises. Absent leaves the picker with the deployment's
+     * own model and a text field, which is what a deployment that cannot name its models should see.
+     */
+    modelCatalogue?: () => Promise<ModelCatalogue>;
   },
   /**
    * Whether to offer help self-hosting, which also hides it from a deployment that pays for
@@ -1466,6 +1475,8 @@ export function createApp(
               ].filter((url): url is URL => url !== undefined),
             }
           : undefined,
+        // What the Setup screen's model picker offers; absent falls back to the default alone.
+        coworker?.modelCatalogue,
       ),
     );
     // Choosing a coworker for an untagged message needs the same permission-filtered roster the

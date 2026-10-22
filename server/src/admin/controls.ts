@@ -59,6 +59,7 @@ import {
   type NetworkPolicyRow,
 } from "./settings-store";
 import type { WebBotAuth } from "../web-bot-auth";
+import { effectiveBuiltInModel } from "../agents/model-choice";
 
 /** Action Recording keeps 90 days, as Grok Bot's does. */
 export const ACTION_RECORD_RETENTION_DAYS = 90;
@@ -895,12 +896,24 @@ export async function headlessTurnRefusal(input: {
     const allowlist = controls.snapshot()?.settings.modelAllowlist;
     if (!allowlist?.enabled) return null;
     const [row] = await controls.deps.database
-      .select({ type: agents.type })
+      .select({
+        type: agents.type,
+        configuration: agents.configuration,
+        /* An administrator's model choice for a package Bot. */
+        override: agents.override,
+      })
       .from(agents)
       .where(eq(agents.id, input.agentId))
       .limit(1);
+    // This Bot's own model when it chose one; see `effectiveBuiltInModel`.
     const model =
-      row?.type === "built_in" ? controls.deps.builtInModel : undefined;
+      row?.type === "built_in"
+        ? effectiveBuiltInModel(
+            row?.configuration,
+            controls.deps.builtInModel,
+            row?.override,
+          )
+        : undefined;
     if (!model || allowlist.models.includes(model)) return null;
     await controls.store
       .recordModelUsage({

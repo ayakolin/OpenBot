@@ -42,6 +42,7 @@ import {
 import { isComposing } from "@/lib/composing";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * Where a new Bot is made: a wide sheet floating in from the right, so the roster it is being added
@@ -76,7 +77,7 @@ export function NewBotSheet({
         side="right"
         variant="inset"
       >
-        <SheetTitle className="sr-only">New Bot</SheetTitle>
+        <SheetTitle className="sr-only">{t("New Bot")}</SheetTitle>
         {/* Inside the popup, so it unmounts on close and a reopened sheet starts empty. */}
         <NewBotFlow onCreated={onCreated} />
       </SheetContent>
@@ -226,6 +227,8 @@ function NewBotFlow({ onCreated }: { onCreated: (agentId: string) => void }) {
         // A Bot that runs here has no address; whatever was typed on the way past stays behind.
         endpoint: managed ? endpoint.trim() : "",
         authValue: managed ? key : "",
+        // A new Bot starts on the deployment's model; its Setup screen is where one is chosen.
+        model: "",
       }),
     );
     setCreatedId(agent.id);
@@ -382,7 +385,7 @@ function NewBotFlow({ onCreated }: { onCreated: (agentId: string) => void }) {
           <SheetClose
             render={<Button className="px-4" size="lg" variant="ghost" />}
           >
-            Cancel
+            {t("Cancel")}
           </SheetClose>
         ) : (
           <Button
@@ -393,7 +396,7 @@ function NewBotFlow({ onCreated }: { onCreated: (agentId: string) => void }) {
             type="button"
             variant="ghost"
           >
-            Back
+            {t("Back")}
           </Button>
         )}
         <Button
@@ -466,9 +469,11 @@ function CreatedView({ name }: { name: string }) {
         transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
       >
         <h2 className="break-words font-semibold text-xl tracking-tight">
-          {name} is ready
+          {name} {t("is ready")}
         </h2>
-        <p className="mt-1 text-muted-foreground text-sm">Taking you to it…</p>
+        <p className="mt-1 text-muted-foreground text-sm">
+          {t("Taking you to it…")}
+        </p>
       </motion.div>
     </div>
   );
@@ -538,21 +543,23 @@ function AboutStep({
   return (
     <FieldGroup>
       <Field>
-        <FieldLabel htmlFor="new-bot-name">Name</FieldLabel>
+        <FieldLabel htmlFor="new-bot-name">{t("Name")}</FieldLabel>
         <Input
           autoComplete="off"
           autoFocus
           id="new-bot-name"
           maxLength={80}
           onChange={(event) => onName(event.target.value)}
-          placeholder="Expense Review"
+          placeholder={t("Expense Review")}
           value={name}
         />
       </Field>
       <Field>
         <FieldLabel htmlFor="new-bot-title">
-          Title
-          <span className="font-normal text-muted-foreground">Optional</span>
+          {t("Title")}
+          <span className="font-normal text-muted-foreground">
+            {t("Optional")}
+          </span>
         </FieldLabel>
         <Input
           autoComplete="off"
@@ -563,31 +570,39 @@ function AboutStep({
           value={title}
         />
         <FieldDescription>
-          A few words, shown beneath its name in lists.
+          {t("A few words, shown beneath its name in lists.")}
         </FieldDescription>
       </Field>
       <Field>
         <FieldLabel htmlFor="new-bot-instructions">
           {runsHere ? "Instructions" : "Role"}
-          <span className="font-normal text-muted-foreground">Optional</span>
+          <span className="font-normal text-muted-foreground">
+            {t("Optional")}
+          </span>
         </FieldLabel>
         <Textarea
           autoComplete="off"
           id="new-bot-instructions"
           maxLength={1000}
           onChange={(event) => onInstructions(event.target.value)}
-          placeholder="Review receipts, categorize expenses, and prepare reimbursement reports."
+          placeholder={t(
+            "Review receipts, categorize expenses, and prepare reimbursement reports.",
+          )}
           rows={5}
           value={instructions}
         />
         <FieldDescription>
           {runsHere
-            ? "How it behaves in every conversation. Left blank, it helps with whatever it is asked."
-            : "Added to the agent's own instructions, in every conversation it joins."}
+            ? t(
+                "How it behaves in every conversation. Left blank, it helps with whatever it is asked.",
+              )
+            : t(
+                "Added to the agent's own instructions, in every conversation it joins.",
+              )}
         </FieldDescription>
       </Field>
       <FieldSet>
-        <FieldLegend variant="label">Who can see it</FieldLegend>
+        <FieldLegend variant="label">{t("Who can see it")}</FieldLegend>
         <div className="grid gap-2 sm:grid-cols-2">
           {VISIBILITY_OPTIONS.map((option) => {
             const Icon = option.icon;
@@ -669,7 +684,7 @@ function RuntimeStep({
         ref={heading}
         tabIndex={-1}
       >
-        Where will your Bot run?
+        {t("Where will your Bot run?")}
       </h2>
 
       <button
@@ -683,18 +698,24 @@ function RuntimeStep({
           <IconSparkles className="size-6 text-foreground" />
         </span>
         <span className="min-w-0 pt-0.5">
-          <span className="block font-semibold text-base">Run it here</span>
+          <span className="block font-semibold text-base">
+            {t("Run it here")}
+          </span>
           <span className="mt-1 block text-pretty text-muted-foreground text-sm">
             {builtInAvailable
-              ? "OpenBot runs it for you. Nothing to set up — it can start work as soon as it is made."
-              : "Not available yet. Whoever set OpenBot up has to switch this on first."}
+              ? t(
+                  "OpenBot runs it for you. Nothing to set up — it can start work as soon as it is made.",
+                )
+              : t(
+                  "Not available yet. Whoever set OpenBot up has to switch this on first.",
+                )}
           </span>
         </span>
       </button>
 
       <div className="flex items-center gap-2 py-1 text-muted-foreground text-xs">
         <span className="h-px flex-1 bg-border" />
-        or connect one you run
+        {t("or connect one you run")}
         <span className="h-px flex-1 bg-border" />
       </div>
 
@@ -763,13 +784,15 @@ function EndpointStep({
           </span>
         ) : null}
         <h2 className="break-words font-semibold text-lg tracking-tight">
-          Where can it be reached?
+          {t("Where can it be reached?")}
         </h2>
       </div>
 
       <FieldGroup>
         <Field data-invalid={endpointError ? true : undefined}>
-          <FieldLabel htmlFor="new-bot-endpoint">Agent address</FieldLabel>
+          <FieldLabel htmlFor="new-bot-endpoint">
+            {t("Agent address")}
+          </FieldLabel>
           <Input
             aria-invalid={endpointError ? true : undefined}
             autoComplete="off"
@@ -777,7 +800,7 @@ function EndpointStep({
             id="new-bot-endpoint"
             inputMode="url"
             onChange={(event) => onEndpoint(event.target.value)}
-            placeholder="https://your-agent.example.com/ag-ui"
+            placeholder={t("https://your-agent.example.com/ag-ui")}
             value={endpoint}
           />
           {endpointError ? (
@@ -787,27 +810,30 @@ function EndpointStep({
             />
           ) : (
             <FieldDescription>
-              Anything that speaks AG-UI works. This server dials your agent, so
-              an agent on your own machine has to be reachable from here.
+              {t(
+                "Anything that speaks AG-UI works. This server dials your agent, so an agent on your own machine has to be reachable from here.",
+              )}
             </FieldDescription>
           )}
         </Field>
         <Field>
           <FieldLabel htmlFor="new-bot-key">
-            Key
-            <span className="font-normal text-muted-foreground">Optional</span>
+            {t("Key")}
+            <span className="font-normal text-muted-foreground">
+              {t("Optional")}
+            </span>
           </FieldLabel>
           <Input
             autoComplete="off"
             id="new-bot-key"
             onChange={(event) => onKey(event.target.value)}
-            placeholder="Bearer …"
+            placeholder={t("Bearer …")}
             type="password"
             value={secret}
           />
           <FieldDescription>
-            Sent as an <code>Authorization</code> header on every run, and kept
-            in the credential vault.
+            {t("Sent as an")} <code>{t("Authorization")}</code>{" "}
+            {t("header on every run, and kept in the credential vault.")}
           </FieldDescription>
         </Field>
       </FieldGroup>

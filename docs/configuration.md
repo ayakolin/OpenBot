@@ -56,7 +56,8 @@ at `agent-langgraph` on a laptop.
 | `ANTHROPIC_BASE_URL` | unset                              | Anthropic-compatible endpoint that key is spent against.            |
 | `GOOGLE_API_KEY`     | unset                              | Google key when `BOT_PROVIDER=google`.                              |
 | `GOOGLE_GENERATIVE_AI_BASE_URL` | unset                   | Google-compatible endpoint that key is spent against.               |
-| `BOT_MODEL`          | the Bot's row in the spec file   | Model for whichever Bot is starting. Unset, it comes from that Bot's row in [the provider spec file](#the-provider-spec-file); the provider fallbacks are `gpt-5.5`, `claude-sonnet-4-5`, and `gemini-2.5-flash`. |
+| `BOT_MODEL`          | the Bot's row in the spec file   | The deployment's model for whichever Bot is starting. Unset, it comes from that Bot's row in [the provider spec file](#the-provider-spec-file); the provider fallbacks are `gpt-5.5`, `claude-sonnet-4-5`, and `gemini-2.5-flash`. A built-in coworker may override it for itself; see [A coworker's own model](#a-coworkers-own-model). |
+| `OPENBOT_MODEL_CHOICES` | unset                          | Model names, comma separated, offered by the per-Bot model picker on top of whatever the provider's own catalogue lists. The place to name models for an endpoint that cannot list its own. |
 | `AGENT_BOT_MODEL`    | `gpt-5.5`                          | Model for the proof-of-concept Bot (`agent-bot`), kept separate because it speaks `/v1/chat/completions` directly and refuses a model it cannot use. |
 | `BOT_RESPONSES_API`  | `false`                            | Makes `agent-langgraph` use the OpenAI Responses API.               |
 | `BOT_REASONING_EFFORT` | unset (provider default)         | OpenAI and the Responses API only: one of `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`. `agent-langgraph` refuses to start on any other value, on a non-`openai` provider, or without the Responses API. |
@@ -203,6 +204,89 @@ call, in either language.
 
 `agent-bot` is the one Bot that pins its provider: it speaks `/v1/chat/completions` directly and
 has never read `BOT_PROVIDER`, and `bots.agent-bot` supplies only its model.
+
+## Email and password
+
+For a deployment with no directory to point at, `OPENBOT_CREDENTIALS_SIGN_IN=true` lets this
+deployment check a password itself. It is the only sign-in method OpenBot invented rather than
+delegated, so it is off unless asked for and says plainly what it does not do.
+
+```sh
+OPENBOT_CREDENTIALS_SIGN_IN=true
+OPENBOT_CREDENTIALS_SIGN_UP=open          # or `closed`, once your people have accounts
+OPENBOT_CREDENTIALS_RESET_WEBHOOK=        # optional, see below
+BETTER_AUTH_SECRET=<32+ random characters>
+BETTER_AUTH_URL=https://openbot.example.com
+INITIAL_ADMIN_EMAILS=you@example.com
+```
+
+It coexists with Google, Microsoft and Okta, and with a registered SAML or OIDC provider. On a
+deployment with both, the sign-in screen draws the buttons first and the password form below them.
+
+**What it does not do.** This deployment has no mail service, so:
+
+- An address is never verified. `requireEmailVerification` stays off, because turning it on would
+  refuse every sign-up until somebody clicks a link nothing can send.
+- A password reset has nowhere to go unless `OPENBOT_CREDENTIALS_RESET_WEBHOOK` names an endpoint.
+  The link is POSTed there as `{"type": "openbot.password-reset", "email", "name", "url"}` and is the
+  operator's to forward. Set nothing and "forgot password" refuses rather than accepting a request it
+  will never answer.
+
+**Account creation** is open when the feature is on, for the reason a deployment that asked for
+sign-up and then admitted nobody would be a login screen nobody can pass. `OPENBOT_CREDENTIALS_SIGN_UP=closed`
+keeps the form and refuses every new account, which is what an operator switches to afterwards.
+
+**Who is an administrator** is still `INITIAL_ADMIN_EMAILS`, and only that. A person who signs up is a
+plain user; `/admin/people` promotes them. The first account to create is therefore the address in
+that list.
+
+**Turning it off** is removing the variable. Better Auth's routes then stop being admitted by
+`decideSignInMethod`, so an existing password row cannot sign in even though the table still holds it.
+
+## Interface language
+
+The interface ships in English and Simplified Chinese. A person picks one under **Settings →
+Preferences → Language**, and the choice is stored on their account, so it follows them to another
+machine. The default is "follow the browser", which reads `navigator.languages` and answers Chinese
+for any `zh` tag and English for anything else this build does not speak.
+
+Translations live in `app/src/lib/i18n/dictionaries/`, keyed by the English text the source renders.
+A key with no entry renders that English, so an untranslated screen still reads rather than showing an
+identifier — which is also what makes the catalogue safe to extend one screen at a time.
+
+Two rules matter when adding a screen:
+
+- **Call `t("...")` where the text is rendered**, not in a module-level table. A table is built when
+  its module is first imported, before anybody's language is known, so a `t()` there freezes whichever
+  language happened to be current.
+- **Keep the English literal as the key** and add the Chinese to `zh-CN.ts`. Renaming the English
+  drops its translation silently, which is the intended trade: the screen still reads correctly.
+
+## A coworker's own model
+
+`BOT_MODEL` sets the model for the whole deployment. A built-in coworker can name its own instead,
+on its **Setup → Model** page, or in the tenant package by nothing at all — package Bots take the
+deployment's model. The choice is stored in that Bot's `configuration.model`, so it survives a
+restart and travels with a duplicate.
+
+What a per-Bot choice can and cannot move:
+
+- **It moves the model name, and only the name.** The provider and the credential stay the
+  deployment's: a deployment pointed at an OpenAI-compatible endpoint keeps spending that key, and
+  listing a model from another provider here does not bring that provider's key.
+- **It is for built-in coworkers.** A remote Bot chooses its own model at its own endpoint, so a name
+  stored for one would be a setting that changes nothing and the Setup page does not offer it.
+- **The allowlist still decides.** A Bot on a model an administrator has not listed is refused before
+  it runs, exactly as the deployment's own model would be.
+
+The picker offers three things: the deployment's default, whatever the provider's catalogue
+publishes (read from `models` on the OpenAI-compatible endpoint and cached for five minutes), and any
+names in `OPENBOT_MODEL_CHOICES`. A deployment that can list none of them still works — the field
+accepts a name typed by hand, which is the honest answer for a gateway whose catalogue lags its
+service.
+
+Nothing is validated at save time beyond shape. A model the endpoint does not serve fails at the
+first message, naming the model, which is the same way a wrong `BOT_MODEL` fails.
 
 ## OpenAI-compatible endpoints
 

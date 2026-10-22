@@ -98,6 +98,8 @@ function selectActiveAgents(database: Database, actor: AgentActor) {
       name: agents.name,
       type: agents.type,
       configuration: agents.configuration,
+      /* An administrator's model choice for a package Bot; see `override` in the schema. */
+      override: agents.override,
       title: agentProfiles.title,
       roleDescription: agentProfiles.roleDescription,
     })

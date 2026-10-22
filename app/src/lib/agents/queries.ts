@@ -19,6 +19,15 @@ export type AgentProfile = {
   /** Where this coworker runs. Null for the Bot in the box. */
   endpoint: string | null;
   /**
+   * The model this Bot was given, or null for the deployment's own.
+   *
+   * A name, never a key. Always null for a remote Bot, which chooses at its own endpoint.
+   *
+   * Optional because a cached payload from a server older than the field has no key for it, and
+   * absent means the same thing null does. Every screen treats the two alike.
+   */
+  model?: string | null;
+  /**
    * Whether it runs on this deployment's own Bot.
    *
    * Creating a coworker with no endpoint stores the deployment's managed address, so `endpoint`
@@ -70,7 +79,29 @@ export const agentKeys = {
     ["agents", "bot-route-detail", agentId] as const,
   handoff: (agentId: string) => ["agents", "handoff", agentId] as const,
   capabilities: () => ["agents", "capabilities"] as const,
+  models: () => ["agents", "models"] as const,
 };
+
+/** The models this deployment offers a built-in Bot, and which of them it defaults to. */
+export type AgentModelCatalogue = {
+  /** `provider/model`, matching what the usage trail records. */
+  defaultModel: string | null;
+  /** The names on offer. Empty when this deployment cannot name any, which is a text field. */
+  models: string[];
+};
+
+export function agentModelsQueryOptions() {
+  return queryOptions({
+    queryKey: agentKeys.models(),
+    queryFn: ({ signal }): Promise<AgentModelCatalogue> =>
+      client("/api/agents/models", "models", {
+        signal,
+        fallback: "Could not load the models this deployment offers",
+      }),
+    // A provider's catalogue changes when somebody else changes it, not while a dialog is open.
+    staleTime: 5 * 60_000,
+  });
+}
 
 /** What kinds of coworker this deployment can create. */
 export type AgentCapabilities = {

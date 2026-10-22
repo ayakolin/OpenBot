@@ -302,6 +302,48 @@ describe("registered Copilot agents", () => {
     ).toMatchObject({ endpoint: "https://risk.internal:443/ag-ui" });
   });
 
+  test("a built-in row's own model is read, and an empty one is the deployment's", () => {
+    // What the Setup screen saves: a name in `configuration.model`.
+    expect(
+      registeredAgentFromRow({
+        ...assistantRow,
+        configuration: { systemPrompt: "Be helpful.", model: "gpt-5.6-sol" },
+      }),
+    ).toMatchObject({ model: "gpt-5.6-sol" });
+
+    // Untouched, malformed and blank all mean the same thing: nothing was chosen.
+    for (const configuration of [
+      { systemPrompt: "Be helpful." },
+      { systemPrompt: "Be helpful.", model: "   " },
+      { systemPrompt: "Be helpful.", model: 7 },
+    ]) {
+      const agent = registeredAgentFromRow({ ...assistantRow, configuration });
+      expect(agent).toMatchObject({ type: "built_in" });
+      expect("model" in (agent ?? {})).toBe(false);
+    }
+  });
+
+  test("an administrator's override wins over the package's configuration", () => {
+    // A package Bot: the synchroniser rewrites `configuration` on every start, so an administrator's
+    // model choice lives in `override` and has to be what the runtime reads.
+    expect(
+      registeredAgentFromRow({
+        ...assistantRow,
+        configuration: { systemPrompt: "Be helpful." },
+        override: { model: "gpt-5.6-sol" },
+      }),
+    ).toMatchObject({ model: "gpt-5.6-sol" });
+
+    // A cleared override is the package's answer again rather than a Bot with no model.
+    expect(
+      registeredAgentFromRow({
+        ...assistantRow,
+        configuration: { systemPrompt: "Be helpful." },
+        override: {},
+      }),
+    ).not.toHaveProperty("model");
+  });
+
   test("configures an OpenAI built-in agent", () => {
     expect(
       builtInAgentConfiguration(

@@ -51,6 +51,7 @@ function boundary(id: string, refusal?: "unauthenticated" | "forbidden") {
     pinned: false,
     deletedAt: null,
     endpoint: null,
+    model: null,
     hasAuth: false,
     hasCallbackToken: false,
   };

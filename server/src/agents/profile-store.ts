@@ -143,6 +143,15 @@ const joinedProjection = {
   /* The hash, only so a surface can say whether one exists. It never leaves this module. */
   callbackTokenHash: agentProfiles.callbackTokenHash,
   configuration: agents.configuration,
+  /*
+   * An administrator's change to a Bot the tenant package ships.
+   *
+   * The package owns `configuration` and rewrites it on every start, so a change written there would
+   * be undone by the next deploy. This column is the one place the package's synchroniser does not
+   * touch, and it holds only the settings an administrator is allowed to change on a package Bot —
+   * today, which model it runs on.
+   */
+  override: agents.override,
 };
 
 function joinedProfiles(executor: DatabaseExecutor, actor: AgentActor) {
@@ -195,6 +204,14 @@ function mapProfile(
     assignedToMe: Boolean(row.assignedToMe),
     deletedAt: row.deletedAt,
     endpoint: endpointOf(row.configuration),
+    /*
+     * Null means the deployment's model. A remote Bot is never given one: it chooses at its own
+     * endpoint, and a name stored for it would be a setting that changes nothing.
+     *
+     * The override wins over the package, because it is the later decision: an administrator who put
+     * this Bot on another model meant it, and the package's file is what they were overriding.
+     */
+    model: modelOf(row.override) ?? modelOf(row.configuration),
     // Whether a key is set, never which. The form needs to show "a key is set" so a person does not
     // wipe one by saving an unrelated edit; showing the value would put a secret in a screenshot.
     hasAuth: authFromConfiguration(row.configuration) !== null,
@@ -235,6 +252,22 @@ function systemPromptOf(configuration: unknown): string | null {
   const prompt = (configuration as { systemPrompt?: unknown }).systemPrompt;
   if (typeof prompt !== "string") return null;
   const trimmed = prompt.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
+ * The model this Bot was given, read back out of its stored configuration.
+ *
+ * The mirror of {@link endpointOf}: an edit form has to show the name that is set, or saving an
+ * unrelated field would silently drop it back to the deployment's model. Trimmed, and blank is null,
+ * which is how "the deployment's model" is spelled everywhere.
+ */
+function modelOf(configuration: unknown): string | null {
+  if (!configuration || typeof configuration !== "object") return null;
+  if (!("model" in configuration)) return null;
+  const model = configuration.model;
+  if (typeof model !== "string") return null;
+  const trimmed = model.trim();
   return trimmed.length > 0 ? trimmed : null;
 }
 
@@ -281,7 +314,11 @@ export function runForDuplicate(
 ): AgentRun | null {
   const systemPrompt = systemPromptOf(source.configuration);
   if (source.type === "built_in" && systemPrompt) {
-    return { type: "built_in", configuration: { systemPrompt } };
+    const model = modelOf(source.configuration);
+    return {
+      type: "built_in",
+      configuration: model ? { systemPrompt, model } : { systemPrompt },
+    };
   }
 
   const endpoint = endpointOf(source.configuration);
@@ -482,12 +519,19 @@ export function createAgentProfileStore(
            * A key is deliberately not written on this branch — a key authenticates to an address and
            * this coworker has none, so storing one would leave a live credential in the vault that
            * nothing can ever present.
+           *
+           * The model IS written here, because it is the one setting a coworker with no address can
+           * have that changes who answers: `configuration.model`, read back by `modelOf` and used by
+           * `registeredAgentFromRow`. Absent, the deployment's model applies as before.
            */
           await transaction.insert(agents).values({
             id,
             name: input.name,
             type: "built_in",
-            configuration: { systemPrompt },
+            configuration: {
+              systemPrompt,
+              ...(input.model ? { model: input.model } : {}),
+            },
           });
         } else {
           /*
@@ -518,6 +562,40 @@ export function createAgentProfileStore(
           await lockProfileMutationRows(transaction, id);
           const profile = await findAccessibleProfile(transaction, actor, id);
           if (!profile) throw new AgentNotFoundError(id);
+          /*
+           * A Bot the tenant package ships takes exactly one edit: which model it runs on.
+           *
+           * Everything else about it is the package's — its prompt, its name, its address — and the
+           * synchroniser would overwrite a change to any of them on the next start, so allowing the
+           * edit would be a promise this deployment cannot keep. A model is different: it belongs to
+           * the deployment rather than to the package's text, an administrator is the one who knows
+           * what this installation can call, and `override` exists for exactly this.
+           *
+           * The edit lands in `override`, never in `configuration`, so the next deploy leaves it
+           * alone. A person asking to change anything else about a package Bot is refused as before.
+           */
+          const packageModelOnly =
+            profile.systemOwned &&
+            actor.role === "admin" &&
+            input.endpoint === undefined &&
+            input.auth === undefined &&
+            input.name === profile.name &&
+            input.title === profile.title &&
+            input.roleDescription === profile.roleDescription &&
+            input.visibility === profile.visibility;
+
+          if (packageModelOnly && input.model !== undefined) {
+            const chosen = input.model.trim();
+            const override = chosen ? { model: chosen } : {};
+            await transaction
+              .update(agents)
+              .set({ override, updatedAt: new Date() })
+              .where(eq(agents.id, id));
+            const updated = await findAccessibleProfile(transaction, actor, id);
+            if (!updated) throw new AgentNotFoundError(id);
+            return updated;
+          }
+
           requireManageable(actor, profile);
 
           const updatedAt = new Date();
@@ -557,7 +635,7 @@ export function createAgentProfileStore(
            * `role_description`, cannot reach this code at all: `requireManageable` above throws
            * `ProtectedAgentError` for anything the package owns.
            */
-          const configuration = {
+          const configuration: Record<string, unknown> = {
             ...previous,
             ...(row?.type === "built_in"
               ? { systemPrompt: input.roleDescription }
@@ -582,6 +660,22 @@ export function createAgentProfileStore(
                 }
               : {}),
           };
+
+          /**
+           * The model, set or cleared, and only for a coworker that runs here.
+           *
+           * Not folded into the spread above, because the two answers that matter are different
+           * values rather than different text: absent means "leave whatever is set", and an empty
+           * string means "go back to the deployment's model", which is the absence of the key.
+           *
+           * A remote Bot never takes one: it chooses its own model at its own endpoint, and a name
+           * stored for it would be a setting that changes nothing.
+           */
+          if (row?.type === "built_in" && input.model !== undefined) {
+            const chosen = input.model.trim();
+            if (chosen) configuration.model = chosen;
+            else delete configuration.model;
+          }
 
           /*
            * The key this one replaces is already retired, by the rotation above.

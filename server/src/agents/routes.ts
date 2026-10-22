@@ -1,6 +1,7 @@
 import type { Context, MiddlewareHandler } from "hono";
 import { Hono } from "hono";
 import type { AuditEventType, AuditStore } from "../audit";
+import type { ModelCatalogue } from "./model-catalogue";
 import { recordAuditEvent } from "../audit";
 import type { AppVariables } from "../auth/guards";
 import { afterExposureChange } from "../plugins/exposure-change";
@@ -34,6 +35,8 @@ type AgentInputObject = {
   visibility?: unknown;
   endpoint?: unknown;
   auth?: unknown;
+  /** The model this Bot runs on, or "" for the deployment's own. Built-in coworkers only. */
+  model?: unknown;
 };
 
 /**
@@ -124,9 +127,36 @@ export function parseAgentInput(
     }
   }
 
+  /*
+   * The model, when one was named.
+   *
+   * "" and a missing field mean different things, so this keeps them apart: absent leaves whatever is
+   * stored alone (an edit form that does not carry the field), and "" clears it back to the
+   * deployment's model. Trimmed and length-capped here because it travels into a provider call, and a
+   * name with a line break or of unbounded length is a bug being carried forward rather than a choice.
+   *
+   * Shape only. Whether the deployment can actually call this model is answered by the route, which
+   * has the credential; a bad name would otherwise fail at the first message, in front of the person
+   * who sent it.
+   */
+  let model: string | undefined;
+  if (input.model !== undefined) {
+    if (typeof input.model !== "string") {
+      return { ok: false, error: "Model must be text." };
+    }
+    const trimmed = input.model.trim();
+    if (trimmed.length > 200) {
+      return { ok: false, error: "Model must be at most 200 characters." };
+    }
+    if (/[\r\n]/.test(trimmed)) {
+      return { ok: false, error: "Model must be one line." };
+    }
+    model = trimmed;
+  }
+
   return {
     ok: true,
-    value: { name, title, roleDescription, visibility, endpoint, auth },
+    value: { name, title, roleDescription, visibility, endpoint, auth, model },
   };
 }
 
@@ -309,6 +339,14 @@ export function createAgentRoutes(
    * the picked harness answering 401 to everything.
    */
   managedRun?: { token: string; endpoints: readonly (string | URL)[] },
+  /**
+   * The models a built-in coworker may be put on, for the picker.
+   *
+   * Absent leaves the route answering with the deployment's own model and nothing else, which is
+   * what a deployment that cannot name its catalogue should see. It is a function because asking
+   * costs a provider call that the caller memoises.
+   */
+  modelCatalogue?: () => Promise<ModelCatalogue>,
 ) {
   /** The dto with the one fact only this closure knows: whether the coworker runs on our own Bot. */
   const dto = (actor: AgentActor, agent: AgentProfile) => ({
@@ -380,6 +418,24 @@ export function createAgentRoutes(
     }
 
     return context.json({ recorded: true });
+  });
+
+  /**
+   * What the model picker offers: the deployment's default, any names an operator listed, and
+   * whatever the provider's own catalogue publishes.
+   *
+   * Mounted before `/:agentId` so `models` is not read as a Bot id. Signed-in only, because the list
+   * is a property of this deployment's credential and says what it can spend.
+   */
+  routes.get("/models", requireUser, async (context) => {
+    if (!modelCatalogue)
+      return context.json({ models: [], defaultModel: null });
+    try {
+      return context.json(await modelCatalogue());
+    } catch {
+      // A catalogue is a convenience. A screen that cannot load one still has its text field.
+      return context.json({ models: [], defaultModel: null });
+    }
   });
 
   routes.get("/", requireUser, async (context) => {
@@ -550,6 +606,9 @@ export function createAgentRoutes(
         name: parsed.value.name,
         visibility: parsed.value.visibility,
         ...(parsed.value.endpoint ? { endpoint: parsed.value.endpoint } : {}),
+        // Which model it was put on, when somebody chose one. The trail is where "who moved this
+        // Bot onto that model" is answered, so the choice belongs on the row that created it.
+        ...(parsed.value.model ? { model: parsed.value.model } : {}),
         hasKey: Boolean(parsed.value.auth),
       });
       return context.json({ agent: dto(context.var.actor, agent) }, 201);
@@ -590,6 +649,11 @@ export function createAgentRoutes(
         name: parsed.value.name,
         visibility: parsed.value.visibility,
         ...(parsed.value.endpoint ? { endpoint: parsed.value.endpoint } : {}),
+        // Sent only when the screen carried the field, so "absent" here means untouched rather than
+        // "back to the deployment's model"; the stored value is what was saved.
+        ...(parsed.value.model !== undefined
+          ? { model: parsed.value.model || null }
+          : {}),
         ...(parsed.value.auth ? { keyReplaced: true } : {}),
       });
       /*
@@ -817,6 +881,8 @@ function agentDto(actor: AgentActor, agent: AgentProfile) {
     // Published so the edit form can show it. Safe to expose: it is an address the person supplied,
     // and any credential for it lives in the vault, never in this row.
     endpoint: agent.endpoint,
+    // The model this Bot was given, or null for the deployment's. Safe: a name, never a key.
+    model: agent.model,
     hasAuth: agent.hasAuth,
     // Whether one exists, never what it is.
     hasCallbackToken: agent.hasCallbackToken,

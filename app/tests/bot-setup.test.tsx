@@ -83,6 +83,7 @@ function serve(endpoint: string, ownerUserId = actor.id) {
     pinned: false,
     deletedAt: null,
     endpoint,
+    model: null,
     hasAuth: false,
     hasCallbackToken: false,
   };
@@ -189,6 +190,23 @@ test("a coworker somebody hosts keeps its own endpoint when it is renamed", asyn
     name: "Receipts",
     endpoint: "https://agents.example.test/ag-ui",
   });
+});
+
+test("a built-in Bot's model is saved from its Setup page, and emptying it clears it", async () => {
+  serve(MANAGED);
+  const view = draw();
+
+  const user = userEvent.setup({ document: view.baseElement.ownerDocument });
+  // The picker's own row, opened the way a person opens it.
+  await user.click(await view.findByRole("button", { name: /^Model/ }));
+  const field = await view.findByLabelText("Model name");
+  await user.type(field, "gpt-5.6-sol");
+  await user.click(view.getByRole("button", { name: "Save" }));
+
+  await waitFor(() => expect(updates).toHaveLength(1));
+  // Sent as a name, alongside the profile the form already had: the endpoint rule is untouched.
+  expect(updates[0]).toMatchObject({ model: "gpt-5.6-sol" });
+  expect(updates[0]?.endpoint).toBeUndefined();
 });
 
 test("someone who cannot manage the Bot reads its setup but cannot open an editor", async () => {
