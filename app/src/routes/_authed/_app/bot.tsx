@@ -8,6 +8,7 @@ import { DetailPanel } from "@/components/layout/detail-panel";
 import { SidebarToggleBar } from "@/components/layout/sidebar-toggle";
 import { Button } from "@/components/ui/button";
 import { defaultAgentId } from "@/lib/agents/default-agent";
+import { displayAgentName } from "@/lib/agents/display-name";
 import {
   type AgentProfile,
   agentKeys,
@@ -130,7 +131,9 @@ function RouteComponent() {
    * Keyed on the Bot, so the hooks below never see it change under them. They cannot be called
    * conditionally, and the guards above return before any of them run.
    */
-  return <BotChat agentId={agentId} key={agentId} name={bot.name} />;
+  return (
+    <BotChat agentId={agentId} key={agentId} name={displayAgentName(bot)} />
+  );
 }
 
 function BotChat({ agentId, name }: { agentId: string; name: string }) {

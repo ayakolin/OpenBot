@@ -41,7 +41,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { countLabel } from "@/lib/agents/bot-summaries";
+import { countLabel, joinList } from "@/lib/agents/bot-summaries";
+import { displayAgentName } from "@/lib/agents/display-name";
 import type { AgentProfile } from "@/lib/agents/queries";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import {
@@ -225,10 +226,10 @@ function audienceSummary(current: TeamBot | undefined): string {
   if (!current) return t("Not published");
   if (current.audience === "team") return t("The whole team");
   const parts = [
-    countLabel(current.people?.length ?? 0, t("person"), t("people"), ""),
+    countLabel(current.people?.length ?? 0, "person", "people", ""),
     countLabel(current.groups?.length ?? 0, t("group"), t("groups"), ""),
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : t("Specific people or groups");
+  return parts.length ? joinList(parts) : t("Specific people or groups");
 }
 
 const AUDIENCES = {
@@ -445,7 +446,7 @@ function AssignDialog({ bot, onClose }: { bot: TeamBot; onClose: () => void }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Assign")} {bot.name} {t("to a group")}
+            {t("Assign")} {displayAgentName(bot)} {t("to a group")}
           </DialogTitle>
           <DialogDescription>
             {t("It is pinned at the top of every member's Bots list.")}

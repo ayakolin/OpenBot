@@ -66,12 +66,29 @@ describe("sharing", () => {
 
 describe("joined parts translate in place", () => {
   test("zh-CN", () => {
-    expect(memorySummary(2, true, trZh)).toBe("2 个来源, 已开启后台研究");
+    expect(memorySummary(2, true, trZh)).toBe("2 个来源、已开启后台研究");
     expect(memorySummary(0, true, trZh)).toBe("已开启后台研究");
-    expect(accessSummary(2, 1, trZh)).toBe("2 个技能, 1 个应用");
+    expect(accessSummary(2, 1, trZh)).toBe("2 个技能、1 个应用");
     expect(reachSummary(["slack", "teams"], trZh)).toBe(
-      "Microsoft Teams, Slack",
+      "Microsoft Teams、Slack",
     );
+  });
+
+  test("zh-CN translates SMS and joins places with 、", () => {
+    expect(reachSummary(["sms"], trZh)).toBe("短信");
+    expect(reachSummary(["sms", "slack"], trZh)).toBe("Slack、短信");
+  });
+});
+
+describe("person counts", () => {
+  test("zh-CN uses one counter for both counts", () => {
+    expect(countLabel(1, "person", "people", "", trZh)).toBe("1 人");
+    expect(countLabel(3, "person", "people", "", trZh)).toBe("3 人");
+  });
+
+  test("English singular and plural", () => {
+    expect(countLabel(1, "person", "people", "", trEn)).toBe("1 person");
+    expect(countLabel(3, "person", "people", "", trEn)).toBe("3 people");
   });
 });
 
@@ -100,6 +117,8 @@ describe("every key these rows use is translated", () => {
     "{count} sources",
     "{count} rule",
     "{count} rules",
+    "{count} person",
+    "{count} people",
     "Nothing connected",
     "Nothing granted",
     "Not shared",
