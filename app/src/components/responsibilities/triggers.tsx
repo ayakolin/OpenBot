@@ -125,7 +125,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
         setTimeout(() => setCopied(false), 1500);
       }}
     >
-      {copied ? "Copied" : label}
+      {copied ? t("Copied") : label}
     </Button>
   );
 }
@@ -198,8 +198,8 @@ export function Triggers({ goal }: { goal: ResponsibilityRecord }) {
       </div>
       {goal.status !== "active" && (
         <p className="text-muted-foreground text-xs">
-          {t("This responsibility is")} {goal.status}, so its triggers are
-          acknowledged but never run it.
+          {t("This responsibility is")} {goal.status}
+          {t(", so its triggers are acknowledged but never run it.")}
         </p>
       )}
       {triggers.error && (
@@ -297,10 +297,10 @@ function TriggerRow({
         <Icon />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>{KIND_LABEL[trigger.kind]}</ItemTitle>
+        <ItemTitle>{t(KIND_LABEL[trigger.kind])}</ItemTitle>
         <ItemDescription className="line-clamp-none">
           {describeFilter(trigger.config)}
-          {trigger.enabled ? "" : " · Paused"}
+          {trigger.enabled ? "" : t(" · Paused")}
         </ItemDescription>
       </ItemContent>
       <ItemActions>
@@ -332,7 +332,9 @@ function TriggerRow({
               {t("Remove")}
             </Button>
             <Switch
-              aria-label={`Run on this ${KIND_LABEL[trigger.kind]} trigger`}
+              aria-label={t("Run on this {kind} trigger", {
+                kind: t(KIND_LABEL[trigger.kind]),
+              })}
               checked={trigger.enabled}
               disabled={toggle.isPending}
               onCheckedChange={() =>
@@ -344,7 +346,7 @@ function TriggerRow({
       </ItemActions>
       <ItemFooter className="flex-col items-stretch">
         <p className="text-muted-foreground text-xs">
-          {KIND_HELP[trigger.kind]}
+          {t(KIND_HELP[trigger.kind])}
         </p>
         {url && (
           <div className="flex flex-wrap items-center gap-2">
@@ -574,12 +576,12 @@ function NewTriggerDialog({
                   <SelectContent>
                     {(Object.keys(KIND_LABEL) as TriggerKind[]).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {KIND_LABEL[value]}
+                        {t(KIND_LABEL[value])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>{KIND_HELP[kind]}</FieldDescription>
+                <FieldDescription>{t(KIND_HELP[kind])}</FieldDescription>
               </Field>
               {kind === "slack" ? (
                 <FieldGroup className="sm:grid sm:grid-cols-2">
@@ -613,7 +615,7 @@ function NewTriggerDialog({
                         {(Object.keys(SLACK_MODE) as SlackMode[]).map(
                           (value) => (
                             <SelectItem key={value} value={value}>
-                              {SLACK_MODE[value]}
+                              {t(SLACK_MODE[value])}
                             </SelectItem>
                           ),
                         )}
@@ -754,7 +756,9 @@ function NewTriggerDialog({
             size="sm"
             type="submit"
           >
-            {create.isPending ? "Adding…" : `Add ${KIND_LABEL[kind]} trigger`}
+            {create.isPending
+              ? t("Adding…")
+              : t("Add {kind} trigger", { kind: t(KIND_LABEL[kind]) })}
           </Button>
         </DialogFooter>
       </DialogContent>

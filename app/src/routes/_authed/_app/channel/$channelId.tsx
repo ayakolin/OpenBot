@@ -84,7 +84,7 @@ function RouteComponent() {
       onClose={() => show(null)}
       open={(isSettingsOpen || isWatching) && agentId !== undefined}
       detailWidth={isWatching ? SCREEN_PANEL_WIDTH : undefined}
-      title={isWatching ? "Computer" : undefined}
+      title={isWatching ? t("Computer") : undefined}
       detail={
         agentId === undefined ? null : isWatching ? (
           // Manual watch remains active even when there is no current browser action.
@@ -132,7 +132,7 @@ function RouteComponent() {
                 ease: EASE_OUT,
               }}
             >
-              {channel.data?.name ?? "Channel"}
+              {channel.data?.name ?? t("Channel")}
             </motion.span>
           </div>
           <div className="flex flex-row gap-1.5">

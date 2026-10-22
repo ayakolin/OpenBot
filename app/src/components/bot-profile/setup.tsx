@@ -314,7 +314,7 @@ function EditTextDialog({
             {t("Cancel")}
           </Button>
           <Button disabled={saving} onClick={() => void submit()} size="sm">
-            {saving ? "Saving…" : "Save"}
+            {saving ? t("Saving…") : t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -86,9 +86,9 @@ export function UpdateRoutingSection() {
                     <IconRoute />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>{KIND_LABEL[kind].title}</ItemTitle>
+                    <ItemTitle>{t(KIND_LABEL[kind].title)}</ItemTitle>
                     <ItemDescription>
-                      {KIND_LABEL[kind].description}
+                      {t(KIND_LABEL[kind].description)}
                     </ItemDescription>
                   </ItemContent>
                   <ItemFooter className="flex-wrap justify-start gap-x-6 gap-y-3 pl-8">
@@ -98,7 +98,10 @@ export function UpdateRoutingSection() {
                         key={transport.id}
                       >
                         <Switch
-                          aria-label={`${KIND_LABEL[kind].title} by ${transport.label}`}
+                          aria-label={t("{title} by {transport}", {
+                            title: t(KIND_LABEL[kind].title),
+                            transport: t(transport.label),
+                          })}
                           checked={
                             configured(transport.id) && allowed(transport.id)
                           }
@@ -119,7 +122,7 @@ export function UpdateRoutingSection() {
                           size="sm"
                         />
                         <span className="flex flex-col leading-tight whitespace-nowrap">
-                          {transport.label}
+                          {t(transport.label)}
                           {configured(transport.id) ? null : (
                             <span className="text-muted-foreground text-xs">
                               {t("Not set up")}

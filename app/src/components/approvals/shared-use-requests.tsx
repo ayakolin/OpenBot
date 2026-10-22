@@ -70,7 +70,7 @@ export function SharedUseRequests() {
                   {t("Now:")}{" "}
                   {request.current
                     ? describeApproval(request.current)
-                    : "Not approved"}
+                    : t("Not approved")}
                 </p>
                 <p className="text-sm">
                   {t("Asked:")} {describeApproval(request.proposed)}

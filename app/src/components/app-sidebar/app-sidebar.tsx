@@ -308,8 +308,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </EmptyTitle>
                     <EmptyDescription className="text-pretty">
                       {channels.hasNextPage
-                        ? "Load older conversations to search more of your history."
-                        : `Nothing here is named “${search.trim()}”, and nobody has said it recently either.`}
+                        ? t(
+                            "Load older conversations to search more of your history.",
+                          )
+                        : t(
+                            "Nothing here is named “{query}”, and nobody has said it recently either.",
+                            { query: search.trim() },
+                          )}
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>

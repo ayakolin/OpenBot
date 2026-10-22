@@ -39,10 +39,10 @@ import { t } from "@/lib/i18n";
 export function linkedAccountDescription(account: LinkedAccount): string {
   if (account.status === "needs_reconnect") {
     return account.handle
-      ? `Needs reconnecting · @${account.handle}`
-      : "Needs reconnecting";
+      ? `${t("Needs reconnecting")} · @${account.handle}`
+      : t("Needs reconnecting");
   }
-  return account.handle ? `@${account.handle}` : "Linked";
+  return account.handle ? `@${account.handle}` : t("Linked");
 }
 
 const providerIcons = {
@@ -262,7 +262,7 @@ export function LinkedAccountsSection() {
                       setCopyFailed(!ok);
                     }}
                   >
-                    {copied ? "Copied" : "Copy"}
+                    {copied ? t("Copied") : t("Copy")}
                   </Button>
                 </div>
                 {copyFailed ? (
@@ -311,7 +311,7 @@ function AvailableAccountRow({
       </ItemContent>
       <ItemActions>
         <Button
-          aria-label={`Connect ${title}`}
+          aria-label={t("Connect {title}", { title })}
           size="sm"
           variant="outline"
           disabled={pending}
@@ -343,7 +343,7 @@ function LinkedAccountRow({ account }: { account: LinkedAccount }) {
         </ItemContent>
         <ItemActions>
           <Button
-            aria-label={`Disconnect ${account.title}`}
+            aria-label={t("Disconnect {title}", { title: account.title })}
             size="sm"
             variant="outline"
             disabled={unlink.isPending}

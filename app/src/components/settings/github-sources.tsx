@@ -81,7 +81,7 @@ export function GithubSources() {
                   <ItemTitle>{binding.repository}</ItemTitle>
                   <ItemDescription className="line-clamp-none break-all font-mono text-xs">
                     {window.location.origin}
-                    {t("/api/events/github/")}
+                    {"/api/events/github/"}
                     {binding.id}
                   </ItemDescription>
                 </ItemContent>

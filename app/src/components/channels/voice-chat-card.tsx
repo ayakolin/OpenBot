@@ -36,7 +36,7 @@ export function VoiceChatCard({ call }: { call: VoiceChatEntry }) {
           {call.transcript.map((entry) => (
             <div key={entry.id}>
               <p className="mb-0.5 text-xs font-medium text-muted-foreground">
-                {entry.role === "user" ? "You" : "Agent"}
+                {entry.role === "user" ? t("You") : t("Agent")}
               </p>
               <p className="whitespace-pre-wrap text-sm leading-relaxed">
                 {entry.text}
@@ -48,15 +48,15 @@ export function VoiceChatCard({ call }: { call: VoiceChatEntry }) {
       <p className="mt-1 text-sm leading-snug" aria-live="polite">
         {call.summary ??
           (saving
-            ? "Saving your conversation and preparing a summary…"
+            ? t("Saving your conversation and preparing a summary…")
             : unsaved
-              ? "Couldn’t confirm this voice chat was saved."
-              : "Transcript saved. A summary couldn’t be generated.")}
+              ? t("Couldn’t confirm this voice chat was saved.")
+              : t("Transcript saved. A summary couldn’t be generated."))}
       </p>
       {(unsaved || (!saving && call.summaryStatus === "failed")) && (
         <div className="mt-2 flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">
-            {call.saveError ?? "You can still expand the transcript."}
+            {call.saveError ?? t("You can still expand the transcript.")}
           </span>
           <Button
             size="xs"

@@ -16,6 +16,7 @@ import {
   galleryManifest,
 } from "@/lib/copilot/gallery-registry";
 import { NOT_SHOWN, NOT_SHOWN_TAIL } from "@openbot/shared/component-markers";
+import { t } from "@/lib/i18n";
 
 /**
  * Register compiled gallery components once per name, scoped to the active Bot with `available`.
@@ -119,7 +120,10 @@ function GrantedTool({
       if (!isHeld) {
         return (
           <RefusedCard
-            reason={`${spec.title} is not available to this Bot at the moment. An administrator grants components per Bot, and can unpublish one for every Bot at once.`}
+            reason={t(
+              "{name} is not available to this Bot at the moment. An administrator grants components per Bot, and can unpublish one for every Bot at once.",
+              { name: spec.title },
+            )}
             title={spec.title}
           />
         );

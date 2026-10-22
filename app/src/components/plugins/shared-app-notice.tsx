@@ -61,7 +61,7 @@ export function SharedAppNotice({
               )}
             </p>
             <Button
-              aria-label={`Request approval for ${app.title}`}
+              aria-label={t("Request approval for {name}", { name: app.title })}
               disabled={ask.isPending}
               onClick={() =>
                 ask.mutate({ botId, serverId: app.serverId, reason })

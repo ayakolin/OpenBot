@@ -141,7 +141,7 @@ function RecordingControls({
         ) : (
           <div className="flex min-w-0 items-center gap-3">
             <span className="sr-only" role="status">
-              {transcribing ? "Transcribing…" : "Listening"}
+              {transcribing ? t("Transcribing…") : t("Listening")}
             </span>
             <LiveWaveform
               stream={state.stream}
@@ -175,7 +175,7 @@ function RecordingControls({
               void (state.canRetry ? session.retry() : session.start())
             }
           >
-            {state.canRetry ? "Retry" : "Record again"}
+            {state.canRetry ? t("Retry") : t("Record again")}
           </Button>
         ) : (
           <div className="flex shrink-0 items-center gap-2">

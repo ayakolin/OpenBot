@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { t } from "@/lib/i18n";
 
 /**
  * One line for one thing a Bot did.
@@ -48,9 +49,9 @@ export function ToolLine({
       {icon ? <span className="shrink-0 self-center">{icon}</span> : null}
       <span className="shrink-0">
         {refused
-          ? `Blocked: ${label}`
+          ? t("Blocked: {label}", { label })
           : failed
-            ? `${label}, didn't work`
+            ? t("{label}, didn't work", { label })
             : label}
       </span>
       {detail ? <span className="truncate opacity-70">{detail}</span> : null}

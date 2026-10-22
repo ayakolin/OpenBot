@@ -56,7 +56,7 @@ export function AgentCard({
         <Button
           variant="ghost"
           size="xs"
-          aria-label={`View details for ${agent.name}`}
+          aria-label={t("View details for {name}", { name: agent.name })}
           className="-ml-2 text-muted-foreground after:absolute after:inset-0"
           render={<Link params={{ agentId: agent.id }} to="/bots/$agentId" />}
         >

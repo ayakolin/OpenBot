@@ -60,18 +60,18 @@ export function VoiceCallWidget({
   const connecting = state.phase === "connecting";
   const failed = state.phase === "error";
   const status = failed
-    ? "Call unavailable"
+    ? t("Call unavailable")
     : connecting
-      ? "Connecting…"
+      ? t("Connecting…")
       : state.speaking
-        ? `${name} is speaking`
+        ? t("{name} is speaking", { name })
         : taskRunning
-          ? "Working on your request"
+          ? t("Working on your request")
           : state.muted
-            ? "Your microphone is muted"
+            ? t("Your microphone is muted")
             : state.listening
-              ? "Listening to you"
-              : "Ready when you are";
+              ? t("Listening to you")
+              : t("Ready when you are");
   const duration = `${Math.floor(state.seconds / 60)}:${String(state.seconds % 60).padStart(2, "0")}`;
   const transition = {
     duration: reduceMotion ? 0 : ENTRANCE_SECONDS,
@@ -79,7 +79,7 @@ export function VoiceCallWidget({
   };
   return (
     <motion.section
-      aria-label={`Voice call with ${name}`}
+      aria-label={t("Voice call with {name}", { name })}
       initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={transition}
@@ -151,7 +151,7 @@ export function VoiceCallWidget({
               )}
             </div>
             <div
-              title={state.muted ? "You · microphone muted" : "You"}
+              title={state.muted ? t("You · microphone muted") : t("You")}
               className={cn(
                 "relative flex size-[40px] shrink-0 items-center justify-center rounded-full bg-background ring-2 ring-transparent ring-offset-2 ring-offset-muted transition-shadow motion-reduce:transition-none",
                 state.listening && !state.muted && "ring-primary/40",
@@ -167,7 +167,11 @@ export function VoiceCallWidget({
               ) : (
                 <span
                   role="img"
-                  aria-label={user?.name ? `${user.name} (you)` : "You"}
+                  aria-label={
+                    user?.name
+                      ? t("{name} (you)", { name: user.name })
+                      : t("You")
+                  }
                   className="text-sm font-medium text-foreground/70"
                 >
                   {initials}
@@ -269,7 +273,9 @@ export function VoiceCallWidget({
                 <div className="mt-3 h-16 overflow-y-auto rounded-xl bg-muted/40 p-2 text-xs leading-relaxed text-muted-foreground">
                   {state.reply ||
                     state.transcript ||
-                    "Speak when you’re ready. This call uses the current chat."}
+                    t(
+                      "Speak when you’re ready. This call uses the current chat.",
+                    )}
                 </div>
               </motion.div>
             )}

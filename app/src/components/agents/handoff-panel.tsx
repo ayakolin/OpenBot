@@ -134,13 +134,17 @@ export function HandoffPanel({ agentId }: { agentId: string }) {
                    */}
                   <ItemDescription>
                     {candidate.hidden
-                      ? `${candidate.title} · hidden from your roster`
+                      ? t("{title} · hidden from your roster", {
+                          title: candidate.title,
+                        })
                       : candidate.title}
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <Switch
-                    aria-label={`Let this Bot ask ${candidate.name}`}
+                    aria-label={t("Let this Bot ask {name}", {
+                      name: candidate.name,
+                    })}
                     checked={reachable.includes(candidate.id)}
                     disabled={!canGrant || setGrant.isPending}
                     onCheckedChange={(next: boolean) =>

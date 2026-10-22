@@ -406,12 +406,12 @@ function NewBotFlow({ onCreated }: { onCreated: (agentId: string) => void }) {
           type="submit"
         >
           {checking
-            ? "Checking…"
+            ? t("Checking…")
             : createAgent.isPending
-              ? "Creating…"
+              ? t("Creating…")
               : step === "about"
-                ? "Create"
-                : "Continue"}
+                ? t("Create")
+                : t("Continue")}
         </Button>
       </SheetFooter>
     </form>
@@ -566,7 +566,9 @@ function AboutStep({
           id="new-bot-title"
           maxLength={120}
           onChange={(event) => onTitle(event.target.value)}
-          placeholder={runsHere ? "Finance Operations" : defaultTitle(runtime)}
+          placeholder={
+            runsHere ? t("Finance Operations") : defaultTitle(runtime)
+          }
           value={title}
         />
         <FieldDescription>
@@ -575,7 +577,7 @@ function AboutStep({
       </Field>
       <Field>
         <FieldLabel htmlFor="new-bot-instructions">
-          {runsHere ? "Instructions" : "Role"}
+          {runsHere ? t("Instructions") : t("Role")}
           <span className="font-normal text-muted-foreground">
             {t("Optional")}
           </span>

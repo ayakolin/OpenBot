@@ -147,10 +147,10 @@ export function LiveWaveform({
       role="img"
       aria-label={
         unavailable
-          ? "Waveform unavailable; recording continues"
+          ? t("Waveform unavailable; recording continues")
           : processing
-            ? "Processing audio"
-            : "Live audio waveform"
+            ? t("Processing audio")
+            : t("Live audio waveform")
       }
     >
       <canvas ref={canvasRef} className="block size-full" />

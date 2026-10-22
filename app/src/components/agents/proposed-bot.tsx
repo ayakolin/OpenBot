@@ -142,8 +142,11 @@ export function ProposedBotCard({
       action={<Badge tone="caution">{t("Waiting on you")}</Badge>}
       caption={
         clashes
-          ? `There is already a ${clashes.title} here, which is ${clashes.ownership}. Names do not have to be unique, but two with the same name are hard to tell apart in a channel list.`
-          : "Nothing is created until you press the button."
+          ? t(
+              "There is already a {title} here, which is {ownership}. Names do not have to be unique, but two with the same name are hard to tell apart in a channel list.",
+              { title: clashes.title, ownership: clashes.ownership },
+            )
+          : t("Nothing is created until you press the button.")
       }
       title={titleFor(values.name, clashes)}
     >
@@ -204,7 +207,7 @@ export function ProposedBotCard({
           size="sm"
           variant="outline"
         >
-          {sending === "decline" ? "…" : "Don't create"}
+          {sending === "decline" ? "…" : t("Don't create")}
         </Button>
       </div>
     </GalleryFrame>
@@ -215,8 +218,10 @@ function titleFor(
   name: string | undefined,
   clashes: { title: string } | undefined,
 ): string {
-  const called = name?.trim() ? name.trim() : "a new coworker";
-  return clashes ? `Create ${called}, again` : `Create ${called}`;
+  const called = name?.trim() ? name.trim() : t("a new coworker");
+  return clashes
+    ? t("Create {name}, again", { name: called })
+    : t("Create {name}", { name: called });
 }
 
 /**
@@ -239,7 +244,7 @@ function TalkToIt({
       params={{ agentId }}
       to="/bots/$agentId"
     >
-      {t("Open")} {name?.trim() || "the coworker"}
+      {t("Open")} {name?.trim() || t("the coworker")}
     </Link>
   );
 }

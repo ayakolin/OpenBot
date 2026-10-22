@@ -308,7 +308,9 @@ export function ComputerTools() {
           label={t("Read the page")}
           detail={
             elements.length
-              ? `${elements.length} thing${elements.length === 1 ? "" : "s"} it can act on`
+              ? elements.length === 1
+                ? t("{count} item it can act on", { count: elements.length })
+                : t("{count} items it can act on", { count: elements.length })
               : undefined
           }
         />
@@ -621,8 +623,14 @@ export function ComputerTools() {
             outcome.refused === true || didNotWork(outcome)
               ? String(outcome.reason ?? "")
               : entries.length
-                ? `${entries.length} item${entries.length === 1 ? "" : "s"} in the workspace`
-                : "nothing saved yet"
+                ? entries.length === 1
+                  ? t("{count} item in the workspace", {
+                      count: entries.length,
+                    })
+                  : t("{count} items in the workspace", {
+                      count: entries.length,
+                    })
+                : t("nothing saved yet")
           }
           refused={outcome.refused === true}
           failed={didNotWork(outcome)}
@@ -815,7 +823,7 @@ export function ComputerTools() {
       return (
         <ActionLine
           running={status !== "complete"}
-          label={args?.append === true ? "Added to file" : "Saved file"}
+          label={args?.append === true ? t("Added to file") : t("Saved file")}
           // Show the path, never file contents.
           detail={
             outcome.refused === true

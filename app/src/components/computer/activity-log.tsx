@@ -77,7 +77,7 @@ function Entry({ entry }: { entry: ComputerActivity }) {
 
       {entry.refused === true ? (
         <p className="mt-1 pl-5 text-destructive text-xs">
-          {entry.output || "A boundary refused it."}
+          {entry.output || t("A boundary refused it.")}
         </p>
       ) : (
         <div className="mt-1 max-h-64 overflow-auto pl-5">

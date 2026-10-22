@@ -190,10 +190,10 @@ function RoutineRuns({ routine }: { routine: RoutineRecord }) {
             </span>
             <span className="text-muted-foreground">
               {run.source === "run_now"
-                ? "Run now"
+                ? t("Run now")
                 : run.source === "trigger"
-                  ? "Triggered"
-                  : "Scheduled"}{" "}
+                  ? t("Triggered")
+                  : t("Scheduled")}{" "}
               · {relativeTime(run.startedAt)}
             </span>
             {routine.channel.gone ? null : (
@@ -263,8 +263,13 @@ export function RoutinesList({
             {t("Nothing is running these.")}
           </span>{" "}
           {sweep?.lastSweptAt
-            ? `The routines worker last checked ${relativeTime(sweep.lastSweptAt)}. Until it is running again, none of these will fire.`
-            : "No routines worker has ever checked in, so none of these will fire. A deployment needs one running to carry them out."}
+            ? t(
+                "The routines worker last checked {time}. Until it is running again, none of these will fire.",
+                { time: relativeTime(sweep.lastSweptAt) },
+              )
+            : t(
+                "No routines worker has ever checked in, so none of these will fire. A deployment needs one running to carry them out.",
+              )}
         </p>
       ) : null}
 
@@ -312,7 +317,9 @@ export function RoutinesList({
                      * page uses for its per-Bot grant switches.
                      */}
                     <Switch
-                      aria-label={`Enable the routine scheduled ${routine.schedule}`}
+                      aria-label={t("Enable the routine scheduled {schedule}", {
+                        schedule: routine.schedule,
+                      })}
                       checked={routine.enabled}
                       disabled={
                         setEnabled.isPending &&
@@ -343,7 +350,7 @@ export function RoutinesList({
                           to="/channel/$channelId"
                         >
                           <Chip className="text-muted-foreground transition-colors hover:text-foreground">
-                            {routine.channel.name ?? "Unnamed channel"}
+                            {routine.channel.name ?? t("Unnamed channel")}
                           </Chip>
                         </Link>
                       )}
@@ -386,7 +393,10 @@ export function RoutinesList({
                        * on, because a paused routine never runs.
                        */}
                       <Button
-                        aria-label={`Run the routine scheduled ${routine.schedule} now`}
+                        aria-label={t(
+                          "Run the routine scheduled {schedule} now",
+                          { schedule: routine.schedule },
+                        )}
                         disabled={
                           !routine.enabled ||
                           (runNow.isPending && runNow.variables === routine.id)
@@ -414,7 +424,10 @@ export function RoutinesList({
                       </Button>
                       <Button
                         aria-expanded={historyId === routine.id}
-                        aria-label={`Run history for the routine scheduled ${routine.schedule}`}
+                        aria-label={t(
+                          "Run history for the routine scheduled {schedule}",
+                          { schedule: routine.schedule },
+                        )}
                         onClick={() =>
                           setHistoryId(
                             historyId === routine.id ? null : routine.id,
@@ -428,7 +441,10 @@ export function RoutinesList({
                         {t("History")}
                       </Button>
                       <Button
-                        aria-label={`Delete the routine scheduled ${routine.schedule}`}
+                        aria-label={t(
+                          "Delete the routine scheduled {schedule}",
+                          { schedule: routine.schedule },
+                        )}
                         onClick={() => {
                           deleteRoutine.reset();
                           setConfirmingId(routine.id);
@@ -508,7 +524,7 @@ export function RoutinesList({
               type="button"
               variant="destructive"
             >
-              {deleteRoutine.isPending ? "Deleting…" : "Delete"}
+              {deleteRoutine.isPending ? t("Deleting…") : t("Delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

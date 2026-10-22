@@ -94,7 +94,7 @@ function ActivityRow({
       size="sm"
       variant="outline"
     >
-      {stop.isPending ? "Stopping…" : "Stop"}
+      {stop.isPending ? t("Stopping…") : t("Stop")}
     </Button>
   ) : item.cancellable ? (
     <Button
@@ -103,7 +103,7 @@ function ActivityRow({
       size="sm"
       variant="outline"
     >
-      {cancel.isPending ? "Cancelling…" : "Cancel"}
+      {cancel.isPending ? t("Cancelling…") : t("Cancel")}
     </Button>
   ) : null;
   const content = (
@@ -114,7 +114,8 @@ function ActivityRow({
       <ItemContent>
         <ItemTitle>{item.title}</ItemTitle>
         <ItemDescription>
-          {KIND_LABEL[item.kind]} · {item.needsYou ? "needs you" : item.status}
+          {t(KIND_LABEL[item.kind])} ·{" "}
+          {item.needsYou ? t("needs you") : t(item.status)}
           {when ? ` · ${when}` : ""}
           {item.detail ? ` · ${item.detail}` : ""}
         </ItemDescription>
@@ -193,19 +194,19 @@ export function BotActivitySections({ agentId }: { agentId: string }) {
     <>
       <ActivitySection
         agentId={agentId}
-        empty="Nothing is running or waiting on you."
+        empty={t("Nothing is running or waiting on you.")}
         items={activity.data.inProgress}
         title={t("In progress")}
       />
       <ActivitySection
         agentId={agentId}
-        empty="Nothing is scheduled."
+        empty={t("Nothing is scheduled.")}
         items={activity.data.scheduled}
         title={t("Scheduled")}
       />
       <ActivitySection
         agentId={agentId}
-        empty="Nothing has finished yet."
+        empty={t("Nothing has finished yet.")}
         items={activity.data.completed}
         title={t("Completed")}
       />

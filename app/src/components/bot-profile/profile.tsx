@@ -45,11 +45,11 @@ import { BotActivitySections } from "./activity";
 import { BotPausedBanner } from "./pause-banner";
 import { t } from "@/lib/i18n";
 
-const NOTIFY_LABEL: Record<BotNotify, string> = {
-  all: "Everything",
-  needs_input: "Only when it needs me",
-  none: "Nothing (badges only)",
-};
+const NOTIFY_LABEL = (): Record<BotNotify, string> => ({
+  all: t("Everything"),
+  needs_input: t("Only when it needs me"),
+  none: t("Nothing (badges only)"),
+});
 
 /** A Bot's own page: its state for you, what it is doing, its settings, and what can be done to it. */
 export function BotProfile({
@@ -75,6 +75,7 @@ export function BotProfile({
       return "unsupported";
     }
   });
+  const notifyLabel = NOTIFY_LABEL();
 
   return (
     <>
@@ -144,15 +145,15 @@ export function BotProfile({
               <ItemContent>
                 <ItemTitle>{t("Notifications")}</ItemTitle>
                 <ItemDescription>
-                  {NOTIFY_LABEL[lifecycle.data.notify]}. Sidebar badges always
-                  show.
+                  {notifyLabel[lifecycle.data.notify]}
+                  {t(". Sidebar badges always show.")}
                 </ItemDescription>
               </ItemContent>
               <ItemActions>
                 <Select
                   disabled={notify.isPending}
                   // The label map, so the closed trigger says "Everything" rather than the raw value.
-                  items={NOTIFY_LABEL}
+                  items={notifyLabel}
                   onValueChange={(next) => {
                     if (next === lifecycle.data.notify) return;
                     notify.mutate({
@@ -166,9 +167,9 @@ export function BotProfile({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.keys(NOTIFY_LABEL) as BotNotify[]).map((value) => (
+                    {(Object.keys(notifyLabel) as BotNotify[]).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {NOTIFY_LABEL[value]}
+                        {notifyLabel[value]}
                       </SelectItem>
                     ))}
                   </SelectContent>

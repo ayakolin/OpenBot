@@ -126,7 +126,7 @@ export const Channel = memo(function Channel({
             <ChannelItemContent
               participantIds={participantIds}
               name={name}
-              title={summary || lastMessage || "New conversation"}
+              title={summary || lastMessage || t("New conversation")}
               displayedTitle={threadTitle}
               lastMessageAt={lastMessageAt}
               emphasis={emphasis}
@@ -204,7 +204,7 @@ export const Channel = memo(function Channel({
               size="sm"
               variant="destructive"
             >
-              {deleteChannel.isPending ? "Deleting…" : "Delete"}
+              {deleteChannel.isPending ? t("Deleting…") : t("Delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

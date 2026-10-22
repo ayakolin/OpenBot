@@ -133,7 +133,7 @@ export function MemoryList() {
   const memories = useQuery(memoriesQueryOptions());
   const agents = useQuery(agentListQueryOptions());
   const botName = (id: string | null) =>
-    agents.data?.find((agent) => agent.id === id)?.name ?? "your Bot";
+    agents.data?.find((agent) => agent.id === id)?.name ?? t("your Bot");
   return (
     <PageSection title={t("Your memories")}>
       {memories.isPending ? null : memories.error ? (
@@ -182,14 +182,14 @@ function MemoryRow({
   // forgotten here but not paused or reviewed.
   const heldByIntelligence = memory.formedBy === "intelligence";
   const status = heldByIntelligence
-    ? "Kept in Intelligence"
+    ? t("Kept in Intelligence")
     : !memory.enabled
-      ? "Disabled"
+      ? t("Disabled")
       : memory.formedBy === "bot"
-        ? `Formed by ${botName}${memory.reviewState === "unreviewed" ? " · awaiting review" : ""}`
+        ? `${t("Formed by {name}", { name: botName })}${memory.reviewState === "unreviewed" ? ` · ${t("awaiting review")}` : ""}`
         : memory.reviewState === "unreviewed"
-          ? "Imported · awaiting review"
-          : "Reviewed";
+          ? t("Imported · awaiting review")
+          : t("Reviewed");
   return (
     <Item size="sm">
       <ItemMedia variant="icon">
@@ -204,9 +204,11 @@ function MemoryRow({
         </ItemDescription>
         {memory.formedBy === "bot" && (
           <ItemDescription className="line-clamp-none">
-            {t("From")} {memory.sourceApp ?? "a conversation"}
+            {t("From")} {memory.sourceApp ?? t("a conversation")}
             {memory.observedAt
-              ? `, read ${new Date(memory.observedAt).toLocaleString()}`
+              ? t(", read {date}", {
+                  date: new Date(memory.observedAt).toLocaleString(),
+                })
               : ""}
             {memory.sourceLink && (
               <>
@@ -260,7 +262,9 @@ function MemoryRow({
         <ItemActions>
           {/* Binary and immediate: Bots stop or start using it when switched. */}
           <Switch
-            aria-label={`Use this memory: ${clip(memory.content)}`}
+            aria-label={t("Use this memory: {content}", {
+              content: clip(memory.content),
+            })}
             checked={memory.enabled}
             disabled={save.isPending}
             onCheckedChange={(enabled) => update({ enabled })}

@@ -71,11 +71,11 @@ export function AccountModeDialog({
         <DialogHeader>
           <DialogTitle>
             {target === "shared"
-              ? `Share one ${title} account?`
-              : `Give everyone their own ${title} account?`}
+              ? t("Share one {title} account?", { title })
+              : t("Give everyone their own {title} account?", { title })}
           </DialogTitle>
           <DialogDescription>
-            {preview.data ? goes : "Checking what this would change…"}
+            {preview.data ? goes : t("Checking what this would change…")}
           </DialogDescription>
         </DialogHeader>
         {target === "shared" ? (

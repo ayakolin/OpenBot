@@ -86,11 +86,14 @@ export function StandingInstructions() {
             <p
               className={
                 over
-                  ? t("text-destructive text-xs")
-                  : t("text-muted-foreground text-xs")
+                  ? "text-destructive text-xs"
+                  : "text-muted-foreground text-xs"
               }
             >
-              {text.trim().length} of {INSTRUCTIONS_LIMIT} {t("characters")}
+              {t("{count} of {limit} characters", {
+                count: text.trim().length,
+                limit: INSTRUCTIONS_LIMIT,
+              })}
             </p>
             <div className="flex flex-row items-center gap-3">
               {/*

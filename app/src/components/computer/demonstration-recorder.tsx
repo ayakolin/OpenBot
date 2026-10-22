@@ -272,13 +272,13 @@ export function DemonstrationRecorder({
               aria-live={secondsLeft <= 60 ? "polite" : "off"}
               className={
                 secondsLeft <= 60
-                  ? t("text-sm font-medium text-destructive tabular-nums")
-                  : t("text-sm text-muted-foreground tabular-nums")
+                  ? "text-sm font-medium text-destructive tabular-nums"
+                  : "text-sm text-muted-foreground tabular-nums"
               }
             >
               {secondsLeft > 0
-                ? `${clock(secondsLeft)} left`
-                : "Time limit reached. Stopping…"}
+                ? t("{time} left", { time: clock(secondsLeft) })
+                : t("Time limit reached. Stopping…")}
             </span>
           )}
           <Button
@@ -414,7 +414,7 @@ export function DemonstrationRecorder({
           <SkillFields
             key={draft.sourceRecordingId}
             defaultValues={draft}
-            submitLabel="Save and use with this Bot"
+            submitLabel={t("Save and use with this Bot")}
             error={saveError || save.error}
             onCancel={() => setDraft(null)}
             onSubmit={async (values) => {

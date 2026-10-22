@@ -135,7 +135,7 @@ function NothingToSee({
           */}
           {page?.url ? (
             <>
-              <span className="font-medium">{page.title || "A page"}</span>
+              <span className="font-medium">{page.title || t("A page")}</span>
               <span className="break-all">{hostOf(page.url)}</span>
               <span>
                 {t("Opened during this turn. The screen has moved on since.")}
@@ -592,12 +592,12 @@ export function ComputerView({
           <div className="flex flex-wrap items-center justify-between gap-2 border-t px-3 py-2">
             <span className="text-xs text-muted-foreground">
               {!control
-                ? "Checking who has control…"
+                ? t("Checking who has control…")
                 : control.transitioning
-                  ? "Finishing the current action…"
+                  ? t("Finishing the current action…")
                   : driving
-                    ? "You have control. Open the screen to click and type."
-                    : "The assistant has control."}
+                    ? t("You have control. Open the screen to click and type.")
+                    : t("The assistant has control.")}
             </span>
             <ComputerControlButton
               computerId={computerId}

@@ -7,6 +7,7 @@ import { GroupPeopleButton } from "@/components/channels/group-people";
 import { SidebarToggle } from "@/components/layout/sidebar-toggle";
 import { useMarkOpenChannelRead } from "@/lib/channels/mark-read";
 import { channelQueryOptions } from "@/lib/channels/queries";
+import { t } from "@/lib/i18n";
 
 /** A conversation with several Bots. The channel is an ordinary channel with more than one Bot. */
 export const Route = createFileRoute("/_authed/_app/group/$channelId")({
@@ -26,7 +27,7 @@ function RouteComponent() {
           size={22}
         />
         <span className="min-w-0 truncate text-sm tracking-tight">
-          {channel.data?.name ?? "Group"}
+          {channel.data?.name ?? t("Group")}
         </span>
         <GroupPeopleButton channelId={channelId} />
       </div>

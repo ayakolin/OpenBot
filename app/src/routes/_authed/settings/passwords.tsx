@@ -73,13 +73,19 @@ function PasswordsPage() {
                     <ItemDescription>
                       {login.username}
                       {login.lastUsedAt
-                        ? ` · last used ${new Date(login.lastUsedAt).toLocaleDateString()}`
-                        : " · never used"}
+                        ? t(" · last used {date}", {
+                            date: new Date(
+                              login.lastUsedAt,
+                            ).toLocaleDateString(),
+                          })
+                        : t(" · never used")}
                     </ItemDescription>
                   </ItemContent>
                   <ItemActions>
                     <Button
-                      aria-label={`Delete the login for ${login.origin}`}
+                      aria-label={t("Delete the login for {origin}", {
+                        origin: login.origin,
+                      })}
                       size="sm"
                       variant="ghost"
                       disabled={remove.isPending}

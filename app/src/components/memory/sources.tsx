@@ -140,11 +140,13 @@ export function MemorySources({ agentId: fixedBot }: { agentId?: string }) {
                   <ItemDescription>
                     {source.enabled
                       ? source.syncStatus === "succeeded"
-                        ? "Up to date"
+                        ? t("Up to date")
                         : source.syncStatus
-                      : "Disabled"}
+                      : t("Disabled")}
                     {source.lastSyncAt
-                      ? ` · Last read ${new Date(source.lastSyncAt).toLocaleString()}`
+                      ? t(" · Last read {date}", {
+                          date: new Date(source.lastSyncAt).toLocaleString(),
+                        })
                       : ""}
                   </ItemDescription>
                   {source.syncError && (
@@ -180,7 +182,7 @@ export function MemorySources({ agentId: fixedBot }: { agentId?: string }) {
                 <ItemActions>
                   {/* Binary and immediate: it refreshes, or stops refreshing, when switched. */}
                   <Switch
-                    aria-label={`Read ${source.title}`}
+                    aria-label={t("Read {title}", { title: source.title })}
                     checked={source.enabled}
                     disabled={action.isPending}
                     onCheckedChange={(enabled) =>

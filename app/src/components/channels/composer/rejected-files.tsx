@@ -1,4 +1,5 @@
 import { IconX } from "@tabler/icons-react";
+import { t } from "@/lib/i18n";
 
 import { Collapse } from "./collapse";
 
@@ -84,8 +85,10 @@ export function RejectedFiles({
           <button
             aria-label={
               rejected.length === 1
-                ? "Dismiss this refusal"
-                : `Dismiss these ${rejected.length} refusals`
+                ? t("Dismiss this refusal")
+                : t("Dismiss these {count} refusals", {
+                    count: rejected.length,
+                  })
             }
             className="-m-1 shrink-0 rounded p-1 text-destructive/70 transition-colors hover:text-destructive"
             onClick={onDismiss}

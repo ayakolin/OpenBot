@@ -87,10 +87,12 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
                       </ItemMedia>
                       <ItemContent>
                         <ItemTitle>
-                          {self ? "You" : (person.name ?? person.email)}
+                          {self ? t("You") : (person.name ?? person.email)}
                         </ItemTitle>
                         <ItemDescription>
-                          {person.creator ? "Started this group" : person.email}
+                          {person.creator
+                            ? t("Started this group")
+                            : person.email}
                         </ItemDescription>
                       </ItemContent>
                       {removable ? (
@@ -98,15 +100,15 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
                           <Button
                             aria-label={
                               self
-                                ? "Leave this group"
-                                : `Remove ${person.email}`
+                                ? t("Leave this group")
+                                : t("Remove {email}", { email: person.email })
                             }
                             disabled={remove.isPending}
                             onClick={() => remove.mutate(person.userId)}
                             size="sm"
                             variant="outline"
                           >
-                            {self ? "Leave" : "Remove"}
+                            {self ? t("Leave") : t("Remove")}
                           </Button>
                         </ItemActions>
                       ) : null}

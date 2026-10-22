@@ -259,7 +259,10 @@ test("signed in but preferences request errors: children still render", async ()
       });
     }
     if (url === "/api/settings/preferences") {
-      return Response.json({ error: "Failed to load preferences" }, { status: 500 });
+      return Response.json(
+        { error: "Failed to load preferences" },
+        { status: 500 },
+      );
     }
     return Response.json({ error: "Not found" }, { status: 404 });
   };

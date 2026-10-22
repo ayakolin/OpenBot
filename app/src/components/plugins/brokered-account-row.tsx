@@ -886,7 +886,7 @@ export function BrokeredAccountRow({
         <ItemContent>
           {/* Not "Connect your account": the row is also the connected state, and a title has to
               read for both. */}
-          <ItemTitle>{heading ?? "Your account"}</ItemTitle>
+          <ItemTitle>{heading ?? t("Your account")}</ItemTitle>
           {/* Unclamped where the key is missing: that sentence is the only place the setting is
               named, so it is the point rather than a hint. */}
           <ItemDescription
@@ -973,7 +973,7 @@ export function BrokeredAccountRow({
                     type="button"
                     variant="outline"
                   >
-                    {account.rechecking ? "Checking…" : "Re-check"}
+                    {account.rechecking ? t("Checking…") : t("Re-check")}
                   </Button>
                 ) : null}
                 <Button

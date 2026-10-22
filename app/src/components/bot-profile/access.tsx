@@ -202,12 +202,15 @@ function Granted({ agentId }: { agentId: string }) {
                   <ItemTitle>{connectorName(key)}</ItemTitle>
                   <ItemDescription>
                     {labels.slice(0, 4).join(", ")}
-                    {labels.length > 4 ? ` and ${labels.length - 4} more` : ""}
+                    {labels.length > 4
+                      ? t(" and {count} more", { count: labels.length - 4 })
+                      : ""}
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <span className="text-muted-foreground text-sm tabular-nums">
-                    {labels.length} {labels.length === 1 ? "tool" : "tools"}
+                    {labels.length}{" "}
+                    {labels.length === 1 ? t("tool") : t("tools")}
                   </span>
                   {me?.role === "admin" ? (
                     <IconChevronRight className="size-4 text-muted-foreground" />
