@@ -6,6 +6,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { currentUserQueryOptions } from "@/lib/auth/queries";
 import {
   DEFAULT_LOCALE,
   intlLocale,
@@ -100,6 +102,7 @@ type LocaleContextValue = {
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
+  const user = useQuery(currentUserQueryOptions());
   const preferences = useUserPreferences();
   const save = useSaveUserPreferences();
   const preference: LocalePreference = preferences.data?.locale ?? "system";
@@ -133,8 +136,14 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
    *
    * Holding the tree for the length of one request is the boring fix, and it is also the honest one:
    * drawing a guess and then correcting it is worse than drawing nothing for 30ms.
+   *
+   * For signed-out visitors, the user query settles without an account and preferences are disabled,
+   * so we render immediately in the browser language rather than blanking. For signed-in users, we
+   * hold until preferences answer or fail.
    */
-  const ready = preferences.data !== undefined;
+  const ready =
+    !user.isPending &&
+    (!user.data || preferences.data !== undefined || preferences.isError);
   const locale = resolveLocale(preference, browserLanguages);
   if (ready) currentLocale = locale;
 
