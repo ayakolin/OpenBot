@@ -12,6 +12,9 @@ const preferencesPatch = z
   .strictObject({
     messageListEmphasis: z.enum(["agent", "thread"]).optional(),
     selfHostBannerDismissed: z.boolean().optional(),
+    /* `system` is a real choice here, not the absence of one: it means "whatever this browser asks
+       for", which is what somebody switching laptops expects to keep working. */
+    locale: z.enum(["en", "zh-CN", "system"]).optional(),
   })
   .refine((patch) => Object.keys(patch).length > 0);
 
@@ -44,7 +47,7 @@ export function userPreferencesRoutes(
       return context.json(
         {
           error:
-            "Choose agent or thread for message list emphasis, or true or false for the self-host banner.",
+            "Choose agent or thread for message list emphasis, true or false for the self-host banner, or en, zh-CN or system for the language.",
         },
         400,
       );

@@ -51,6 +51,7 @@ test("preferences default to thread and persist separately for each authenticate
   const alice = appFor("alice");
   expect(await (await alice.request(path)).json()).toEqual({
     preferences: {
+      locale: "system",
       messageListEmphasis: "thread",
       selfHostBannerDismissed: false,
     },
@@ -62,12 +63,14 @@ test("preferences default to thread and persist separately for each authenticate
   expect(saved.status).toBe(200);
   expect(await (await appFor("alice").request(path)).json()).toEqual({
     preferences: {
+      locale: "system",
       messageListEmphasis: "agent",
       selfHostBannerDismissed: false,
     },
   });
   expect(await (await appFor("bob").request(path)).json()).toEqual({
     preferences: {
+      locale: "system",
       messageListEmphasis: "thread",
       selfHostBannerDismissed: false,
     },
@@ -112,12 +115,14 @@ test("saves the self-host banner dismissal without touching message list emphasi
   expect(saved.status).toBe(200);
   expect(await (await appFor("alice").request(path)).json()).toEqual({
     preferences: {
+      locale: "system",
       messageListEmphasis: "agent",
       selfHostBannerDismissed: true,
     },
   });
   expect(await (await appFor("bob").request(path)).json()).toEqual({
     preferences: {
+      locale: "system",
       messageListEmphasis: "thread",
       selfHostBannerDismissed: false,
     },

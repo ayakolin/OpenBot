@@ -2,7 +2,9 @@ import {
   mutationOptions,
   type QueryClient,
   queryOptions,
+  useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { client } from "@/lib/client";
@@ -29,6 +31,19 @@ export function useUserPreferences() {
     userId: user?.id,
     ...useQuery(userPreferencesQueryOptions(user?.id)),
   };
+}
+
+/**
+ * Point at the preferences save, for the language switch.
+ *
+ * The switch lives in the provider and the mutation needs the query client, so the provider is handed
+ * a function rather than a client. Absent user id means the save refuses, which is what every other
+ * write here does when signed out.
+ */
+export function useSaveUserPreferences() {
+  const queryClient = useQueryClient();
+  const { userId } = useUserPreferences();
+  return useMutation(saveUserPreferencesMutationOptions(queryClient, userId));
 }
 
 export function useMessageListEmphasis() {
