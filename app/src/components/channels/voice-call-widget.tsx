@@ -167,7 +167,11 @@ export function VoiceCallWidget({
               ) : (
                 <span
                   role="img"
-                  aria-label={user?.name ? t("{name} (you)", { name: user.name }) : t("You")}
+                  aria-label={
+                    user?.name
+                      ? t("{name} (you)", { name: user.name })
+                      : t("You")
+                  }
                   className="text-sm font-medium text-foreground/70"
                 >
                   {initials}
@@ -269,7 +273,9 @@ export function VoiceCallWidget({
                 <div className="mt-3 h-16 overflow-y-auto rounded-xl bg-muted/40 p-2 text-xs leading-relaxed text-muted-foreground">
                   {state.reply ||
                     state.transcript ||
-                    t("Speak when you’re ready. This call uses the current chat.")}
+                    t(
+                      "Speak when you’re ready. This call uses the current chat.",
+                    )}
                 </div>
               </motion.div>
             )}

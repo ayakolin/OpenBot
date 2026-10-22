@@ -116,10 +116,15 @@ function ResetDialog({
               )}
               {plan.data.sharedConversationsKept > 0 ? (
                 <p className="text-muted-foreground">
-                  {t(
-                    "{count} conversation shared with other people or Bots and will be kept.",
-                    { count: plan.data.sharedConversationsKept },
-                  )}
+                  {plan.data.sharedConversationsKept === 1
+                    ? t(
+                        "{count} conversation shared with other people or Bots and will be kept.",
+                        { count: plan.data.sharedConversationsKept },
+                      )
+                    : t(
+                        "{count} conversations shared with other people or Bots and will be kept.",
+                        { count: plan.data.sharedConversationsKept },
+                      )}
                 </p>
               ) : null}
               <p className="text-muted-foreground">

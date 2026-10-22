@@ -193,7 +193,9 @@ export function ApprovalSettings() {
             </Link>
             .
             {rulesOff
-              ? t(" Your team has switched personal rules off, so they are kept but do not apply.")
+              ? t(
+                  " Your team has switched personal rules off, so they are kept but do not apply.",
+                )
               : ""}
           </>
         }

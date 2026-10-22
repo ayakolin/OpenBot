@@ -297,7 +297,7 @@ function TriggerRow({
         <Icon />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>{KIND_LABEL[trigger.kind]}</ItemTitle>
+        <ItemTitle>{t(KIND_LABEL[trigger.kind])}</ItemTitle>
         <ItemDescription className="line-clamp-none">
           {describeFilter(trigger.config)}
           {trigger.enabled ? "" : t(" · Paused")}
@@ -333,7 +333,7 @@ function TriggerRow({
             </Button>
             <Switch
               aria-label={t("Run on this {kind} trigger", {
-                kind: KIND_LABEL[trigger.kind],
+                kind: t(KIND_LABEL[trigger.kind]),
               })}
               checked={trigger.enabled}
               disabled={toggle.isPending}
@@ -346,7 +346,7 @@ function TriggerRow({
       </ItemActions>
       <ItemFooter className="flex-col items-stretch">
         <p className="text-muted-foreground text-xs">
-          {KIND_HELP[trigger.kind]}
+          {t(KIND_HELP[trigger.kind])}
         </p>
         {url && (
           <div className="flex flex-wrap items-center gap-2">
@@ -576,12 +576,12 @@ function NewTriggerDialog({
                   <SelectContent>
                     {(Object.keys(KIND_LABEL) as TriggerKind[]).map((value) => (
                       <SelectItem key={value} value={value}>
-                        {KIND_LABEL[value]}
+                        {t(KIND_LABEL[value])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldDescription>{KIND_HELP[kind]}</FieldDescription>
+                <FieldDescription>{t(KIND_HELP[kind])}</FieldDescription>
               </Field>
               {kind === "slack" ? (
                 <FieldGroup className="sm:grid sm:grid-cols-2">
@@ -615,7 +615,7 @@ function NewTriggerDialog({
                         {(Object.keys(SLACK_MODE) as SlackMode[]).map(
                           (value) => (
                             <SelectItem key={value} value={value}>
-                              {SLACK_MODE[value]}
+                              {t(SLACK_MODE[value])}
                             </SelectItem>
                           ),
                         )}
@@ -758,7 +758,7 @@ function NewTriggerDialog({
           >
             {create.isPending
               ? t("Adding…")
-              : t("Add {kind} trigger", { kind: KIND_LABEL[kind] })}
+              : t("Add {kind} trigger", { kind: t(KIND_LABEL[kind]) })}
           </Button>
         </DialogFooter>
       </DialogContent>

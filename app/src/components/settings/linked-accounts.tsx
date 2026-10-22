@@ -39,10 +39,10 @@ import { t } from "@/lib/i18n";
 export function linkedAccountDescription(account: LinkedAccount): string {
   if (account.status === "needs_reconnect") {
     return account.handle
-      ? `Needs reconnecting · @${account.handle}`
-      : "Needs reconnecting";
+      ? `${t("Needs reconnecting")} · @${account.handle}`
+      : t("Needs reconnecting");
   }
-  return account.handle ? `@${account.handle}` : "Linked";
+  return account.handle ? `@${account.handle}` : t("Linked");
 }
 
 const providerIcons = {

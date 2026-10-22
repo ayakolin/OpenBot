@@ -90,7 +90,9 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
                           {self ? t("You") : (person.name ?? person.email)}
                         </ItemTitle>
                         <ItemDescription>
-                          {person.creator ? t("Started this group") : person.email}
+                          {person.creator
+                            ? t("Started this group")
+                            : person.email}
                         </ItemDescription>
                       </ItemContent>
                       {removable ? (

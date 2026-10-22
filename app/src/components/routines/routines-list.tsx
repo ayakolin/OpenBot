@@ -317,10 +317,9 @@ export function RoutinesList({
                      * page uses for its per-Bot grant switches.
                      */}
                     <Switch
-                      aria-label={t(
-                        "Enable the routine scheduled {schedule}",
-                        { schedule: routine.schedule },
-                      )}
+                      aria-label={t("Enable the routine scheduled {schedule}", {
+                        schedule: routine.schedule,
+                      })}
                       checked={routine.enabled}
                       disabled={
                         setEnabled.isPending &&

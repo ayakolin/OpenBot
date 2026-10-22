@@ -46,9 +46,7 @@ export function HandoffTool() {
       return (
         <ToolLine
           label={
-            asked
-              ? t("Asked {bot}", { bot: asked })
-              : t("Asked another Bot")
+            asked ? t("Asked {bot}", { bot: asked }) : t("Asked another Bot")
           }
           detail={given?.task}
           running={running}

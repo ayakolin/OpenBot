@@ -566,7 +566,9 @@ function AboutStep({
           id="new-bot-title"
           maxLength={120}
           onChange={(event) => onTitle(event.target.value)}
-          placeholder={runsHere ? t("Finance Operations") : defaultTitle(runtime)}
+          placeholder={
+            runsHere ? t("Finance Operations") : defaultTitle(runtime)
+          }
           value={title}
         />
         <FieldDescription>

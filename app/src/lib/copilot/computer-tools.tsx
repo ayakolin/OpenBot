@@ -308,7 +308,9 @@ export function ComputerTools() {
           label={t("Read the page")}
           detail={
             elements.length
-              ? t("{count} items it can act on", { count: elements.length })
+              ? elements.length === 1
+                ? t("{count} item it can act on", { count: elements.length })
+                : t("{count} items it can act on", { count: elements.length })
               : undefined
           }
         />
@@ -621,7 +623,13 @@ export function ComputerTools() {
             outcome.refused === true || didNotWork(outcome)
               ? String(outcome.reason ?? "")
               : entries.length
-                ? t("{count} items in the workspace", { count: entries.length })
+                ? entries.length === 1
+                  ? t("{count} item in the workspace", {
+                      count: entries.length,
+                    })
+                  : t("{count} items in the workspace", {
+                      count: entries.length,
+                    })
                 : t("nothing saved yet")
           }
           refused={outcome.refused === true}

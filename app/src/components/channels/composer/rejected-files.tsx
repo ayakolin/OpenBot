@@ -86,7 +86,9 @@ export function RejectedFiles({
             aria-label={
               rejected.length === 1
                 ? t("Dismiss this refusal")
-                : t("Dismiss these {count} refusals", { count: rejected.length })
+                : t("Dismiss these {count} refusals", {
+                    count: rejected.length,
+                  })
             }
             className="-m-1 shrink-0 rounded p-1 text-destructive/70 transition-colors hover:text-destructive"
             onClick={onDismiss}

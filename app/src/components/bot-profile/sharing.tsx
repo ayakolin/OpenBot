@@ -222,13 +222,13 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
 
 /** The current answer on the Audience row: who it is published to, as a count. */
 function audienceSummary(current: TeamBot | undefined): string {
-  if (!current) return "Not published";
-  if (current.audience === "team") return "The whole team";
+  if (!current) return t("Not published");
+  if (current.audience === "team") return t("The whole team");
   const parts = [
-    countLabel(current.people?.length ?? 0, "person", "people", ""),
-    countLabel(current.groups?.length ?? 0, "group", "groups", ""),
+    countLabel(current.people?.length ?? 0, t("person"), t("people"), ""),
+    countLabel(current.groups?.length ?? 0, t("group"), t("groups"), ""),
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : "Specific people or groups";
+  return parts.length ? parts.join(", ") : t("Specific people or groups");
 }
 
 const AUDIENCES = {
@@ -308,7 +308,7 @@ function PublishDialog({
                     {(Object.keys(AUDIENCES) as (keyof typeof AUDIENCES)[]).map(
                       (value) => (
                         <SelectItem key={value} value={value}>
-                          {AUDIENCES[value]}
+                          {t(AUDIENCES[value])}
                         </SelectItem>
                       ),
                     )}

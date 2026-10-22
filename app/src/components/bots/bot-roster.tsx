@@ -119,10 +119,17 @@ function HiddenSection({
           {open ? t("Hide") : t("Show")}
         </Button>
       }
-      description={t(
-        "{count} Bots you took off this list. Nobody else's list changed.",
-        { count: agents.length },
-      )}
+      description={
+        agents.length === 1
+          ? t(
+              "{count} Bot you took off this list. Nobody else's list changed.",
+              { count: agents.length },
+            )
+          : t(
+              "{count} Bots you took off this list. Nobody else's list changed.",
+              { count: agents.length },
+            )
+      }
       title={t("Hidden")}
     >
       {open ? <RosterRows agents={agents} byId={byId} /> : null}

@@ -133,7 +133,7 @@ export function MemoryList() {
   const memories = useQuery(memoriesQueryOptions());
   const agents = useQuery(agentListQueryOptions());
   const botName = (id: string | null) =>
-    agents.data?.find((agent) => agent.id === id)?.name ?? "your Bot";
+    agents.data?.find((agent) => agent.id === id)?.name ?? t("your Bot");
   return (
     <PageSection title={t("Your memories")}>
       {memories.isPending ? null : memories.error ? (
@@ -182,14 +182,14 @@ function MemoryRow({
   // forgotten here but not paused or reviewed.
   const heldByIntelligence = memory.formedBy === "intelligence";
   const status = heldByIntelligence
-    ? "Kept in Intelligence"
+    ? t("Kept in Intelligence")
     : !memory.enabled
-      ? "Disabled"
+      ? t("Disabled")
       : memory.formedBy === "bot"
-        ? `Formed by ${botName}${memory.reviewState === "unreviewed" ? " · awaiting review" : ""}`
+        ? `${t("Formed by {name}", { name: botName })}${memory.reviewState === "unreviewed" ? ` · ${t("awaiting review")}` : ""}`
         : memory.reviewState === "unreviewed"
-          ? "Imported · awaiting review"
-          : "Reviewed";
+          ? t("Imported · awaiting review")
+          : t("Reviewed");
   return (
     <Item size="sm">
       <ItemMedia variant="icon">

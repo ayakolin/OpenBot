@@ -74,7 +74,9 @@ function PasswordsPage() {
                       {login.username}
                       {login.lastUsedAt
                         ? t(" · last used {date}", {
-                            date: new Date(login.lastUsedAt).toLocaleDateString(),
+                            date: new Date(
+                              login.lastUsedAt,
+                            ).toLocaleDateString(),
                           })
                         : t(" · never used")}
                     </ItemDescription>

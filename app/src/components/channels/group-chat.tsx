@@ -66,7 +66,9 @@ export function GroupChat({ channelId }: { channelId: string }) {
             <p className="text-sm text-muted-foreground">
               {t("Say something to")}{" "}
               {bots.map((bot) => bot.name).join(" and ")}
-              {t(". Every Bot answers in turn; start with @Name to ask just one.")}
+              {t(
+                ". Every Bot answers in turn; start with @Name to ask just one.",
+              )}
             </p>
           ) : null}
           {messages.map((message) => (

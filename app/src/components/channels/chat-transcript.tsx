@@ -1059,7 +1059,9 @@ function SentAttachmentTile({ attachment }: { attachment: SentAttachment }) {
   return (
     <AttachmentLightbox filename={filename} url={url}>
       <img
-        alt={filename ? t("Attachment: {filename}", { filename }) : t("Attachment")}
+        alt={
+          filename ? t("Attachment: {filename}", { filename }) : t("Attachment")
+        }
         className="size-32 rounded-xl object-cover"
         onError={() => setFailedToLoad(true)}
         src={url}
@@ -1190,7 +1192,12 @@ function AttachmentLightbox({
         // tab to a raw image file is not the promise this makes. `block` so the tile is not sitting
         // on a text baseline with a stray gap under it.
         className="block cursor-zoom-in overflow-hidden rounded-xl"
-        render={<button aria-label={t("Open {name}", { name: label })} type="button" />}
+        render={
+          <button
+            aria-label={t("Open {name}", { name: label })}
+            type="button"
+          />
+        }
       >
         {children}
       </DialogTrigger>
