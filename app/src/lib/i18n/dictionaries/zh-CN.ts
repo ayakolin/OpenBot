@@ -2225,5 +2225,7 @@ export const zhCN: Record<string, string> = {
   "{count} person": "{count} 人",
   "{count} people": "{count} 人",
   ", ": "、",
+  "Research Analyst": "研究分析师",
+  "Data Analyst": "数据分析师",
   "Bots you can work with, such as {names}, and one of your own": "你可以合作的机器人，例如 {names}，以及你自己的机器人",
 };

@@ -16,11 +16,11 @@ import { LaptopIllustration } from "@/components/onboarding/laptop-illustration"
 import { OrganizationFlow } from "@/components/onboarding/organization-flow";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { joinList } from "@/lib/agents/bot-summaries";
-import { displayAgentName } from "@/lib/agents/display-name";
 import { type AgentProfile, agentListQueryOptions } from "@/lib/agents/queries";
 import { currentUserQueryOptions, needsOnboarding } from "@/lib/auth/queries";
 import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
 import { appConfig } from "@/lib/generated/application-config";
+import { rosterCardName } from "@/lib/onboarding/roster-name";
 import { completeOnboardingMutationOptions } from "@/lib/onboarding/mutations";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/query-client";
@@ -141,7 +141,7 @@ function RosterStep() {
         className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6"
         label={t(
           "Bots you can work with, such as {names}, and one of your own",
-          { names: joinList(roster.map((a) => displayAgentName(a))) },
+          { names: joinList(roster.map((a) => rosterCardName(a))) },
         )}
       >
         {roster.map((a) => {
@@ -154,7 +154,7 @@ function RosterStep() {
               <Avatar name={a.avatarSeed} size={40} />
               <div className="flex min-w-0 flex-col">
                 <h3 className="line-clamp-1 text-base font-medium tracking-tight">
-                  {displayAgentName(a)}
+                  {rosterCardName(a)}
                 </h3>
                 {a.example ? (
                   <span className="text-xs text-muted-foreground">
