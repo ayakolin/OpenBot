@@ -387,7 +387,7 @@ export function ResponsibilityDialog({
             size="sm"
             type="submit"
           >
-            {edit.isPending ? "Saving…" : "Save"}
+            {edit.isPending ? t("Saving…") : t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -472,8 +472,10 @@ function Runs({
                   <ItemFooter className="min-w-0 flex-col items-stretch">
                     {run.waiting && (
                       <p>
-                        {t("Waiting for")} {run.waiting.kind}. Respond at the
-                        top of this Bot's page, or in the conversation.
+                        {t("Waiting for")} {run.waiting.kind}
+                        {t(
+                          ". Respond at the top of this Bot's page, or in the conversation.",
+                        )}
                       </p>
                     )}
                     {run.error && (

@@ -114,8 +114,11 @@ export function ProposedSkillCard({
       action={<Badge tone="caution">{t("Waiting on you")}</Badge>}
       caption={
         replaces
-          ? `This replaces ${replaces.title}, which is ${replaces.ownership}.`
-          : "Nothing is saved until you press the button."
+          ? t("This replaces {title}, which is {ownership}.", {
+              title: replaces.title,
+              ownership: replaces.ownership,
+            })
+          : t("Nothing is saved until you press the button.")
       }
       title={titleFor(values.slug, replaces)}
     >
@@ -167,10 +170,10 @@ export function ProposedSkillCard({
           size="sm"
         >
           {sending === "save"
-            ? "Saving…"
+            ? t("Saving…")
             : replaces
-              ? "Replace it"
-              : "Create it"}
+              ? t("Replace it")
+              : t("Create it")}
         </Button>
         <Button
           disabled={Boolean(sending)}
@@ -178,7 +181,7 @@ export function ProposedSkillCard({
           size="sm"
           variant="outline"
         >
-          {sending === "decline" ? "…" : "Don't save"}
+          {sending === "decline" ? "…" : t("Don't save")}
         </Button>
       </div>
     </GalleryFrame>
@@ -189,8 +192,10 @@ function titleFor(
   slug: string | undefined,
   replaces: { title: string } | undefined,
 ): string {
-  const name = slug ? `/${slug}` : "a new skill";
-  return replaces ? `Replace ${name}` : `Create ${name}`;
+  const name = slug ? `/${slug}` : t("a new skill");
+  return replaces
+    ? t("Replace {name}", { name })
+    : t("Create {name}", { name });
 }
 
 /** Where the remaining step happens. A skill on no Bot is inert, and saying so beats implying done. */

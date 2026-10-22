@@ -179,10 +179,10 @@ function SignInCard({
       <ToolLine
         label={
           running
-            ? "Waiting for you to sign in"
+            ? t("Waiting for you to sign in")
             : outcome.signedIn
-              ? "Signed in"
-              : "Sign-in did not complete"
+              ? t("Signed in")
+              : t("Sign-in did not complete")
         }
         detail={site}
         running={running}

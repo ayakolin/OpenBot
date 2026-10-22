@@ -410,7 +410,7 @@ function StepRow({ step, active }: { step: StepDetails; active: boolean }) {
   const reason =
     step.failed && step.kind === "browser" ? (
       <p className="mt-0.5 pl-6 text-destructive">
-        {step.reason ?? "This step could not be completed."}
+        {step.reason ?? t("This step could not be completed.")}
       </p>
     ) : null;
   // A browser step says everything it has in its line. Anything else opens to what it was given

@@ -115,7 +115,8 @@ export function SuggestionsInbox({
                     {suggestion.sourceApp || suggestion.sourceLink ? (
                       <>
                         {" · "}
-                        {t("From")} {suggestion.sourceApp ?? "a connected app"}
+                        {t("From")}{" "}
+                        {suggestion.sourceApp ?? t("a connected app")}
                         {suggestion.sourceLink && (
                           <>
                             {" · "}

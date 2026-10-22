@@ -100,8 +100,15 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
               <ItemContent>
                 <ItemTitle>
                   {published.audience === "team"
-                    ? "To the whole team"
-                    : `To ${[...(published.people ?? []), ...(published.groups ?? []).map((group) => `group ${group}`)].join(", ")}`}
+                    ? t("To the whole team")
+                    : t("To {targets}", {
+                        targets: [
+                          ...(published.people ?? []),
+                          ...(published.groups ?? []).map((group) =>
+                            t("group {group}", { group }),
+                          ),
+                        ].join(", "),
+                      })}
                 </ItemTitle>
                 <ItemDescription>
                   {published.visibleToTeam
@@ -145,7 +152,7 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                   size="sm"
                   variant="outline"
                 >
-                  {copied ? "Copied" : "Copy link"}
+                  {copied ? t("Copied") : t("Copy link")}
                 </Button>
               </ItemActions>
             </Item>
@@ -153,10 +160,12 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
         ) : (
           <PageEmpty>
             {agent.visibility === "public"
-              ? "Not published to the team. It is public, so everyone in the deployment can already use it."
+              ? t(
+                  "Not published to the team. It is public, so everyone in the deployment can already use it.",
+                )
               : agent.mine
-                ? "Not published. Only you can use it."
-                : "Not published."}
+                ? t("Not published. Only you can use it.")
+                : t("Not published.")}
           </PageEmpty>
         )}
       </PageSection>
@@ -165,7 +174,7 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
           description={t(
             "Publishing does not change its visibility, and it can be undone.",
           )}
-          title={published ? "Who it is published to" : "Publish"}
+          title={published ? t("Who it is published to") : t("Publish")}
         >
           {/* More than one value — an audience, then people and groups — so a summary row and a
               dialog rather than a form on the page. */}
@@ -252,7 +261,7 @@ function PublishDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {current ? "Who it is published to" : "Publish"}
+            {current ? t("Who it is published to") : t("Publish")}
           </DialogTitle>
           <DialogDescription>
             {t(
@@ -351,7 +360,7 @@ function PublishDialog({
             size="sm"
             type="submit"
           >
-            {current ? "Update" : "Publish to team"}
+            {current ? t("Update") : t("Publish to team")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -385,11 +394,11 @@ function Assignments({ bot }: { bot: TeamBot }) {
                 <IconUsers />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{name === "*" ? "Whole team" : name}</ItemTitle>
+                <ItemTitle>{name === "*" ? t("Whole team") : name}</ItemTitle>
               </ItemContent>
               <ItemActions>
                 <Button
-                  aria-label={`Remove ${name}`}
+                  aria-label={t("Remove {name}", { name })}
                   disabled={remove.isPending}
                   onClick={() =>
                     remove.mutate({ botId: bot.id, group: name, remove: true })

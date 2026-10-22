@@ -204,9 +204,11 @@ function MemoryRow({
         </ItemDescription>
         {memory.formedBy === "bot" && (
           <ItemDescription className="line-clamp-none">
-            {t("From")} {memory.sourceApp ?? "a conversation"}
+            {t("From")} {memory.sourceApp ?? t("a conversation")}
             {memory.observedAt
-              ? `, read ${new Date(memory.observedAt).toLocaleString()}`
+              ? t(", read {date}", {
+                  date: new Date(memory.observedAt).toLocaleString(),
+                })
               : ""}
             {memory.sourceLink && (
               <>
@@ -260,7 +262,9 @@ function MemoryRow({
         <ItemActions>
           {/* Binary and immediate: Bots stop or start using it when switched. */}
           <Switch
-            aria-label={`Use this memory: ${clip(memory.content)}`}
+            aria-label={t("Use this memory: {content}", {
+              content: clip(memory.content),
+            })}
             checked={memory.enabled}
             disabled={save.isPending}
             onCheckedChange={(enabled) => update({ enabled })}

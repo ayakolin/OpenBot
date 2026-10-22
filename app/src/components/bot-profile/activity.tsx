@@ -94,7 +94,7 @@ function ActivityRow({
       size="sm"
       variant="outline"
     >
-      {stop.isPending ? "Stopping…" : "Stop"}
+      {stop.isPending ? t("Stopping…") : t("Stop")}
     </Button>
   ) : item.cancellable ? (
     <Button
@@ -103,7 +103,7 @@ function ActivityRow({
       size="sm"
       variant="outline"
     >
-      {cancel.isPending ? "Cancelling…" : "Cancel"}
+      {cancel.isPending ? t("Cancelling…") : t("Cancel")}
     </Button>
   ) : null;
   const content = (
@@ -114,7 +114,7 @@ function ActivityRow({
       <ItemContent>
         <ItemTitle>{item.title}</ItemTitle>
         <ItemDescription>
-          {KIND_LABEL[item.kind]} · {item.needsYou ? "needs you" : item.status}
+          {KIND_LABEL[item.kind]} · {item.needsYou ? t("needs you") : item.status}
           {when ? ` · ${when}` : ""}
           {item.detail ? ` · ${item.detail}` : ""}
         </ItemDescription>

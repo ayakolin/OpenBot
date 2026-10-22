@@ -81,10 +81,10 @@ export function CallbackTokenPanel({
             variant="outline"
           >
             {issue.isPending
-              ? "Generating…"
+              ? t("Generating…")
               : hasToken
-                ? "Rotate token"
-                : "Generate token"}
+                ? t("Rotate token")
+                : t("Generate token")}
           </Button>
           {hasToken ? (
             <Button
@@ -93,7 +93,7 @@ export function CallbackTokenPanel({
               size="sm"
               variant="outline"
             >
-              {revoke.isPending ? "Revoking…" : "Revoke"}
+              {revoke.isPending ? t("Revoking…") : t("Revoke")}
             </Button>
           ) : null}
         </div>

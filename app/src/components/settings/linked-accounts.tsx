@@ -262,7 +262,7 @@ export function LinkedAccountsSection() {
                       setCopyFailed(!ok);
                     }}
                   >
-                    {copied ? "Copied" : "Copy"}
+                    {copied ? t("Copied") : t("Copy")}
                   </Button>
                 </div>
                 {copyFailed ? (
@@ -311,7 +311,7 @@ function AvailableAccountRow({
       </ItemContent>
       <ItemActions>
         <Button
-          aria-label={`Connect ${title}`}
+          aria-label={t("Connect {title}", { title })}
           size="sm"
           variant="outline"
           disabled={pending}
@@ -343,7 +343,7 @@ function LinkedAccountRow({ account }: { account: LinkedAccount }) {
         </ItemContent>
         <ItemActions>
           <Button
-            aria-label={`Disconnect ${account.title}`}
+            aria-label={t("Disconnect {title}", { title: account.title })}
             size="sm"
             variant="outline"
             disabled={unlink.isPending}

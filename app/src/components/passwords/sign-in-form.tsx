@@ -97,9 +97,11 @@ export function SignInForm({ requestId }: { requestId: string }) {
 
   if (FINAL_SIGN_IN.includes(data.status))
     return (
-      <PageSection title={data.status === "signed_in" ? "Signed in" : "Closed"}>
+      <PageSection
+        title={data.status === "signed_in" ? t("Signed in") : t("Closed")}
+      >
         <p className="text-muted-foreground text-sm">
-          {data.outcome ?? "This sign-in request is no longer open."}
+          {data.outcome ?? t("This sign-in request is no longer open.")}
         </p>
       </PageSection>
     );
@@ -225,7 +227,10 @@ export function SignInForm({ requestId }: { requestId: string }) {
       {data.savedLogins.length > 0 ? (
         <PageSection
           title={t("Use a saved login")}
-          description={`Choosing one confirms it may be used for this sign-in to ${data.origin}.`}
+          description={t(
+            "Choosing one confirms it may be used for this sign-in to {origin}.",
+            { origin: data.origin },
+          )}
         >
           <PageRows>
             {data.savedLogins.map((login, index) => (

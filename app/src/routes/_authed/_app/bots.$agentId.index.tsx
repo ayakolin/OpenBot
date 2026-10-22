@@ -18,9 +18,9 @@ function BotProfilePage() {
   const toRoster = () => void navigate({ to: "/bots" });
   return (
     <PageShell
-      backButton={{ label: "Bots", linkProps: { to: "/bots" } }}
+      backButton={{ label: t("Bots"), linkProps: { to: "/bots" } }}
       description={t("What this Bot is doing for you, and how it is set up.")}
-      title={agent.data?.name ?? "Bot"}
+      title={agent.data?.name ?? t("Bot")}
     >
       {agent.isPending ? null : agent.error ? (
         <p className="mt-6 text-destructive text-sm" role="alert">

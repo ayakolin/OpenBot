@@ -4,6 +4,7 @@ import { Questionnaire as QuestionnairePrimitive } from "@shadcn/react/questionn
 import { cn } from "@/lib/utils";
 import { buttonVariants, type Button } from "@/components/ui/button";
 import { IconCheck } from "@tabler/icons-react";
+import { t } from "@/lib/i18n";
 
 function Questionnaire({
   className,
@@ -226,7 +227,7 @@ function QuestionnairePrevious({
       )}
       {...props}
     >
-      {children ?? "Previous"}
+      {children ?? t("Previous")}
     </QuestionnairePrimitive.Previous>
   );
 }
@@ -251,7 +252,7 @@ function QuestionnaireSkip({
       )}
       {...props}
     >
-      {children ?? "Skip"}
+      {children ?? t("Skip")}
     </QuestionnairePrimitive.Skip>
   );
 }
@@ -276,7 +277,7 @@ function QuestionnaireNext({
       )}
       {...props}
     >
-      {children ?? "Next"}
+      {children ?? t("Next")}
     </QuestionnairePrimitive.Next>
   );
 }
@@ -301,7 +302,7 @@ function QuestionnaireSubmit({
       )}
       {...props}
     >
-      {children ?? "Submit"}
+      {children ?? t("Submit")}
     </QuestionnairePrimitive.Submit>
   );
 }

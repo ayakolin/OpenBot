@@ -214,7 +214,7 @@ export function ReachingYou({ agentId: fixedBot }: { agentId?: string }) {
                       <ItemDescription>
                         {botName(binding.agentId)}
                         {binding.optedOutAt
-                          ? " · Replied STOP; text START to resume"
+                          ? t(" · Replied STOP; text START to resume")
                           : null}
                       </ItemDescription>
                     </ItemContent>
@@ -539,7 +539,7 @@ function ConnectDialog({
                   size="sm"
                   variant="outline"
                 >
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? t("Copied") : t("Copy")}
                 </Button>
               </ItemActions>
             </Item>

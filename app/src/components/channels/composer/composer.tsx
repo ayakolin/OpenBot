@@ -1365,9 +1365,9 @@ export function Composer({
       title={
         callAction.supported
           ? callAction.active
-            ? "Show voice call"
-            : "Call this agent"
-          : "Voice calls need HTTPS or localhost and microphone support"
+            ? t("Show voice call")
+            : t("Call this agent")
+          : t("Voice calls need HTTPS or localhost and microphone support")
       }
       className={actionClassName}
       disabled={disabled || dictation.busy || !callAction.supported}

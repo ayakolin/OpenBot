@@ -78,7 +78,7 @@ export function DetailPanel({
             style={{ width: `min(${detailWidth}px, 100vw)`, maxWidth: "100vw" }}
           >
             <SheetTitle className="h-12 shrink-0 px-4 pr-12 flex items-center">
-              {title ?? "Details"}
+              {title ?? t("Details")}
             </SheetTitle>
             <div className="flex-1 min-h-0 overflow-y-auto">
               {open ? detail : null}

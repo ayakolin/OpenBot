@@ -147,7 +147,10 @@ export function SkillTools({
                 key={role.ref}
                 onClick={() => toggle(role.ref)}
                 size="sm"
-                title={`${role.ref} — on whichever research connector the Bot holds`}
+                title={t(
+                  "{ref} — on whichever research connector the Bot holds",
+                  { ref: role.ref },
+                )}
                 type="button"
                 variant={held.has(role.ref) ? "default" : "outline"}
               >
@@ -173,7 +176,9 @@ export function SkillTools({
                  * The whole ref, not a tool name. There is no server here to put it under, and the
                  * server id is the part that says which connector is missing.
                  */
-                title={`${ref} — no connected server offers this`}
+                title={t("{ref} — no connected server offers this", {
+                  ref,
+                })}
                 type="button"
                 variant="secondary"
               >

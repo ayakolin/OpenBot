@@ -277,7 +277,7 @@ export function NewResponsibilityDialog({
                       value={eventType}
                       onChange={(event) => setEventType(event.target.value)}
                       placeholder={
-                        source === "github" ? "issues.opened" : "Event type"
+                        source === "github" ? "issues.opened" : t("Event type")
                       }
                     />
                   </Field>

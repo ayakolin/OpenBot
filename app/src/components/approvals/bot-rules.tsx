@@ -58,7 +58,7 @@ export function BotApprovalRules({ agentId }: { agentId: string }) {
           </Link>
           .
           {rulesOff
-            ? " Your team has switched personal rules off, so they are kept but do not apply."
+            ? t(" Your team has switched personal rules off, so they are kept but do not apply.")
             : ""}
         </>
       }

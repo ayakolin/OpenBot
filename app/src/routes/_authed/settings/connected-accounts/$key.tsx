@@ -332,10 +332,16 @@ function RouteComponent() {
               <ItemTitle>{t("Your account")}</ItemTitle>
               <ItemDescription>
                 {!enabled
-                  ? "An administrator has not enabled this connector, so there is nothing to connect to yet."
+                  ? t(
+                      "An administrator has not enabled this connector, so there is nothing to connect to yet.",
+                    )
                   : connection
-                    ? "A Bot granted its tools reads this as you, and sees only what you can see."
-                    : "No Bot can read this as you. Connecting takes you to the vendor to consent."}
+                    ? t(
+                        "A Bot granted its tools reads this as you, and sees only what you can see.",
+                      )
+                    : t(
+                        "No Bot can read this as you. Connecting takes you to the vendor to consent.",
+                      )}
               </ItemDescription>
             </ItemContent>
             <ItemActions>
@@ -423,7 +429,7 @@ function RouteComponent() {
               <ItemContent>
                 <ItemTitle>{t("Granted")}</ItemTitle>
                 <ItemDescription className="line-clamp-none">
-                  {connection.scope || "The vendor named no scope."}
+                  {connection.scope || t("The vendor named no scope.")}
                 </ItemDescription>
               </ItemContent>
             </Item>

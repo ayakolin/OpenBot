@@ -126,7 +126,7 @@ export function ApprovalSettings() {
                     className="line-clamp-none"
                     id="auto-review-description"
                   >
-                    {enforced ? "Required by your team. " : ""}
+                    {enforced ? t("Required by your team. ") : ""}
                     {t(
                       "Before an action that could affect your accounts or share information, a model checks it against what you asked for, your rules and the safety requirements. If it cannot decide, it asks you.",
                     )}
@@ -157,7 +157,9 @@ export function ApprovalSettings() {
                     {inbox.data.hostCommands &&
                     inbox.data.hostCommands !==
                       inbox.data.preferences.hostCommands
-                      ? `Your team limits this to "${HOST_LABELS[inbox.data.hostCommands]}". `
+                      ? t('Your team limits this to "{limit}". ', {
+                          limit: HOST_LABELS[inbox.data.hostCommands],
+                        })
                       : ""}
                     {t(
                       "The OpenBot desktop app still shows each command before it runs on your computer.",
@@ -191,7 +193,7 @@ export function ApprovalSettings() {
             </Link>
             .
             {rulesOff
-              ? " Your team has switched personal rules off, so they are kept but do not apply."
+              ? t(" Your team has switched personal rules off, so they are kept but do not apply.")
               : ""}
           </>
         }

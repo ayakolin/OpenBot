@@ -65,8 +65,8 @@ export function GroupChat({ channelId }: { channelId: string }) {
           {messages.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               {t("Say something to")}{" "}
-              {bots.map((bot) => bot.name).join(" and ")}. Every Bot answers in
-              turn; start with @Name to ask just one.
+              {bots.map((bot) => bot.name).join(" and ")}
+              {t(". Every Bot answers in turn; start with @Name to ask just one.")}
             </p>
           ) : null}
           {messages.map((message) => (
@@ -75,14 +75,14 @@ export function GroupChat({ channelId }: { channelId: string }) {
               message={message}
               name={
                 message.agentId
-                  ? (names.get(message.agentId) ?? "A Bot no longer here")
+                  ? (names.get(message.agentId) ?? t("A Bot no longer here"))
                   : message.ownerUserId === me?.id
-                    ? "You"
-                    : "A teammate"
+                    ? t("You")
+                    : t("A teammate")
               }
               answeredBy={
                 message.answeredBy
-                  ? (names.get(message.answeredBy) ?? "another Bot")
+                  ? (names.get(message.answeredBy) ?? t("another Bot"))
                   : undefined
               }
               mine={message.ownerUserId === me?.id}
@@ -157,7 +157,7 @@ function GroupLine({
       <MessageContent>
         <MessageHeader className="text-xs font-medium text-muted-foreground">
           {name}
-          {answeredBy ? ` · answer from ${answeredBy}` : null}
+          {answeredBy ? t(" · answer from {name}", { name: answeredBy }) : null}
         </MessageHeader>
         {(message.status === "running" || message.status === "queued") &&
         !message.text ? (
@@ -169,7 +169,7 @@ function GroupLine({
           </p>
         ) : message.status === "waiting" ? (
           <p className="text-sm text-muted-foreground">
-            {message.reason ?? "Waiting for your response."}{" "}
+            {message.reason ?? t("Waiting for your response.")}{" "}
             <Link
               className="underline"
               params={{ agentId: message.agentId }}
@@ -194,7 +194,7 @@ function GroupLine({
           )
         ) : message.status === "failed" ? (
           <p className="text-sm text-destructive" role="alert">
-            {message.text || "This Bot could not answer."}
+            {message.text || t("This Bot could not answer.")}
           </p>
         ) : (
           <Bubble

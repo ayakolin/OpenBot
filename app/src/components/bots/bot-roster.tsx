@@ -116,10 +116,13 @@ function HiddenSection({
     <PageSection
       action={
         <Button onClick={() => setOpen(!open)} size="sm" variant="ghost">
-          {open ? "Hide" : "Show"}
+          {open ? t("Hide") : t("Show")}
         </Button>
       }
-      description={`${agents.length} ${agents.length === 1 ? "Bot" : "Bots"} you took off this list. Nobody else's list changed.`}
+      description={t(
+        "{count} Bots you took off this list. Nobody else's list changed.",
+        { count: agents.length },
+      )}
       title={t("Hidden")}
     >
       {open ? <RosterRows agents={agents} byId={byId} /> : null}

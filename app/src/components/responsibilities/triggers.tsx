@@ -125,7 +125,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
         setTimeout(() => setCopied(false), 1500);
       }}
     >
-      {copied ? "Copied" : label}
+      {copied ? t("Copied") : label}
     </Button>
   );
 }
@@ -198,8 +198,8 @@ export function Triggers({ goal }: { goal: ResponsibilityRecord }) {
       </div>
       {goal.status !== "active" && (
         <p className="text-muted-foreground text-xs">
-          {t("This responsibility is")} {goal.status}, so its triggers are
-          acknowledged but never run it.
+          {t("This responsibility is")} {goal.status}
+          {t(", so its triggers are acknowledged but never run it.")}
         </p>
       )}
       {triggers.error && (
@@ -300,7 +300,7 @@ function TriggerRow({
         <ItemTitle>{KIND_LABEL[trigger.kind]}</ItemTitle>
         <ItemDescription className="line-clamp-none">
           {describeFilter(trigger.config)}
-          {trigger.enabled ? "" : " · Paused"}
+          {trigger.enabled ? "" : t(" · Paused")}
         </ItemDescription>
       </ItemContent>
       <ItemActions>
@@ -332,7 +332,9 @@ function TriggerRow({
               {t("Remove")}
             </Button>
             <Switch
-              aria-label={`Run on this ${KIND_LABEL[trigger.kind]} trigger`}
+              aria-label={t("Run on this {kind} trigger", {
+                kind: KIND_LABEL[trigger.kind],
+              })}
               checked={trigger.enabled}
               disabled={toggle.isPending}
               onCheckedChange={() =>
@@ -754,7 +756,9 @@ function NewTriggerDialog({
             size="sm"
             type="submit"
           >
-            {create.isPending ? "Adding…" : `Add ${KIND_LABEL[kind]} trigger`}
+            {create.isPending
+              ? t("Adding…")
+              : t("Add {kind} trigger", { kind: KIND_LABEL[kind] })}
           </Button>
         </DialogFooter>
       </DialogContent>

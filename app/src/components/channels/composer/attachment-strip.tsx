@@ -101,13 +101,15 @@ export function AttachmentStrip({
                * region, and a paste of eight images would interrupt eight times to say so.
                */
               <Skeleton
-                aria-label={`${image.alt ?? "Attachment"}, uploading`}
+                aria-label={t("{name}, uploading", {
+                  name: image.alt ?? t("Attachment"),
+                })}
                 className="size-20 rounded-xl"
                 role="img"
               />
             ) : (
               <img
-                alt={image.alt ?? "Attachment"}
+                alt={image.alt ?? t("Attachment")}
                 className="size-20 rounded-xl border border-border object-cover"
                 src={image.url}
               />
@@ -160,12 +162,14 @@ export function AttachmentStrip({
                   className="truncate text-muted-foreground text-xs"
                   title={
                     file.mayTruncate === true
-                      ? "The model reads the first 120,000 characters of this file."
+                      ? t(
+                          "The model reads the first 120,000 characters of this file.",
+                        )
                       : undefined
                   }
                 >
                   {formatBytes(file.size)}
-                  {file.mayTruncate === true ? " · may be cut" : null}
+                  {file.mayTruncate === true ? t(" · may be cut") : null}
                 </p>
               )}
             </div>
@@ -228,7 +232,7 @@ function RemoveButton({
 }) {
   return (
     <button
-      aria-label={`Remove ${name}`}
+      aria-label={t("Remove {name}", { name })}
       className="absolute top-1 right-1 grid size-5 place-items-center rounded-full border border-border bg-background/90 text-muted-foreground shadow-sm transition-colors hover:text-foreground"
       onClick={onRemove}
       type="button"

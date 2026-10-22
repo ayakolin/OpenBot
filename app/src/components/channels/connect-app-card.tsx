@@ -137,13 +137,13 @@ export function ConnectAppCard({
             {t("Enter it on")} {title}
             {t("'s page")}
           </Link>
-          , then ask again.
+          {t(", then ask again.")}
         </p>
       ) : (
         <div className="flex flex-wrap items-center gap-3">
           {/* The heading above already names the app; the button says what pressing it does. */}
           <Button disabled={connect.isPending} onClick={open} size="sm">
-            {waiting ? `Waiting for ${title}…` : "Connect"}
+            {waiting ? t("Waiting for {title}…", { title }) : t("Connect")}
           </Button>
           {waiting ? (
             <p className="text-muted-foreground text-sm" role="status">
@@ -169,7 +169,7 @@ export function ConnectAppCard({
             <p className="text-destructive text-sm" role="status">
               {connect.error instanceof Error
                 ? connect.error.message
-                : `${title} could not be connected.`}
+                : t("{title} could not be connected.", { title })}
             </p>
           ) : null}
         </div>

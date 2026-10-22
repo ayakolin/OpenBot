@@ -119,8 +119,8 @@ function RouteComponent() {
       <div className="flex h-screen items-center justify-center p-6">
         <p className="text-muted-foreground text-sm">
           {agent
-            ? `This deployment has no Bot called "${agent}".`
-            : "This deployment has no Bots yet."}
+            ? t('This deployment has no Bot called "{agent}".', { agent })
+            : t("This deployment has no Bots yet.")}
         </p>
       </div>
     );

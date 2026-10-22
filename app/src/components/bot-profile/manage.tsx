@@ -116,9 +116,10 @@ function ResetDialog({
               )}
               {plan.data.sharedConversationsKept > 0 ? (
                 <p className="text-muted-foreground">
-                  {plan.data.sharedConversationsKept} {t("conversation")}
-                  {plan.data.sharedConversationsKept === 1 ? " is" : "s are"}{" "}
-                  {t("shared with other people or Bots and will be kept.")}
+                  {t(
+                    "{count} conversation shared with other people or Bots and will be kept.",
+                    { count: plan.data.sharedConversationsKept },
+                  )}
                 </p>
               ) : null}
               <p className="text-muted-foreground">
@@ -140,7 +141,7 @@ function ResetDialog({
             size="sm"
             variant="outline"
           >
-            {reset.isSuccess ? "Close" : "Cancel"}
+            {reset.isSuccess ? t("Close") : t("Cancel")}
           </Button>
           {reset.isSuccess ? null : (
             <Button
@@ -201,10 +202,16 @@ export function ManageSection({
             <ItemTitle>{t("Pinned")}</ItemTitle>
             <ItemDescription>
               {assigned
-                ? "Assigned to you by an administrator, so it stays at the top of your Bots list."
+                ? t(
+                    "Assigned to you by an administrator, so it stays at the top of your Bots list.",
+                  )
                 : agent.pinned
-                  ? "At the top of your Bots list. Nobody else's list changes."
-                  : "Keep it at the top of your Bots list. Nobody else's list changes."}
+                  ? t(
+                      "At the top of your Bots list. Nobody else's list changes.",
+                    )
+                  : t(
+                      "Keep it at the top of your Bots list. Nobody else's list changes.",
+                    )}
             </ItemDescription>
           </ItemContent>
           <ItemActions>
@@ -227,10 +234,16 @@ export function ManageSection({
             <ItemTitle>{t("Hidden")}</ItemTitle>
             <ItemDescription>
               {assigned
-                ? "Assigned to you by an administrator, so it cannot be hidden."
+                ? t(
+                    "Assigned to you by an administrator, so it cannot be hidden.",
+                  )
                 : agent.hidden
-                  ? "Folded under Hidden on your Bots list. Nobody else's list changes."
-                  : "Take it off your Bots list. Nobody else's list changes."}
+                  ? t(
+                      "Folded under Hidden on your Bots list. Nobody else's list changes.",
+                    )
+                  : t(
+                      "Take it off your Bots list. Nobody else's list changes.",
+                    )}
             </ItemDescription>
           </ItemContent>
           <ItemActions>
@@ -346,7 +359,7 @@ export function ManageSection({
               size="sm"
               variant="destructive"
             >
-              {remove.isPending ? "Deleting…" : "Delete"}
+              {remove.isPending ? t("Deleting…") : t("Delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

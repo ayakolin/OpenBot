@@ -151,7 +151,7 @@ export function RuleRow({
           <>
             <LabelSelect
               disabled={disabled}
-              label={`Behaviour for ${rule.toolRef}`}
+              label={t("Behaviour for {tool}", { tool: rule.toolRef })}
               labels={labels}
               onChange={onChange}
               value={rule.behaviour}

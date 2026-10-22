@@ -118,7 +118,7 @@ export function WaitingForYou({ agentId }: { agentId?: string }) {
                   {request.action.policy ? (
                     <p className="text-sm">
                       {request.action.policy.behaviour === "hand_off"
-                        ? "Handed to you: "
+                        ? t("Handed to you: ")
                         : ""}
                       {request.action.policy.reason}
                     </p>
