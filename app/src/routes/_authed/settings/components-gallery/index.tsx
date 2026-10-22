@@ -66,10 +66,12 @@ function RouteComponent() {
             >
               <div className="min-h-28 p-4">
                 <h4 className="line-clamp-1 font-medium text-sm">
-                  {component.title}
+                  {t(component.title)}
                 </h4>
                 <p className="mt-2 line-clamp-2 text-muted-foreground text-xs">
-                  {component.publishedDescription}
+                  {component.publishedDescription
+                    ? t(component.publishedDescription)
+                    : null}
                 </p>
               </div>
               <div className="relative flex-1">
