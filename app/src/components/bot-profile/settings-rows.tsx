@@ -198,10 +198,9 @@ export function BotSettingsRows({ agent }: { agent: AgentProfile }) {
                 <Icon />
               </ItemMedia>
               <ItemContent>
-                {/* Translated where it is drawn: the table above is built when this module is
-                    imported, before anybody's language is known. */}
+                {/* Summaries translate themselves; titles are translated here. */}
                 <ItemTitle>{t(title)}</ItemTitle>
-                <ItemDescription>{t(summary)}</ItemDescription>
+                <ItemDescription>{summary}</ItemDescription>
               </ItemContent>
               <ItemActions>
                 <IconChevronRight className="size-4 text-muted-foreground" />
