@@ -23,6 +23,7 @@ import {
   ComboboxList,
   useComboboxAnchor,
 } from "@/components/ui/combobox";
+import { displayAgentName } from "@/lib/agents/display-name";
 import {
   type AgentProfile,
   agentListQueryOptions,
@@ -128,7 +129,7 @@ function RouteComponent() {
           isItemEqualToValue={(item: AgentProfile, value: AgentProfile) =>
             item.id === value.id
           }
-          itemToStringLabel={(item: AgentProfile) => item.name}
+          itemToStringLabel={(item: AgentProfile) => displayAgentName(item)}
           itemToStringValue={(item: AgentProfile) => item.id}
           onValueChange={(next: AgentProfile[], details) => {
             const kept = toFieldChange(selected, next, details.reason);
@@ -150,10 +151,12 @@ function RouteComponent() {
               <ComboboxChip
                 className="gap-1.5 pl-1"
                 key={profile.id}
-                removeLabel={t("Remove {name}", { name: profile.name })}
+                removeLabel={t("Remove {name}", {
+                  name: displayAgentName(profile),
+                })}
               >
                 <ChannelAvatar participantIds={[profile.id]} size={16} />
-                {profile.name}
+                {displayAgentName(profile)}
               </ComboboxChip>
             ))}
             <ComboboxChipsInput
@@ -179,7 +182,7 @@ function RouteComponent() {
               {(item: AgentProfile) => (
                 <ComboboxItem key={item.id} value={item} className="h-10">
                   <ChannelAvatar participantIds={[item.id]} size={24} />
-                  {item.name}
+                  {displayAgentName(item)}
                   <span className="truncate text-muted-foreground ml-1">
                     {t(item.title)}
                   </span>

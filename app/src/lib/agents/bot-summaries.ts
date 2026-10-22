@@ -20,6 +20,11 @@ export function countLabel(
   return tr(`{count} ${count === 1 ? one : many}`, { count });
 }
 
+/** Joins list parts with the language's own separator: ", " in English, "、" in zh-CN. */
+export function joinList(parts: readonly string[], tr: Translate = t): string {
+  return parts.join(tr(", "));
+}
+
 export function accessSummary(
   skills: number,
   apps: number,
@@ -29,7 +34,7 @@ export function accessSummary(
     skills ? countLabel(skills, "skill", "skills", "", tr) : "",
     apps ? countLabel(apps, "app", "apps", "", tr) : "",
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : tr("Nothing granted");
+  return parts.length ? joinList(parts, tr) : tr("Nothing granted");
 }
 
 /**
@@ -78,7 +83,12 @@ export function reachSummary(
   const places = [...new Set(transports)]
     .map((transport) => TRANSPORT_LABEL[transport] ?? transport)
     .sort((a, b) => a.localeCompare(b));
-  return places.length ? places.join(", ") : tr("Only in OpenBot");
+  return places.length
+    ? joinList(
+        places.map((place) => tr(place)),
+        tr,
+      )
+    : tr("Only in OpenBot");
 }
 
 /** The apps feeding this Bot facts, and whether it researches in the background. */
@@ -95,5 +105,5 @@ export function memorySummary(
         : tr("Background research on")
       : "",
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : tr("Nothing connected");
+  return parts.length ? joinList(parts, tr) : tr("Nothing connected");
 }

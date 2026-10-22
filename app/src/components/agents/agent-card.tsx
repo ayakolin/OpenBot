@@ -4,6 +4,7 @@ import Avatar from "boring-avatars";
 import { AbstractAvatar } from "@/components/agents/abstract-avatar";
 import { Button } from "@/components/ui/button";
 import type { AgentProfile } from "@/lib/agents/queries";
+import { displayAgentName } from "@/lib/agents/display-name";
 import { t } from "@/lib/i18n";
 
 export function AgentCard({
@@ -25,7 +26,7 @@ export function AgentCard({
         <div className="absolute top-0 left-0 h-full w-full bg-background/40 dark:bg-background/50" />
         <div className="absolute top-0 left-0 flex h-full w-full flex-col justify-end gap-2 p-3">
           <span className="line-clamp-1 text-sm font-medium">
-            {t(agent.name)}
+            {displayAgentName(agent)}
           </span>
           <span className="line-clamp-3 text-xs text-foreground dark:text-foreground/80">
             {t(agent.roleDescription)}
@@ -43,9 +44,9 @@ export function AgentCard({
       <div className="flex min-w-0 flex-col gap-2">
         <span
           className="line-clamp-1 break-words text-sm font-medium leading-5"
-          title={agent.name}
+          title={displayAgentName(agent)}
         >
-          {t(agent.name)}
+          {displayAgentName(agent)}
         </span>
         <span className="line-clamp-2 break-words text-xs leading-4 text-muted-foreground">
           {t(agent.roleDescription)}

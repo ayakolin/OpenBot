@@ -15,6 +15,7 @@ import { IllustrationFrame } from "@/components/onboarding/illustration-frame";
 import { LaptopIllustration } from "@/components/onboarding/laptop-illustration";
 import { OrganizationFlow } from "@/components/onboarding/organization-flow";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { displayAgentName } from "@/lib/agents/display-name";
 import { type AgentProfile, agentListQueryOptions } from "@/lib/agents/queries";
 import { currentUserQueryOptions, needsOnboarding } from "@/lib/auth/queries";
 import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
@@ -94,7 +95,8 @@ function ComputerUseStep() {
 }
 
 /** What a roster card needs — placeholders carry these three fields and nothing more. */
-type RosterCard = Pick<AgentProfile, "id" | "name" | "avatarSeed">;
+type RosterCard = Pick<AgentProfile, "id" | "name" | "avatarSeed"> &
+  Partial<Pick<AgentProfile, "systemOwned">>;
 
 /**
  * Stand-ins for a deployment that has fewer than three public agents to show. Invented names on
@@ -148,7 +150,7 @@ function RosterStep() {
               <Avatar name={a.avatarSeed} size={40} />
               <div className="flex min-w-0 flex-col">
                 <h3 className="line-clamp-1 text-base font-medium tracking-tight">
-                  {a.name}
+                  {displayAgentName(a)}
                 </h3>
                 {a.example ? (
                   <span className="text-xs text-muted-foreground">

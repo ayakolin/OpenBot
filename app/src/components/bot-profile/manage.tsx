@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { displayAgentName } from "@/lib/agents/display-name";
 import {
   deleteAgentMutationOptions,
   duplicateAgentMutationOptions,
@@ -82,10 +83,10 @@ function ResetDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {t("Reset")} {agent.name}?
+            {t("Reset")} {displayAgentName(agent)}?
           </DialogTitle>
           <DialogDescription>
-            {t("This deletes what")} {agent.name}{" "}
+            {t("This deletes what")} {displayAgentName(agent)}{" "}
             {t(
               "has with you, and only with you. Nobody else's conversations or data are touched. It cannot be undone.",
             )}
@@ -98,7 +99,8 @@ function ResetDialog({
             </p>
           ) : reset.isSuccess ? (
             <p className="text-sm">
-              {t("Done.")} {agent.name} {t("starts fresh with you.")}
+              {t("Done.")} {displayAgentName(agent)}{" "}
+              {t("starts fresh with you.")}
             </p>
           ) : (
             <div className="grid gap-2 text-sm">
@@ -336,7 +338,7 @@ export function ManageSection({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {t("Delete")} {agent.name}?
+              {t("Delete")} {displayAgentName(agent)}?
             </DialogTitle>
             <DialogDescription>{t("This cannot be undone.")}</DialogDescription>
           </DialogHeader>

@@ -32,3 +32,21 @@ describe("displayAgentName", () => {
     ).toBe("Research Pal");
   });
 });
+
+describe("the Bot card's name", () => {
+  // AgentCard renders `displayAgentName(agent)` for both appearances, so this is its rendering rule.
+  test("a user-created 'General Assistant' stays untranslated in zh-CN", () => {
+    expect(
+      displayAgentName({ name: "General Assistant", systemOwned: false }, zh),
+    ).toBe("General Assistant");
+    expect(displayAgentName({ name: "General Assistant" }, zh)).toBe(
+      "General Assistant",
+    );
+  });
+
+  test("the deployment's own 'General Assistant' becomes 通用助手", () => {
+    expect(
+      displayAgentName({ name: "General Assistant", systemOwned: true }, zh),
+    ).toBe("通用助手");
+  });
+});

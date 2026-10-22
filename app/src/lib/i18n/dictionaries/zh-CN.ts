@@ -2215,10 +2215,14 @@ export const zhCN: Record<string, string> = {
   "Release readiness": "发布准备",
   "Design": "设计",
   "Workspace polish": "工作区打磨",
-  "Create your account": "创建你的账号",
+  "Create your account": "创建账号",
   "Ask the person to approve or decline something, and WAIT for their answer.": "请对方批准或拒绝某件事，并等待对方回答。",
   "Ask the person to pick one of several options, and WAIT for their answer.": "请对方从多个选项中选择一个，并等待对方回答。",
   "Ask the person to fill in a short form and WAIT for their answers.": "请对方填写一份简短表单，并等待对方作答。",
   "Show a sortable table to compare records, plans, or other structured facts.": "以可排序的表格展示，用于比较记录、方案或其他结构化信息。",
   "Show what this deployment has actually been doing, read from its own records rather than from anything you know.": "展示此部署实际做了什么，内容读取自其自身记录，而不是你已知的任何信息。",
+  // --- zh r4 (fix/zh-r4-display-names) ---
+  "{count} person": "{count} 人",
+  "{count} people": "{count} 人",
+  ", ": "、",
 };
