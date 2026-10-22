@@ -17,7 +17,7 @@ export function RefusedCard({
       role="status"
     >
       <p className="text-sm font-medium text-destructive">
-        {t("Not shown:")} {title}
+        {t("Not shown:")} {t(title)}
       </p>
       <p className="mt-1 text-sm text-foreground/80">{reason}</p>
     </div>

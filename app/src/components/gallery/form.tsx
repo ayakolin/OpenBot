@@ -180,29 +180,32 @@ function FormEntry({
     for (const field of args.fields) {
       const control = form.elements.namedItem(field.id);
       if (control instanceof HTMLInputElement && control.validity.badInput) {
-        problems.set(field.id, "Enter a valid number.");
+        problems.set(field.id, t("Enter a valid number."));
         continue;
       }
       const value = (values.get(field.id) ?? "").trim();
       if (!value) {
         if (field.required)
-          problems.set(field.id, `${t(field.label)} is required.`);
+          problems.set(
+            field.id,
+            t("{label} is required.", { label: t(field.label) }),
+          );
         continue;
       }
       if (value.length > 2000)
-        problems.set(field.id, "Use 2,000 characters or fewer.");
+        problems.set(field.id, t("Use 2,000 characters or fewer."));
       else if (field.type === "email" && !z.email().safeParse(value).success)
-        problems.set(field.id, "Enter a valid email address.");
+        problems.set(field.id, t("Enter a valid email address."));
       else if (field.type === "select" && !field.options?.includes(value))
-        problems.set(field.id, "Choose one of the listed options.");
+        problems.set(field.id, t("Choose one of the listed options."));
       else if (field.type === "number") {
         const number = Number(value);
         if (!Number.isFinite(number))
-          problems.set(field.id, "Enter a valid number.");
+          problems.set(field.id, t("Enter a valid number."));
         else if (field.min !== undefined && number < field.min)
-          problems.set(field.id, `Enter ${field.min} or more.`);
+          problems.set(field.id, t("Enter {min} or more.", { min: field.min }));
         else if (field.max !== undefined && number > field.max)
-          problems.set(field.id, `Enter ${field.max} or less.`);
+          problems.set(field.id, t("Enter {max} or less.", { max: field.max }));
       }
       entries.push([field.id, field.type === "number" ? Number(value) : value]);
     }
@@ -237,7 +240,7 @@ function FormEntry({
       caption={args.description}
       action={
         <Badge tone={finished ? "positive" : "caution"}>
-          {finished ? "Submitted" : "Waiting on you"}
+          {finished ? t("Submitted") : t("Waiting on you")}
         </Badge>
       }
     >
@@ -254,7 +257,7 @@ function FormEntry({
                   <dd className="whitespace-pre-wrap break-words font-medium">
                     {Object.hasOwn(answer.values, field.id)
                       ? answer.values[field.id]
-                      : "Not provided"}
+                      : t("Not provided")}
                   </dd>
                 </div>
               ))}
@@ -376,7 +379,9 @@ function FormEntry({
           )}
           <div className="flex justify-end border-t border-border pt-3">
             <Button type="submit" size="sm" disabled={sending || !respond}>
-              {sending ? "Sending…" : (args.submitLabel ?? "Submit answers")}
+              {sending
+                ? t("Sending…")
+                : (args.submitLabel ?? t("Submit answers"))}
             </Button>
           </div>
         </form>
@@ -388,36 +393,55 @@ function FormEntry({
 export const GALLERY: GalleryComponent[] = [
   {
     name: "askForm",
-    title: "Form",
+    get title() {
+      return t("Form");
+    },
     kind: "decision",
     description:
       "Ask the person to fill in a short form and WAIT for their answers. Use when several related details are needed together. Provide up to eight labeled text, email, number, select, or textarea fields with unique IDs. Mark required fields and give options for selects. Never request passwords or secrets. The result has status submitted and values keyed by field ID; numbers are returned as numbers and blank optional fields are omitted.",
     parameters: FormCardArgs,
     Component: FormCard,
-    preview: {
-      status: "executing",
-      args: {
-        title: "Plan your next project",
-        description: "A few details to prepare a useful first draft.",
-        fields: [
-          { id: "team", label: "Team name", type: "text", required: true },
-          { id: "email", label: "Work email", type: "email", required: true },
-          {
-            id: "priority",
-            label: "Priority",
-            type: "select",
-            options: ["This week", "This month", "Exploring"],
-          },
-          { id: "seats", label: "People involved", type: "number", min: 1 },
-          {
-            id: "notes",
-            label: "What would a good outcome look like?",
-            type: "textarea",
-          },
-        ],
-        submitLabel: "Prepare my brief",
-      },
-      respond: async () => {},
+    get preview() {
+      return {
+        status: "executing",
+        args: {
+          title: t("Plan your next project"),
+          description: t("A few details to prepare a useful first draft."),
+          fields: [
+            {
+              id: "team",
+              label: t("Team name"),
+              type: "text",
+              required: true,
+            },
+            {
+              id: "email",
+              label: t("Work email"),
+              type: "email",
+              required: true,
+            },
+            {
+              id: "priority",
+              label: t("Priority"),
+              type: "select",
+              options: [t("This week"), t("This month"), t("Exploring")],
+            },
+            {
+              id: "seats",
+              label: t("People involved"),
+              type: "number",
+              min: 1,
+            },
+            {
+              id: "notes",
+              label: t("What would a good outcome look like?"),
+              type: "textarea",
+            },
+          ],
+          submitLabel: t("Prepare my brief"),
+        },
+        respond: async () => {},
+      };
     },
   },
 ];

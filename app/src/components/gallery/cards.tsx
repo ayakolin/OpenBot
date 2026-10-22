@@ -142,7 +142,7 @@ export function ChecklistCard({
             done === items.length && items.length > 0 ? "positive" : "neutral"
           }
         >
-          {done} of {items.length}
+          {t("{done} of {total}", { done, total: items.length })}
         </Badge>
       }
       caption={caption}
@@ -202,7 +202,7 @@ export function NoticeCard({
     <GalleryFrame
       action={
         noticeTone && noticeTone !== "neutral" ? (
-          <Badge tone={noticeTone}>{noticeTone}</Badge>
+          <Badge tone={noticeTone}>{t(noticeTone)}</Badge>
         ) : undefined
       }
       title={title}
@@ -231,15 +231,17 @@ export const GALLERY: GalleryComponent[] = [
       "Show one thing and its fields, an order, a person, a ticket. Use instead of describing a record in prose.",
     parameters: RecordCardProps,
     Component: RecordCard as GalleryComponent["Component"],
-    preview: {
-      title: "Invoice 2043",
-      subtitle: "Northwind Traders",
-      status: "Approved",
-      fields: [
-        { label: "Amount", value: "$4,280.00" },
-        { label: "Raised", value: "12 March" },
-        { label: "Owner", value: "Priya Raman" },
-      ],
+    get preview() {
+      return {
+        title: t("Invoice 2043"),
+        subtitle: t("Northwind Traders"),
+        status: t("Approved"),
+        fields: [
+          { label: "Amount", value: "$4,280.00" },
+          { label: "Raised", value: t("12 March") },
+          { label: "Owner", value: t("Priya Raman") },
+        ],
+      };
     },
     confirmation: "The record is now on screen for the person.",
   },
@@ -251,23 +253,25 @@ export const GALLERY: GalleryComponent[] = [
       "Show up to six headline figures, each with an optional movement. Use for a summary somebody reads at a glance.",
     parameters: MetricsCardProps,
     Component: MetricsCard as GalleryComponent["Component"],
-    preview: {
-      title: "This month",
-      metrics: [
-        {
-          label: "Revenue",
-          value: "$412k",
-          change: "+12% on last month",
-          changeTone: "positive",
-        },
-        { label: "Open deals", value: "38" },
-        {
-          label: "Churn",
-          value: "1.4%",
-          change: "+0.3pt",
-          changeTone: "caution",
-        },
-      ],
+    get preview() {
+      return {
+        title: t("This month"),
+        metrics: [
+          {
+            label: t("Revenue"),
+            value: "$412k",
+            change: t("+12% on last month"),
+            changeTone: "positive",
+          },
+          { label: t("Open deals"), value: "38" },
+          {
+            label: t("Churn"),
+            value: "1.4%",
+            change: t("+0.3pt"),
+            changeTone: "caution",
+          },
+        ],
+      };
     },
     confirmation: "The figures are now on screen for the person.",
   },
@@ -279,13 +283,19 @@ export const GALLERY: GalleryComponent[] = [
       "Show a list of things and which are done. Reporting only, the person cannot tick these, so do not use it to ask for anything.",
     parameters: ChecklistCardProps,
     Component: ChecklistCard as GalleryComponent["Component"],
-    preview: {
-      title: "Before the release",
-      items: [
-        { text: "Migrations applied", done: true },
-        { text: "Changelog written", done: true },
-        { text: "Load test", done: false, note: "Waiting on staging" },
-      ],
+    get preview() {
+      return {
+        title: t("Before the release"),
+        items: [
+          { text: t("Migrations applied"), done: true },
+          { text: t("Changelog written"), done: true },
+          {
+            text: t("Load test"),
+            done: false,
+            note: t("Waiting on staging"),
+          },
+        ],
+      };
     },
     confirmation: "The checklist is now on screen for the person.",
   },
@@ -297,11 +307,15 @@ export const GALLERY: GalleryComponent[] = [
       "Show a headline, a short explanation and optional supporting points. Use instead of writing several paragraphs of prose.",
     parameters: NoticeCardProps,
     Component: NoticeCard as GalleryComponent["Component"],
-    preview: {
-      title: "Certificate expires in 30 days",
-      body: "The checkout certificate has an owner now, and this is the first of the new alerts.",
-      tone: "caution",
-      points: ["Owner: Platform", "Renews automatically once approved"],
+    get preview() {
+      return {
+        title: t("Certificate expires in 30 days"),
+        body: t(
+          "The checkout certificate has an owner now, and this is the first of the new alerts.",
+        ),
+        tone: "caution",
+        points: [t("Owner: Platform"), t("Renews automatically once approved")],
+      };
     },
     confirmation: "The notice is now on screen for the person.",
   },

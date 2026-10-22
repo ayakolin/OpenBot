@@ -86,7 +86,7 @@ export function GalleryPreview({
           <div className="flex items-baseline justify-between gap-3">
             <h3 className="font-medium text-sm">{t(component.title)}</h3>
             <span className="shrink-0 text-[11px] text-muted-foreground uppercase tracking-wider">
-              {component.kind}
+              {t(component.kind)}
             </span>
           </div>
 
@@ -95,8 +95,10 @@ export function GalleryPreview({
           </div>
 
           <p className="text-muted-foreground text-xs leading-relaxed">
-            {firstSentence(
-              granted.get(component.name) || component.description,
+            {t(
+              firstSentence(
+                granted.get(component.name) || component.description,
+              ),
             )}
           </p>
         </li>
@@ -145,7 +147,7 @@ function PreviewOf({ name }: { name: string }) {
  * The full description is written for a model deciding whether to call this, and carries the
  * comparisons that matter to that decision. A person reading a gallery wants to know what it is.
  */
-function firstSentence(description: string): string {
+export function firstSentence(description: string): string {
   const end = description.indexOf(". ");
   return end === -1 ? description : description.slice(0, end + 1);
 }

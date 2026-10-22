@@ -3,6 +3,7 @@ import type * as React from "react";
 import { PageShell } from "@/components/layout/page-shell";
 import { type AgentProfile, agentQueryOptions } from "@/lib/agents/queries";
 import { t } from "@/lib/i18n";
+import { displayAgentName } from "@/lib/agents/display-name";
 
 /**
  * The frame of every `/bots/$agentId/<area>` page: back to the Bot by name, then the area.
@@ -25,7 +26,7 @@ export function BotSubpage({
   return (
     <PageShell
       backButton={{
-        label: agent.data?.name ?? "Bot",
+        label: agent.data ? displayAgentName(agent.data, t) : t("Bot"),
         linkProps: { params: { agentId }, to: "/bots/$agentId" },
       }}
       description={description}

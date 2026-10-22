@@ -57,7 +57,7 @@ export function ApprovalCard(props: Waiting<ApprovalArgs> & { name?: string }) {
 
   if (status === "inProgress") {
     return (
-      <GalleryFrame title={args.title ?? "Waiting for the assistant…"}>
+      <GalleryFrame title={args.title ?? t("Waiting for the assistant…")}>
         <p className="text-sm text-muted-foreground">
           {t("Preparing the request…")}
         </p>
@@ -73,7 +73,7 @@ export function ApprovalCard(props: Waiting<ApprovalArgs> & { name?: string }) {
       action={
         decided ? (
           <Badge tone={decided === "approved" ? "positive" : "negative"}>
-            {decided === "approved" ? "Approved" : "Declined"}
+            {decided === "approved" ? t("Approved") : t("Declined")}
           </Badge>
         ) : (
           <Badge tone="caution">{t("Waiting on you")}</Badge>
@@ -111,8 +111,8 @@ export function ApprovalCard(props: Waiting<ApprovalArgs> & { name?: string }) {
               size="sm"
             >
               {sending === "approved"
-                ? "Sending…"
-                : (args.approveLabel ?? "Approve")}
+                ? t("Sending…")
+                : (args.approveLabel ?? t("Approve"))}
             </Button>
             <Button
               disabled={Boolean(sending)}
@@ -121,8 +121,8 @@ export function ApprovalCard(props: Waiting<ApprovalArgs> & { name?: string }) {
               variant="outline"
             >
               {sending === "declined"
-                ? "Sending…"
-                : (args.rejectLabel ?? "Decline")}
+                ? t("Sending…")
+                : (args.rejectLabel ?? t("Decline"))}
             </Button>
           </div>
         </div>
@@ -158,7 +158,7 @@ export function ChoiceCard(props: Waiting<ChoiceArgs>) {
 
   if (status === "inProgress") {
     return (
-      <GalleryFrame title={args.title ?? "Waiting for the assistant…"}>
+      <GalleryFrame title={args.title ?? t("Waiting for the assistant…")}>
         <p className="text-sm text-muted-foreground">
           {t("Preparing the question…")}
         </p>
@@ -253,57 +253,67 @@ function readChoice(result: string | undefined): string | undefined {
 export const GALLERY: GalleryComponent[] = [
   {
     name: "askApproval",
-    title: "Approval",
+    get title() {
+      return t("Approval");
+    },
     kind: "decision",
     description:
       "Ask the person to approve or decline something, and WAIT for their answer. Use before doing anything you cannot undo, spending money, sending a message, changing a record. You are given their decision and any reason they typed.",
     parameters: ApprovalCardProps,
     Component: ApprovalCard as GalleryComponent["Component"],
-    preview: {
-      // The whole interaction, because that is what this component is handed: it suspends a run,
-      // so its arguments arrive wrapped in the state of the decision it is waiting on.
-      status: "executing",
-      args: {
-        title: "Refund this order?",
-        summary:
-          "The customer was charged twice for the same order and the second charge has not settled.",
-        details: [
-          { label: "Amount", value: "$128.40" },
-          { label: "Customer", value: "Northwind Traders" },
-          { label: "Order", value: "2043" },
-        ],
-        approveLabel: "Refund",
-      },
-      respond: async () => {},
+    // A getter so the sample is written in the language on screen, not the one at import time.
+    get preview() {
+      return {
+        // The whole interaction, because that is what this component is handed: it suspends a run,
+        // so its arguments arrive wrapped in the state of the decision it is waiting on.
+        status: "executing",
+        args: {
+          title: t("Refund this order?"),
+          summary: t(
+            "The customer was charged twice for the same order and the second charge has not settled.",
+          ),
+          details: [
+            { label: t("Amount"), value: "$128.40" },
+            { label: t("Customer"), value: "Northwind Traders" },
+            { label: t("Order"), value: "2043" },
+          ],
+          approveLabel: t("Refund"),
+        },
+        respond: async () => {},
+      };
     },
   },
   {
     name: "askChoice",
-    title: "Choice",
+    get title() {
+      return t("Choice");
+    },
     kind: "decision",
     description:
       "Ask the person to pick one of several options, and WAIT for their answer. Use when you cannot sensibly guess which one they meant. You are given the id of the option they chose.",
     parameters: ChoiceCardProps,
     Component: ChoiceCard as GalleryComponent["Component"],
-    preview: {
-      status: "executing",
-      args: {
-        title: "Which environment should this go to?",
-        summary: "The build is green and nothing else is queued.",
-        options: [
-          {
-            id: "staging",
-            label: "Staging",
-            description: "Safe, and reversible",
-          },
-          {
-            id: "production",
-            label: "Production",
-            description: "Live customers",
-          },
-        ],
-      },
-      respond: async () => {},
+    get preview() {
+      return {
+        status: "executing",
+        args: {
+          title: t("Which environment should this go to?"),
+          summary: t("The build is green and nothing else is queued."),
+          options: [
+            {
+              id: "staging",
+              label: t("Staging"),
+              description: t("Safe, and reversible"),
+            },
+            {
+              id: "production",
+              label: t("Production"),
+              description: t("Live customers"),
+            },
+          ],
+        },
+        respond: async () => {},
+      };
     },
   },
 ];

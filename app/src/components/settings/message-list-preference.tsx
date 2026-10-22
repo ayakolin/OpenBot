@@ -99,9 +99,9 @@ export function MessageListPreference() {
           >
             <ChannelItemContent
               participantIds={["message-list-preview"]}
-              name="General Assistant"
+              name={t("General Assistant")}
               title={t("Plan next week")}
-              lastMessageAt="2h"
+              lastMessageAt={t("2h")}
               emphasis={emphasis}
             />
           </figure>

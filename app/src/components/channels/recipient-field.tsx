@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/input-group";
 import { agentListQueryOptions } from "@/lib/agents/queries";
 import { t } from "@/lib/i18n";
+import { displayAgentName } from "@/lib/agents/display-name";
 
 /**
  * Who a conversation that does not exist yet is with.
@@ -53,10 +54,10 @@ export function RecipientField({
             variant="secondary"
           >
             <ChannelAvatar participantIds={[recipient.id]} size={16} />
-            {recipient.name}
+            {displayAgentName(recipient, t)}
             <span aria-hidden>×</span>
             <span className="sr-only">
-              {t("Remove")} {recipient.name}
+              {t("Remove")} {displayAgentName(recipient, t)}
             </span>
           </Button>
         ))}
@@ -85,6 +86,7 @@ export function RecipientField({
                     addRecipient(recipients, {
                       id: profile.id,
                       name: profile.name,
+                      systemOwned: profile.systemOwned,
                     }),
                   );
                   setSearch("");
@@ -92,7 +94,7 @@ export function RecipientField({
                 type="button"
               >
                 <ChannelAvatar participantIds={[profile.id]} size={18} />
-                <span>{profile.name}</span>
+                <span>{displayAgentName(profile, t)}</span>
                 <span className="text-muted-foreground">{profile.title}</span>
               </button>
             </li>

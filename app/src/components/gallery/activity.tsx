@@ -7,7 +7,7 @@ import { useConversation } from "@/lib/copilot/conversation";
 import type { GalleryComponent } from "@/lib/copilot/gallery-registry";
 import { GalleryFrame } from "./frame";
 import { seriesColour } from "./palette";
-import { t } from "@/lib/i18n";
+import { currentIntlLocale, t } from "@/lib/i18n";
 
 /**
  * Server-filled report component. The model chooses report arguments; data and permissions come
@@ -82,7 +82,9 @@ export function ActivityReportCard({
           : {
               status: "refused",
               reason:
-                result.reason ?? result.error ?? "That data could not be read.",
+                result.reason ??
+                result.error ??
+                t("That data could not be read."),
             },
       );
     });
@@ -105,8 +107,8 @@ export function ActivityReportCard({
   if (state.status === "reading") {
     return (
       <GalleryFrame
-        caption="Reading from this deployment"
-        title={title ?? "Report"}
+        caption={t("Reading from this deployment")}
+        title={title ?? t("Report")}
       >
         <p className="text-sm text-muted-foreground">{t("Reading…")}</p>
       </GalleryFrame>
@@ -115,7 +117,7 @@ export function ActivityReportCard({
 
   if (state.status === "refused") {
     return (
-      <GalleryFrame title={title ?? "Report"}>
+      <GalleryFrame title={title ?? t("Report")}>
         <p className="text-sm text-destructive">{t("Not shown")}</p>
         <p className="mt-1 text-sm text-foreground/80">{state.reason}</p>
       </GalleryFrame>
@@ -149,10 +151,11 @@ function ActivityChart({
   const rows = data?.rows ?? [];
   if (rows.length === 0) {
     return (
-      <GalleryFrame title={title ?? "Bot activity"}>
+      <GalleryFrame title={title ?? t("Bot activity")}>
         <p className="text-sm text-muted-foreground">
-          {t("No Bot has done anything in the last")} {data?.days ?? 7}{" "}
-          {t("days.")}
+          {t("No Bot has done anything in the last {days} days.", {
+            days: data?.days ?? 7,
+          })}
         </p>
       </GalleryFrame>
     );
@@ -168,7 +171,10 @@ function ActivityChart({
           <Button
             onClick={() =>
               ask(
-                `What has ${busiest.bot} actually been doing? Look at the audit trail and summarise it.`,
+                t(
+                  "What has {bot} actually been doing? Look at the audit trail and summarise it.",
+                  { bot: busiest.bot },
+                ),
               )
             }
             size="sm"
@@ -178,8 +184,11 @@ function ActivityChart({
           </Button>
         ) : undefined
       }
-      caption={`Counted from this deployment's audit trail, last ${data.days} days`}
-      title={title ?? "Bot activity"}
+      caption={t(
+        "Counted from this deployment's audit trail, last {days} days",
+        { days: data.days },
+      )}
+      title={title ?? t("Bot activity")}
     >
       <ul className="flex flex-col gap-2">
         {rows.map((row, index) => (
@@ -219,7 +228,7 @@ function RefusalList({
   const rows = data?.rows ?? [];
   if (rows.length === 0) {
     return (
-      <GalleryFrame title={title ?? "Recent refusals"}>
+      <GalleryFrame title={title ?? t("Recent refusals")}>
         <p className="text-sm text-muted-foreground">
           {t("This deployment has refused nothing.")}
         </p>
@@ -234,7 +243,9 @@ function RefusalList({
           <Button
             onClick={() =>
               ask(
-                "Explain the most recent refusal in that list, and what would have to change for it to be allowed.",
+                t(
+                  "Explain the most recent refusal in that list, and what would have to change for it to be allowed.",
+                ),
               )
             }
             size="sm"
@@ -244,8 +255,8 @@ function RefusalList({
           </Button>
         ) : undefined
       }
-      caption="Read from this deployment's audit trail"
-      title={title ?? "Recent refusals"}
+      caption={t("Read from this deployment's audit trail")}
+      title={title ?? t("Recent refusals")}
     >
       <ul className="flex flex-col gap-2">
         {rows.map((row) => (
@@ -256,7 +267,7 @@ function RefusalList({
                 <span className="text-xs text-muted-foreground">{row.bot}</span>
               ) : null}
               <span className="ml-auto text-xs text-muted-foreground">
-                {new Date(row.at).toLocaleString()}
+                {new Date(row.at).toLocaleString(currentIntlLocale())}
               </span>
             </div>
             {row.reason ? (
@@ -278,7 +289,10 @@ export const GALLERY: GalleryComponent[] = [
      * only means to show what the component looks like. Admin draws it as unpreviewable instead.
      */
     name: "showActivityReport",
-    title: "Activity report",
+    // A getter so the title is read in the language on screen, not the one at import time.
+    get title() {
+      return t("Activity report");
+    },
     kind: "card",
     description:
       "Show what this deployment has actually been doing, read from its own records rather than from anything you know. Use for 'what have the Bots been up to' and 'what has been refused'. You choose the report and the period; the figures are read for you and you will not see them.",

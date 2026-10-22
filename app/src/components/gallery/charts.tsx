@@ -406,14 +406,16 @@ export const GALLERY: GalleryComponent[] = [
       "Show values as a bar chart. Use when comparing a handful of named things, teams, months, categories. Not for a trend over time, which is showLineChart.",
     parameters: BarChartProps,
     Component: BarChartCard as GalleryComponent["Component"],
-    preview: {
-      title: "Revenue by team",
-      caption: "Sales leads, and Engineering is closing the gap.",
-      points: [
-        { label: "Sales", value: 120 },
-        { label: "Engineering", value: 80 },
-        { label: "Support", value: 45 },
-      ],
+    get preview() {
+      return {
+        title: t("Revenue by team"),
+        caption: t("Sales leads, and Engineering is closing the gap."),
+        points: [
+          { label: t("Sales"), value: 120 },
+          { label: t("Engineering"), value: 80 },
+          { label: t("Support"), value: 45 },
+        ],
+      };
     },
     confirmation: "The bar chart is now on screen for the person.",
   },
@@ -425,13 +427,15 @@ export const GALLERY: GalleryComponent[] = [
       "Show how a whole is divided, as a donut with a legend. Use only when the parts sum to something meaningful, and prefer a bar chart above about six slices.",
     parameters: PieChartProps,
     Component: PieChartCard as GalleryComponent["Component"],
-    preview: {
-      title: "Where the month went",
-      points: [
-        { label: "Build", value: 48 },
-        { label: "Support", value: 26 },
-        { label: "Meetings", value: 26 },
-      ],
+    get preview() {
+      return {
+        title: t("Where the month went"),
+        points: [
+          { label: t("Build"), value: 48 },
+          { label: t("Support"), value: 26 },
+          { label: t("Meetings"), value: 26 },
+        ],
+      };
     },
     confirmation: "The donut chart is now on screen for the person.",
   },
@@ -443,11 +447,15 @@ export const GALLERY: GalleryComponent[] = [
       "Show one or more series over an ordered axis, usually time. Every series must have one value per label.",
     parameters: LineChartProps,
     Component: LineChartCard as GalleryComponent["Component"],
-    preview: {
-      title: "Signups",
-      caption: "Six weeks, one release.",
-      labels: ["W1", "W2", "W3", "W4", "W5", "W6"],
-      series: [{ name: "Signups", values: [120, 180, 160, 240, 300, 420] }],
+    get preview() {
+      return {
+        title: t("Signups"),
+        caption: t("Six weeks, one release."),
+        labels: [t("W1"), t("W2"), t("W3"), t("W4"), t("W5"), t("W6")],
+        series: [
+          { name: t("Signups"), values: [120, 180, 160, 240, 300, 420] },
+        ],
+      };
     },
     confirmation: "The line chart is now on screen for the person.",
   },
@@ -459,11 +467,13 @@ export const GALLERY: GalleryComponent[] = [
       "The same as showLineChart with the area under each line filled. Use for volume or accumulation rather than for a rate.",
     parameters: AreaChartProps,
     Component: AreaChartCard as GalleryComponent["Component"],
-    preview: {
-      title: "Storage used",
-      caption: "Growing steadily since the migration.",
-      labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-      series: [{ name: "TB", values: [12, 19, 26, 31, 44] }],
+    get preview() {
+      return {
+        title: t("Storage used"),
+        caption: t("Growing steadily since the migration."),
+        labels: [t("Jan"), t("Feb"), t("Mar"), t("Apr"), t("May")],
+        series: [{ name: t("TB"), values: [12, 19, 26, 31, 44] }],
+      };
     },
     confirmation: "The area chart is now on screen for the person.",
   },
@@ -475,13 +485,15 @@ export const GALLERY: GalleryComponent[] = [
       "Show values against their targets as progress bars. Use for 'are we there yet' questions, budget spent against budget, done against planned.",
     parameters: ProgressChartProps,
     Component: ProgressChartCard as GalleryComponent["Component"],
-    preview: {
-      title: "Migration to the new runtime",
-      caption: "Two services left.",
-      points: [
-        { label: "Services moved", value: 18, target: 20 },
-        { label: "Tests ported", value: 240, target: 240 },
-      ],
+    get preview() {
+      return {
+        title: t("Migration to the new runtime"),
+        caption: t("Two services left."),
+        points: [
+          { label: t("Services moved"), value: 18, target: 20 },
+          { label: t("Tests ported"), value: 240, target: 240 },
+        ],
+      };
     },
     confirmation: "The progress chart is now on screen for the person.",
   },
