@@ -53,7 +53,7 @@ import {
   startSmsMutationOptions,
 } from "@/lib/delivery";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { t, type Translate } from "@/lib/i18n";
 
 /**
  * The phone verification waiting for its code, kept for the tab.
@@ -89,7 +89,11 @@ type HeldLink = ChatLink & {
   expiresAt: number;
 };
 
-const TRANSPORT: Record<
+/**
+ * What each transport is called and what it does, in English keys translated where they are drawn:
+ * this table is evaluated before the language is known, so it holds no translated text.
+ */
+export const TRANSPORTS: Record<
   Transport,
   { link: string; icon: typeof IconBrandSlack; summary: string }
 > = {
@@ -109,6 +113,29 @@ const TRANSPORT: Record<
     summary: "Continue a conversation by text message.",
   },
 };
+
+/**
+ * What a transport's row says under its title: the step the person is in the middle of first, then
+ * what the transport does, then why it cannot be used on this deployment.
+ */
+export function transportSummary(
+  transport: Transport,
+  state: { challengePending: boolean; linkHeld: boolean; open: boolean },
+  tr: Translate = t,
+): string {
+  if (state.challengePending) {
+    return tr("A verification code is on its way. Enter it to finish.");
+  }
+  if (state.linkHeld) {
+    return tr("A link code is waiting to be sent. Open this to see it again.");
+  }
+  if (state.open) return tr(TRANSPORTS[transport].summary);
+  return transport === "sms"
+    ? tr("Text messages are not set up on this deployment.")
+    : tr(
+        "An administrator needs to pair OpenBot with OpenTag before Slack or Teams can be linked.",
+      );
+}
 
 /**
  * Continuing a conversation in Slack, Microsoft Teams or by text message. Given a Bot, only that
@@ -155,18 +182,12 @@ export function ReachingYou({ agentId: fixedBot }: { agentId?: string }) {
   const open = (transport: Transport) =>
     !!reach.data?.available[transport] ||
     (transport === "sms" && challengeId !== "");
-  const summary = (transport: Transport) => {
-    if (transport === "sms" && challengeId) {
-      return "A verification code is on its way. Enter it to finish.";
-    }
-    if (heldLink(transport)) {
-      return "A link code is waiting to be sent. Open this to see it again.";
-    }
-    if (open(transport)) return TRANSPORT[transport].summary;
-    return transport === "sms"
-      ? "Text messages are not set up on this deployment."
-      : "An administrator needs to pair OpenBot with OpenTag before Slack or Teams can be linked.";
-  };
+  const summary = (transport: Transport) =>
+    transportSummary(transport, {
+      challengePending: transport === "sms" && challengeId !== "",
+      linkHeld: heldLink(transport) !== undefined,
+      open: open(transport),
+    });
 
   return (
     <>
@@ -195,7 +216,7 @@ export function ReachingYou({ agentId: fixedBot }: { agentId?: string }) {
         ) : (
           <PageRows>
             {destinations.map((binding, index) => {
-              const Icon = TRANSPORT[binding.transport].icon;
+              const Icon = TRANSPORTS[binding.transport].icon;
               return (
                 <Fragment key={binding.id}>
                   {index > 0 ? <Separator /> : null}
@@ -243,39 +264,41 @@ export function ReachingYou({ agentId: fixedBot }: { agentId?: string }) {
       >
         {reach.data ? (
           <PageRows>
-            {(Object.keys(TRANSPORT) as Transport[]).map((transport, index) => {
-              const Icon = TRANSPORT[transport].icon;
-              const opens = open(transport);
-              return (
-                <Fragment key={transport}>
-                  {index > 0 ? <Separator /> : null}
-                  <Item
-                    render={
-                      opens ? (
-                        <button
-                          onClick={() => setConnecting(transport)}
-                          type="button"
-                        />
-                      ) : undefined
-                    }
-                    size="sm"
-                  >
-                    <ItemMedia variant="icon">
-                      <Icon />
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{TRANSPORT[transport].link}</ItemTitle>
-                      <ItemDescription>{summary(transport)}</ItemDescription>
-                    </ItemContent>
-                    {opens ? (
-                      <ItemActions>
-                        <IconChevronRight className="size-4 text-muted-foreground" />
-                      </ItemActions>
-                    ) : null}
-                  </Item>
-                </Fragment>
-              );
-            })}
+            {(Object.keys(TRANSPORTS) as Transport[]).map(
+              (transport, index) => {
+                const Icon = TRANSPORTS[transport].icon;
+                const opens = open(transport);
+                return (
+                  <Fragment key={transport}>
+                    {index > 0 ? <Separator /> : null}
+                    <Item
+                      render={
+                        opens ? (
+                          <button
+                            onClick={() => setConnecting(transport)}
+                            type="button"
+                          />
+                        ) : undefined
+                      }
+                      size="sm"
+                    >
+                      <ItemMedia variant="icon">
+                        <Icon />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>{t(TRANSPORTS[transport].link)}</ItemTitle>
+                        <ItemDescription>{summary(transport)}</ItemDescription>
+                      </ItemContent>
+                      {opens ? (
+                        <ItemActions>
+                          <IconChevronRight className="size-4 text-muted-foreground" />
+                        </ItemActions>
+                      ) : null}
+                    </Item>
+                  </Fragment>
+                );
+              },
+            )}
           </PageRows>
         ) : null}
       </PageSection>
@@ -366,7 +389,7 @@ function ConnectDialog({
     <Dialog onOpenChange={(next) => !next && onClose()} open>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{TRANSPORT[transport].link}</DialogTitle>
+          <DialogTitle>{t(TRANSPORTS[transport].link)}</DialogTitle>
           <DialogDescription>
             {t(
               "An account or phone number reaches one conversation at a time. Linking it here moves it from wherever it is linked now.",
@@ -561,7 +584,7 @@ function ConnectDialog({
               onClick={() => startLink(transport)}
               size="sm"
             >
-              {TRANSPORT[transport].link}
+              {t(TRANSPORTS[transport].link)}
             </Button>
           )}
         </DialogFooter>

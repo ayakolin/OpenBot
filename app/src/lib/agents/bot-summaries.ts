@@ -1,24 +1,35 @@
 /**
  * The current answer each "Settings for this Bot" row states, computed from its query on every
  * render so it updates itself when the page behind it changes something.
+ *
+ * Every function takes the translator as its last argument, defaulting to `t`, so the text is
+ * translated here rather than at the drawing site.
  */
 
+import { type Translate, t } from "@/lib/i18n";
+
+/** `one`, `many` and `none` are English dictionary keys; only the rendered text is translated. */
 export function countLabel(
   count: number,
   one: string,
   many: string,
   none: string,
+  tr: Translate = t,
 ): string {
-  if (count === 0) return none;
-  return `${count} ${count === 1 ? one : many}`;
+  if (count === 0) return none ? tr(none) : "";
+  return tr(`{count} ${count === 1 ? one : many}`, { count });
 }
 
-export function accessSummary(skills: number, apps: number): string {
+export function accessSummary(
+  skills: number,
+  apps: number,
+  tr: Translate = t,
+): string {
   const parts = [
-    skills ? countLabel(skills, "skill", "skills", "") : "",
-    apps ? countLabel(apps, "app", "apps", "") : "",
+    skills ? countLabel(skills, "skill", "skills", "", tr) : "",
+    apps ? countLabel(apps, "app", "apps", "", tr) : "",
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : "Nothing granted";
+  return parts.length ? parts.join(", ") : tr("Nothing granted");
 }
 
 /**
@@ -28,20 +39,24 @@ export function accessSummary(skills: number, apps: number): string {
 export function sharingSummary(
   published: { audience: "team" | "people" } | undefined,
   visibility: "public" | "private",
+  tr: Translate = t,
 ): string {
   if (!published) {
-    return visibility === "public" ? "Everyone (public)" : "Not shared";
+    return visibility === "public" ? tr("Everyone (public)") : tr("Not shared");
   }
   return published.audience === "team"
-    ? "Whole team"
-    : "Specific people and groups";
+    ? tr("Whole team")
+    : tr("Specific people and groups");
 }
 
-export function setupSummary(agent: {
-  builtIn: boolean;
-  endpoint: string | null;
-}): string {
-  if (agent.builtIn || !agent.endpoint) return "Built in";
+export function setupSummary(
+  agent: {
+    builtIn: boolean;
+    endpoint: string | null;
+  },
+  tr: Translate = t,
+): string {
+  if (agent.builtIn || !agent.endpoint) return tr("Built in");
   try {
     return new URL(agent.endpoint).host;
   } catch {
@@ -56,22 +71,29 @@ const TRANSPORT_LABEL: Record<string, string> = {
 };
 
 /** Where this Bot's conversations continue outside OpenBot, each place once. */
-export function reachSummary(transports: readonly string[]): string {
+export function reachSummary(
+  transports: readonly string[],
+  tr: Translate = t,
+): string {
   const places = [...new Set(transports)]
     .map((transport) => TRANSPORT_LABEL[transport] ?? transport)
     .sort((a, b) => a.localeCompare(b));
-  return places.length ? places.join(", ") : "Only in OpenBot";
+  return places.length ? places.join(", ") : tr("Only in OpenBot");
 }
 
 /** The apps feeding this Bot facts, and whether it researches in the background. */
-export function memorySummary(sources: number, research: boolean): string {
+export function memorySummary(
+  sources: number,
+  research: boolean,
+  tr: Translate = t,
+): string {
   const parts = [
-    sources ? countLabel(sources, "source", "sources", "") : "",
+    sources ? countLabel(sources, "source", "sources", "", tr) : "",
     research
       ? sources
-        ? "background research on"
-        : "Background research on"
+        ? tr("background research on")
+        : tr("Background research on")
       : "",
   ].filter(Boolean);
-  return parts.length ? parts.join(", ") : "Nothing connected";
+  return parts.length ? parts.join(", ") : tr("Nothing connected");
 }
