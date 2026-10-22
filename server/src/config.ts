@@ -117,7 +117,81 @@ export type AuthConfig = {
   microsoft?: OAuthClient & { tenantId: string };
   /** Okta is an OIDC provider rather than a named one, so it is identified by its issuer. */
   okta?: OAuthClient & { issuer: string };
+  /**
+   * Email and password, for a deployment with no identity provider of its own.
+   *
+   * THIS IS THE ONE SIGN-IN METHOD THIS DEPLOYMENT INVENTED, so it is off unless asked for and says
+   * what it costs: OpenBot has no mail service, so an address is never verified and a reset link has
+   * nowhere to go unless an operator wires one. What it buys is a deployment that can be used
+   * without Meta's or Microsoft's account, which is the whole reason a template like this gets run
+   * on a private server.
+   */
+  credentials?: CredentialsAuthConfig;
 };
+
+/** How an operator turned email-and-password on, and what it may do. */
+export type CredentialsAuthConfig = {
+  /**
+   * Who may create an account.
+   *
+   * `open` is the default when the feature is switched on, because a deployment that asked for
+   * sign-up and then admitted nobody would be a login screen nobody can pass. `closed` keeps the
+   * route but refuses every new account, which is what an operator switches to once their people
+   * have signed up.
+   */
+  signUp: "open" | "closed";
+  /**
+   * Where a reset link is delivered, when it is not delivered by mail.
+   *
+   * OpenBot sends no email. A URL here is POSTed the link, signed, and that is how an operator
+   * forwards it by whatever they already use. Absent leaves "forgot password" saying plainly that
+   * this deployment cannot reset one, rather than accepting a request it will never answer.
+   */
+  resetWebhook?: string;
+};
+
+/**
+ * Email-and-password, by configuration.
+ *
+ * The switch is a single variable rather than a provider's four, because there is no third party to
+ * register with: the deployment checks the password itself. `OPENBOT_CREDENTIALS_SIGN_UP` decides
+ * whether new accounts may be made, defaulting to open for the reason {@link CredentialsAuthConfig}
+ * gives.
+ */
+function credentialsAuth(
+  environment: Environment,
+): CredentialsAuthConfig | undefined {
+  if (environment.OPENBOT_CREDENTIALS_SIGN_IN?.trim() !== "true")
+    return undefined;
+
+  const signUp = environment.OPENBOT_CREDENTIALS_SIGN_UP?.trim().toLowerCase();
+  if (
+    signUp !== undefined &&
+    signUp !== "" &&
+    signUp !== "open" &&
+    signUp !== "closed"
+  ) {
+    throw new Error(
+      "OPENBOT_CREDENTIALS_SIGN_UP must be `open` or `closed` when it is set",
+    );
+  }
+  const resetWebhook = optional(
+    environment,
+    "OPENBOT_CREDENTIALS_RESET_WEBHOOK",
+  );
+  if (resetWebhook !== undefined) {
+    const parsed = url(environment, "OPENBOT_CREDENTIALS_RESET_WEBHOOK");
+    if (!parsed) {
+      throw new Error(
+        "OPENBOT_CREDENTIALS_RESET_WEBHOOK must be an http(s) URL that accepts the reset link",
+      );
+    }
+  }
+  return {
+    signUp: signUp === "closed" ? "closed" : "open",
+    ...(resetWebhook ? { resetWebhook } : {}),
+  };
+}
 
 /**
  * The providers this deployment can actually sign somebody in with.
@@ -767,14 +841,15 @@ function authConfig(
 ): AuthConfig | undefined {
   const microsoft = microsoftAuth(environment);
   const okta = oktaAuth(environment);
+  const credentials = credentialsAuth(environment);
 
   const secret = optional(environment, "BETTER_AUTH_SECRET");
   const baseUrl = url(environment, "BETTER_AUTH_URL");
 
-  if (!google && !microsoft && !okta) {
+  if (!google && !microsoft && !okta && !credentials) {
     if (secret || baseUrl) {
       throw new Error(
-        "BETTER_AUTH_SECRET or BETTER_AUTH_URL is set but no identity provider is. Configure GOOGLE_OAUTH_*, MICROSOFT_OAUTH_* or OKTA_OAUTH_*, or unset both",
+        "BETTER_AUTH_SECRET or BETTER_AUTH_URL is set but no identity provider is. Configure GOOGLE_OAUTH_*, MICROSOFT_OAUTH_* or OKTA_OAUTH_* (or OPENBOT_CREDENTIALS_SIGN_IN=true for email and password), or unset both",
       );
     }
     return undefined;
@@ -885,7 +960,22 @@ function authConfig(
     ...(google ? { google } : {}),
     ...(microsoft ? { microsoft } : {}),
     ...(okta ? { okta } : {}),
+    ...(credentials ? { credentials } : {}),
   };
+}
+
+/**
+ * Whether this deployment has anybody who can sign in at all.
+ *
+ * A provider counts, and so does email-and-password. This is the question `singleUserAllowed` and
+ * `configuredAuthProviders` are both asking, and the two answers have to agree: a deployment that
+ * runs credentials-only has a sign-in screen, so it is not the no-sign-in mode, and it must not be
+ * refused for being public the way that mode is.
+ */
+export function hasIdentityProvider(auth: AuthConfig | undefined): boolean {
+  return Boolean(
+    auth && (auth.google || auth.microsoft || auth.okta || auth.credentials),
+  );
 }
 
 /**
@@ -1383,7 +1473,7 @@ export function loadConfig(
      */
     singleUser:
       !organizationAuthUrl &&
-      singleUserAllowed(environment, configuredAuthProviders(auth).length > 0),
+      singleUserAllowed(environment, hasIdentityProvider(auth)),
     accessibility: accessibilityEnabled(environment),
     generativeUi: generativeUiEnabled(environment),
     selfHostBanner: selfHostBannerEnabled(environment),

@@ -82,3 +82,70 @@ export async function signInWithEmailDomain(
     );
   }
 }
+
+/**
+ * Sign in with an address and a password this deployment checks itself.
+ *
+ * Only reachable on a deployment that turned `OPENBOT_CREDENTIALS_SIGN_IN` on; otherwise Better Auth
+ * has no such route and the call fails, which is the correct refusal rather than a dead button.
+ */
+export async function signInWithPassword(input: {
+  email: string;
+  password: string;
+  start?: (value: { email: string; password: string }) => Promise<SocialResult>;
+}): Promise<void> {
+  const start =
+    input.start ??
+    ((value: { email: string; password: string }) =>
+      (
+        authClient as unknown as {
+          signIn: {
+            email: (i: unknown) => Promise<SocialResult>;
+          };
+        }
+      ).signIn.email(value));
+
+  const result = await start({
+    email: input.email,
+    password: input.password,
+  });
+  if (result.error) {
+    throw new Error(result.error.message || "Could not sign in.");
+  }
+}
+
+/**
+ * Create an account with an address and a password.
+ *
+ * The name is required by Better Auth and is what the sidebar shows, so it is asked for rather than
+ * derived from the address: an address is not a name, and the profile screen is not where somebody
+ * expects to discover that.
+ */
+export async function signUpWithPassword(input: {
+  name: string;
+  email: string;
+  password: string;
+  start?: (value: {
+    name: string;
+    email: string;
+    password: string;
+  }) => Promise<SocialResult>;
+}): Promise<void> {
+  const start =
+    input.start ??
+    ((value: { name: string; email: string; password: string }) =>
+      (
+        authClient as unknown as {
+          signUp: { email: (i: unknown) => Promise<SocialResult> };
+        }
+      ).signUp.email(value));
+
+  const result = await start({
+    name: input.name,
+    email: input.email,
+    password: input.password,
+  });
+  if (result.error) {
+    throw new Error(result.error.message || "Could not create the account.");
+  }
+}

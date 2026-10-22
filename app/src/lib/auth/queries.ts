@@ -48,6 +48,14 @@ export type SignInOptions = {
   sso: boolean;
   /** An administrator requires SSO; social sign-in stays only as the administrators' break-glass. */
   ssoRequired: boolean;
+  /**
+   * Whether this deployment checks a password of its own.
+   *
+   * Separate from `providers`, which are the buttons that leave this site. This one means the screen
+   * draws a form, and it is the only thing the browser is told: whether accounts may be created is
+   * decided and enforced on the server, so a stale flag cannot open a door that is shut.
+   */
+  credentials: boolean;
 };
 
 async function signInOptions(): Promise<SignInOptions> {
@@ -60,12 +68,14 @@ async function signInOptions(): Promise<SignInOptions> {
     authProviders?: AuthProviderId[];
     ssoConfigured?: boolean;
     ssoRequired?: boolean;
+    credentialsSignIn?: boolean;
   };
 
   return {
     providers: body.authProviders ?? [],
     sso: body.ssoConfigured === true,
     ssoRequired: body.ssoRequired === true,
+    credentials: body.credentialsSignIn === true,
   };
 }
 

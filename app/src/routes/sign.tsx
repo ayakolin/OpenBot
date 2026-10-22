@@ -3,6 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import AgentOrb from "@/components/agents/orb/agent-orb";
+import { PasswordForm } from "@/components/auth/password-form";
 import { ProviderLogo } from "@/components/auth/provider-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import {
   authProvidersQueryOptions,
   currentUserQueryOptions,
 } from "../lib/auth/queries";
+import { t } from "@/lib/i18n";
 
 const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
@@ -154,7 +156,7 @@ function SignScreen() {
           transition={{ duration: ENTRANCE_SECONDS, ease: EASE_OUT }}
           variants={{ hidden, shown }}
         >
-          Sign in to {appConfig.brand.productName}
+          {t("Sign in to")} {appConfig.brand.productName}
         </motion.h1>
         <motion.div
           className="mt-8 w-full"
@@ -163,14 +165,16 @@ function SignScreen() {
         >
           {options?.ssoRequired ? (
             <p className="mb-3 text-center text-sm text-muted-foreground">
-              Your organization requires single sign-on.
+              {t("Your organization requires single sign-on.")}
             </p>
           ) : null}
           {providers.length > 0 && !options?.ssoRequired ? (
             providerButtons
-          ) : options?.sso || options?.ssoRequired ? null : (
+          ) : options?.sso ||
+            options?.ssoRequired ||
+            options?.credentials ? null : (
             <p className="text-center text-sm text-muted-foreground">
-              No sign-in provider is configured for this deployment.
+              {t("No sign-in provider is configured for this deployment.")}
             </p>
           )}
           {/*
@@ -191,7 +195,7 @@ function SignScreen() {
               <Input
                 autoComplete="email"
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="you@company.com"
+                placeholder={t("you@company.com")}
                 required
                 type="email"
                 value={email}
@@ -204,16 +208,48 @@ function SignScreen() {
                 variant="outline"
               >
                 {opening === "sso"
-                  ? "Opening…"
-                  : "Continue with your company account"}
+                  ? t("Opening…")
+                  : t("Continue with your company account")}
               </Button>
             </form>
+          ) : null}
+          {/*
+           * A password this deployment checks itself.
+           *
+           * Below every button, because a deployment that also has a directory expects most people to
+           * arrive through it. Shown when it is the only way in too, which is the case this exists
+           * for: a private server with no identity provider to point at.
+           */}
+          {options?.credentials && !options?.ssoRequired ? (
+            <>
+              {providers.length > 0 || options?.sso ? (
+                <div className="my-3 flex items-center gap-3">
+                  <Separator className="flex-1" />
+                  <span className="text-muted-foreground text-xs">
+                    {t("or")}
+                  </span>
+                  <Separator className="flex-1" />
+                </div>
+              ) : null}
+              <PasswordForm
+                canSignUp={options.credentials}
+                onDone={() => {
+                  /*
+                   * A full reload rather than a router navigation: the session cookie is set by the
+                   * response to the sign-in request, and every query in the tree was fetched without
+                   * it. Reloading is one request and cannot leave a screen holding somebody else's
+                   * cached answer, which a router navigation would have to invalidate by hand.
+                   */
+                  window.location.assign("/");
+                }}
+              />
+            </>
           ) : null}
           {/* The administrators' audited break-glass while SSO is required; everybody else is refused. */}
           {options?.ssoRequired && providers.length > 0 ? (
             <details className="mt-4 text-sm">
               <summary className="cursor-pointer text-center text-muted-foreground">
-                Administrator sign-in
+                {t("Administrator sign-in")}
               </summary>
               <div className="mt-3">{providerButtons}</div>
             </details>

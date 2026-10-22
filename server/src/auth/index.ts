@@ -54,8 +54,39 @@ export async function decideSignInMethod(input: {
   email: string | undefined;
   ssoRequired: () => Promise<boolean>;
   initialAdminEmails: readonly string[];
+  /**
+   * Whether this deployment switched email-and-password on.
+   *
+   * Absent is off, and off means Better Auth's own `email-password` method is not one of the ways in.
+   * That matters rather than being implied by the option block: an operator who turns SSO-required
+   * on has said that this deployment trusts a directory, and a password this deployment stores
+   * itself is not one.
+   */
+  credentials?: boolean;
 }): Promise<"allow" | "break_glass" | "refuse"> {
   if (["sso-oidc", "sso-saml", "scim"].includes(input.method)) return "allow";
+  /*
+   * A password checked here is admitted only when the feature is on, and only while SSO is not
+   * required. `ssoRequired` is read below for everybody else; this is the one method whose whole
+   * premise SSO-required contradicts.
+   */
+  if (input.method === "email-password") {
+    if (!input.credentials) return "refuse";
+    let required: boolean;
+    try {
+      required = await input.ssoRequired();
+    } catch {
+      required = true;
+    }
+    if (!required) return "allow";
+    if (
+      input.email &&
+      isConfiguredAdmin(input.email, input.initialAdminEmails)
+    ) {
+      return "break_glass";
+    }
+    return "refuse";
+  }
   let required: boolean;
   try {
     required = await input.ssoRequired();
@@ -76,6 +107,50 @@ export async function decideSignInMethod(input: {
  * that is briefly unavailable must not lock everybody out of the deployment, so the failure is
  * logged where an operator will see it and the sign-in continues.
  */
+/**
+ * Hand a password-reset link to whatever the operator wired.
+ *
+ * WHY A WEBHOOK AND NOT SMTP. This deployment sends no mail anywhere else, so adding a mail service
+ * for one link would be a second credential to hold, a second way to leak an address, and a
+ * deliverability problem nobody signed up for. A URL is something an operator already has: a chat
+ * webhook, a ticketing endpoint, their own relay.
+ *
+ * THE LINK IS A BEARER CREDENTIAL for exactly as long as it is valid, so the warning when this fails
+ * says the person was not told, not that a notification bounced. Nothing here is logged: the URL
+ * contains the token.
+ */
+async function deliverResetLink(
+  webhook: string | undefined,
+  payload: { email: string; name: string | null; url: string },
+): Promise<void> {
+  if (!webhook) return;
+  try {
+    const response = await fetch(webhook, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "openbot.password-reset", ...payload }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) {
+      console.error(
+        JSON.stringify({
+          type: "password-reset-delivery-failed",
+          status: response.status,
+          note: "The reset link was generated but the operator's webhook refused it, so the person was not told.",
+        }),
+      );
+    }
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        type: "password-reset-delivery-failed",
+        reason: error instanceof Error ? error.message : String(error),
+        note: "The reset link was generated but could not be delivered, so the person was not told.",
+      }),
+    );
+  }
+}
+
 async function record(
   auditStore: AuditStore | undefined,
   event: AuditEventInput,
@@ -285,6 +360,7 @@ export function createAuth(
           ssoRequired: async () =>
             (await enterpriseStore.settings()).ssoRequired,
           initialAdminEmails: authConfig.initialAdminEmails,
+          credentials: Boolean(authConfig.credentials),
         });
         if (verdict === "allow") return;
         const provider = source.oauth?.providerId ?? source.method;
@@ -317,6 +393,66 @@ export function createAuth(
         };
       },
     },
+    /*
+     * EMAIL AND PASSWORD, the one way in that has no third party behind it.
+     *
+     * Off unless `OPENBOT_CREDENTIALS_SIGN_IN=true`. Everything about it is deliberately smaller than
+     * the providers above: no mail is sent (this deployment has no mail service), so an address is
+     * unverified and a reset link is handed to an operator's webhook rather than to a mailbox. What it
+     * is for is the deployment that has no directory to point at.
+     *
+     * `requireEmailVerification` stays off for the reason an unverified address is a fact rather than
+     * a choice here: turning it on would refuse every sign-up until somebody clicks a link that
+     * nothing can deliver.
+     *
+     * THE PASSWORD POLICY IS BETTER AUTH'S DEFAULT, which is a minimum length and its own hashing.
+     * Written out rather than left implicit so the next reader does not have to open their source to
+     * learn what is enforced.
+     */
+    ...(authConfig.credentials
+      ? {
+          emailAndPassword: {
+            enabled: true,
+            /*
+             * Open, unless an operator closed it. A deployment that asked for sign-up and then
+             * admitted nobody would be a login screen nobody can get past.
+             */
+            disableSignUp: authConfig.credentials.signUp === "closed",
+            /*
+             * Signing in straight after registering, because there is no verification mail to wait
+             * for. The alternative leaves a person staring at a form wondering what failed.
+             */
+            autoSignIn: true,
+            minPasswordLength: 12,
+            /*
+             * The reset link goes to whatever the operator wired. Absent, Better Auth's own route
+             * answers with an error naming the missing configuration, which is the honest answer for
+             * a deployment that cannot reset a password — better than accepting the request and
+             * silently doing nothing.
+             */
+            ...(authConfig.credentials.resetWebhook
+              ? {
+                  sendResetPassword: async ({
+                    user,
+                    url,
+                  }: {
+                    user: { email: string; name?: string | null };
+                    url: string;
+                  }) => {
+                    await deliverResetLink(
+                      authConfig.credentials?.resetWebhook,
+                      {
+                        email: user.email,
+                        name: user.name ?? null,
+                        url,
+                      },
+                    );
+                  },
+                }
+              : {}),
+          },
+        }
+      : {}),
     baseURL: authConfig.baseUrl,
     secret: authConfig.secret,
     trustedOrigins: [

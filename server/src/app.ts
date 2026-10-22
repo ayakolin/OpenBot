@@ -516,6 +516,15 @@ export function createApp(
        */
       authProviders: configuredAuthProviders(config.auth),
       /*
+       * Whether this deployment checks a password of its own.
+       *
+       * A boolean beside the provider ids rather than an entry among them: the three named providers
+       * are buttons that leave this site, and this is a form that does not. The sign-in screen needs
+       * to tell them apart to lay itself out, and it needs nothing else — the policy (sign-up open
+       * or closed) is the server's to enforce and is enforced on the route itself.
+       */
+      credentialsSignIn: Boolean(config.auth?.credentials),
+      /*
        * Whether any enterprise identity provider has been registered.
        *
        * A count, not a list. The sign-in screen only needs to know whether to offer the email box
