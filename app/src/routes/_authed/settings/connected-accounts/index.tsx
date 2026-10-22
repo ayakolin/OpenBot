@@ -43,6 +43,7 @@ import {
   pluginsPageQueryOptions,
 } from "@/lib/plugins/queries";
 import { clearTeamBotConsentsMutationOptions } from "@/lib/team-bots";
+import { t } from "@/lib/i18n";
 
 /**
  * The services a Bot reads as you.
@@ -247,8 +248,8 @@ function RouteComponent() {
   return (
     <PageShell
       className="max-w-4xl @container"
-      description="Connect your apps so your Bots can work with them."
-      title="Connected accounts"
+      description={t("Connect your apps so your Bots can work with them.")}
+      title={t("Connected accounts")}
     >
       {/*
        * For `?connected=` only the failure is worth saying. A success needs no sentence: the row it
@@ -257,7 +258,9 @@ function RouteComponent() {
        */}
       {outcome === "failed" ? (
         <p className="text-destructive text-sm" role="alert">
-          That account could not be connected. Nothing was saved — try again.
+          {t(
+            "That account could not be connected. Nothing was saved — try again.",
+          )}
         </p>
       ) : null}
       {notice ? (
@@ -287,36 +290,39 @@ function RouteComponent() {
       {plugins.isPending || connections.isPending ? null : plugins.error ||
         connections.error ? (
         <p className="mt-12 text-destructive text-sm" role="alert">
-          Your connected accounts could not be loaded, so nothing is listed here
-          rather than a list that may be wrong. Reload the page, and tell an
-          administrator if it persists.
+          {t(
+            "Your connected accounts could not be loaded, so nothing is listed here rather than a list that may be wrong. Reload the page, and tell an administrator if it persists.",
+          )}
         </p>
       ) : sectionsToShow.includes("empty") ? (
         <PageSection>
           <PageEmpty>
-            Nothing to connect yet. These appear once an administrator enables a
-            connector that reads as the person asking.
+            {t(
+              "Nothing to connect yet. These appear once an administrator enables a connector that reads as the person asking.",
+            )}
           </PageEmpty>
         </PageSection>
       ) : (
         <>
           <p className="mt-5 text-xs text-muted-foreground">
-            {connectedCount} connected · {accounts.length} available
+            {connectedCount} {t("connected ·")} {accounts.length}{" "}
+            {t("available")}
           </p>
           <InputGroup className="mt-3 h-9 border-transparent bg-muted/60 shadow-none dark:bg-muted/60">
             <InputGroupAddon>
               <IconSearch aria-hidden="true" className="size-4" />
             </InputGroupAddon>
             <InputGroupInput
-              aria-label="Search apps"
-              placeholder="Search apps"
+              aria-label={t("Search apps")}
+              placeholder={t("Search apps")}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
           </InputGroup>
           {matching.length === 0 ? (
             <p className="mt-8 text-sm text-muted-foreground" role="status">
-              No apps match “{search.trim()}”.
+              {t("No apps match “")}
+              {search.trim()}”.
             </p>
           ) : (
             sections
@@ -324,11 +330,11 @@ function RouteComponent() {
               .map((section) => (
                 <section
                   className="mt-8"
-                  key={section.title}
-                  aria-label={section.title}
+                  key={t(section.title)}
+                  aria-label={t(section.title)}
                 >
                   <h2 className="mb-3 px-2 text-xs font-medium text-muted-foreground">
-                    {section.title}
+                    {t(section.title)}
                   </h2>
                   <div className="grid grid-cols-1 gap-x-6 gap-y-2 @min-[36rem]:grid-cols-2">
                     {section.accounts.map((account) => (
@@ -363,11 +369,11 @@ function RouteComponent() {
                                 aria-hidden="true"
                                 className="size-3.5 text-emerald-600 dark:text-emerald-400"
                               />
-                              Connected
+                              {t("Connected")}
                             </span>
                           ) : (
                             <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
-                              Connect
+                              {t("Connect")}
                             </span>
                           )}
                         </ItemActions>
@@ -398,7 +404,7 @@ function RouteComponent() {
       !plugins.error &&
       !connections.error &&
       sectionsToShow.includes("shared") ? (
-        <PageSection title="Shared by your organisation">
+        <PageSection title={t("Shared by your organisation")}>
           <div className="grid grid-cols-1 gap-x-6 gap-y-2 @min-[36rem]:grid-cols-2">
             {shared.map((server) => (
               <Item
@@ -416,9 +422,13 @@ function RouteComponent() {
                   </ItemTitle>
                   <ItemDescription
                     className="line-clamp-1 break-all text-xs"
-                    title="Shared by your organisation. Bots act as the team account."
+                    title={t(
+                      "Shared by your organisation. Bots act as the team account.",
+                    )}
                   >
-                    Shared by your organisation. Bots act as the team account.
+                    {t(
+                      "Shared by your organisation. Bots act as the team account.",
+                    )}
                   </ItemDescription>
                 </ItemContent>
               </Item>
@@ -441,8 +451,10 @@ function TeamBotConsents() {
   const clear = useMutation(clearTeamBotConsentsMutationOptions());
   return (
     <PageSection
-      description="A Bot someone shared with you uses their connected apps, and yours only where you allowed it on the card it showed you."
-      title="Bots shared with you"
+      description={t(
+        "A Bot someone shared with you uses their connected apps, and yours only where you allowed it on the card it showed you.",
+      )}
+      title={t("Bots shared with you")}
     >
       {clear.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
@@ -452,11 +464,11 @@ function TeamBotConsents() {
       <PageRows>
         <Item size="sm">
           <ItemContent>
-            <ItemTitle>Your answers</ItemTitle>
+            <ItemTitle>{t("Your answers")}</ItemTitle>
             <ItemDescription>
               {clear.isSuccess
-                ? "Cleared. Each will ask again."
-                : "Forget them, so each asks again."}
+                ? t("Cleared. Each will ask again.")
+                : t("Forget them, so each asks again.")}
             </ItemDescription>
           </ItemContent>
           <ItemActions>
@@ -466,7 +478,7 @@ function TeamBotConsents() {
               size="sm"
               variant="outline"
             >
-              Clear
+              {t("Clear")}
             </Button>
           </ItemActions>
         </Item>

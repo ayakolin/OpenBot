@@ -42,6 +42,7 @@ import {
   type ResetPlan,
 } from "@/lib/bot-lifecycle/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /** Each count the notice lists, in the words the person reads, skipping the kinds with nothing. */
 function resetLines(plan: ResetPlan): string[] {
@@ -80,27 +81,32 @@ function ResetDialog({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Reset {agent.name}?</DialogTitle>
+          <DialogTitle>
+            {t("Reset")} {agent.name}?
+          </DialogTitle>
           <DialogDescription>
-            This deletes what {agent.name} has with you, and only with you.
-            Nobody else's conversations or data are touched. It cannot be
-            undone.
+            {t("This deletes what")} {agent.name}{" "}
+            {t(
+              "has with you, and only with you. Nobody else's conversations or data are touched. It cannot be undone.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4 overflow-y-auto">
           {plan.isPending ? null : plan.error ? (
             <p className="text-destructive text-sm" role="alert">
-              Could not count what a reset would delete.
+              {t("Could not count what a reset would delete.")}
             </p>
           ) : reset.isSuccess ? (
-            <p className="text-sm">Done. {agent.name} starts fresh with you.</p>
+            <p className="text-sm">
+              {t("Done.")} {agent.name} {t("starts fresh with you.")}
+            </p>
           ) : (
             <div className="grid gap-2 text-sm">
               {lines.length === 0 ? (
-                <p>There is nothing of yours to delete.</p>
+                <p>{t("There is nothing of yours to delete.")}</p>
               ) : (
                 <>
-                  <p>This will delete:</p>
+                  <p>{t("This will delete:")}</p>
                   <ul className="list-disc pl-5">
                     {lines.map((line) => (
                       <li key={line}>{line}</li>
@@ -110,13 +116,15 @@ function ResetDialog({
               )}
               {plan.data.sharedConversationsKept > 0 ? (
                 <p className="text-muted-foreground">
-                  {plan.data.sharedConversationsKept} conversation
+                  {plan.data.sharedConversationsKept} {t("conversation")}
                   {plan.data.sharedConversationsKept === 1 ? " is" : "s are"}{" "}
-                  shared with other people or Bots and will be kept.
+                  {t("shared with other people or Bots and will be kept.")}
                 </p>
               ) : null}
               <p className="text-muted-foreground">
-                Your own memories, the ones you told a Bot directly, are kept.
+                {t(
+                  "Your own memories, the ones you told a Bot directly, are kept.",
+                )}
               </p>
             </div>
           )}
@@ -141,7 +149,7 @@ function ResetDialog({
               size="sm"
               variant="destructive"
             >
-              {reset.isPending ? "Resetting…" : "Delete and reset"}
+              {reset.isPending ? t("Resetting…") : t("Delete and reset")}
             </Button>
           )}
         </DialogFooter>
@@ -178,7 +186,7 @@ export function ManageSection({
   const assigned = agent.assignedToMe === true;
 
   return (
-    <PageSection title="Manage">
+    <PageSection title={t("Manage")}>
       {error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
           {error.message}
@@ -190,7 +198,7 @@ export function ManageSection({
             <IconPin />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>Pinned</ItemTitle>
+            <ItemTitle>{t("Pinned")}</ItemTitle>
             <ItemDescription>
               {assigned
                 ? "Assigned to you by an administrator, so it stays at the top of your Bots list."
@@ -201,7 +209,7 @@ export function ManageSection({
           </ItemContent>
           <ItemActions>
             <Switch
-              aria-label="Pinned"
+              aria-label={t("Pinned")}
               checked={agent.pinned || assigned}
               disabled={assigned || setPinned.isPending}
               onCheckedChange={(pinned) =>
@@ -216,7 +224,7 @@ export function ManageSection({
             <IconEyeOff />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>Hidden</ItemTitle>
+            <ItemTitle>{t("Hidden")}</ItemTitle>
             <ItemDescription>
               {assigned
                 ? "Assigned to you by an administrator, so it cannot be hidden."
@@ -227,7 +235,7 @@ export function ManageSection({
           </ItemContent>
           <ItemActions>
             <Switch
-              aria-label="Hidden"
+              aria-label={t("Hidden")}
               checked={agent.hidden}
               disabled={assigned || setHidden.isPending}
               onCheckedChange={async (hidden) => {
@@ -254,9 +262,9 @@ export function ManageSection({
             <IconCopy />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>Duplicate</ItemTitle>
+            <ItemTitle>{t("Duplicate")}</ItemTitle>
             <ItemDescription>
-              A copy of your own, with no key and no conversations.
+              {t("A copy of your own, with no key and no conversations.")}
             </ItemDescription>
           </ItemContent>
         </Item>
@@ -269,10 +277,11 @@ export function ManageSection({
             <IconRefresh />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>Reset</ItemTitle>
+            <ItemTitle>{t("Reset")}</ItemTitle>
             <ItemDescription>
-              Delete your conversations with it, what it remembers for you, and
-              its scheduled work. You see what will go first.
+              {t(
+                "Delete your conversations with it, what it remembers for you, and its scheduled work. You see what will go first.",
+              )}
             </ItemDescription>
           </ItemContent>
           <ItemActions>
@@ -292,9 +301,9 @@ export function ManageSection({
                 <IconTrash />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Delete</ItemTitle>
+                <ItemTitle>{t("Delete")}</ItemTitle>
                 <ItemDescription>
-                  For everyone. This cannot be undone.
+                  {t("For everyone. This cannot be undone.")}
                 </ItemDescription>
               </ItemContent>
               <ItemActions>
@@ -308,8 +317,10 @@ export function ManageSection({
       <Dialog onOpenChange={setDeleteOpen} open={deleteOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete {agent.name}?</DialogTitle>
-            <DialogDescription>This cannot be undone.</DialogDescription>
+            <DialogTitle>
+              {t("Delete")} {agent.name}?
+            </DialogTitle>
+            <DialogDescription>{t("This cannot be undone.")}</DialogDescription>
           </DialogHeader>
           {remove.error ? (
             <DialogBody className="mt-4">
@@ -324,7 +335,7 @@ export function ManageSection({
               size="sm"
               variant="outline"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               disabled={remove.isPending}

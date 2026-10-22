@@ -5,6 +5,7 @@ import {
   issueCallbackTokenMutationOptions,
   revokeCallbackTokenMutationOptions,
 } from "@/lib/agents/mutations";
+import { t } from "@/lib/i18n";
 
 /**
  * The credential this coworker presents when it calls a tool back.
@@ -37,19 +38,23 @@ export function CallbackTokenPanel({
   return (
     <section className="mt-6 grid gap-2">
       <h2 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-        Calling tools back
+        {t("Calling tools back")}
       </h2>
 
       <p className="text-muted-foreground text-sm">
         {hasToken
-          ? "This coworker holds a credential, so it can use the tools it has been granted. Rotating replaces it, and the old one stops working straight away."
-          : "This coworker has no credential, so it can hold a conversation but cannot use any tool it has been granted. Generate one and put it in that agent's configuration."}
+          ? t(
+              "This coworker holds a credential, so it can use the tools it has been granted. Rotating replaces it, and the old one stops working straight away.",
+            )
+          : t(
+              "This coworker has no credential, so it can hold a conversation but cannot use any tool it has been granted. Generate one and put it in that agent's configuration.",
+            )}
       </p>
 
       {token ? (
         <div className="grid gap-2 rounded-lg border border-border bg-card p-3">
           <p className="font-medium text-sm">
-            Copy this now. It will not be shown again.
+            {t("Copy this now. It will not be shown again.")}
           </p>
           {/*
            * Selectable and wrapped rather than a copy button alone: somebody pasting this into a
@@ -59,11 +64,12 @@ export function CallbackTokenPanel({
             {token}
           </code>
           <p className="text-muted-foreground text-xs">
-            The deployment keeps only a hash of it, so nothing here can show it
-            to you a second time.
+            {t(
+              "The deployment keeps only a hash of it, so nothing here can show it to you a second time.",
+            )}
           </p>
           <Button onClick={() => setToken(null)} size="sm" variant="outline">
-            Done
+            {t("Done")}
           </Button>
         </div>
       ) : (

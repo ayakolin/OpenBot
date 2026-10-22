@@ -79,6 +79,7 @@ import { TeamBotConsentCard } from "./team-bot-consent";
 import { ToolRenderBoundary } from "./tool-boundary";
 import { ToolLine } from "./tool-line";
 import { VoiceChatCard } from "./voice-chat-card";
+import { t } from "@/lib/i18n";
 
 type ChatTranscriptProps = {
   busy?: boolean;
@@ -149,7 +150,7 @@ const RESTORING_ANSWER_LINES = [
 function RestoringTranscript() {
   return (
     // One announcement, with every bar hidden from it: nine empty shapes read aloud is worse.
-    <div aria-label="Loading this conversation" role="status">
+    <div aria-label={t("Loading this conversation")} role="status">
       <div aria-hidden="true" className="flex justify-end pb-7">
         <Skeleton className="h-10 w-64 rounded-xl bg-muted/40 motion-reduce:animate-none" />
       </div>
@@ -184,7 +185,7 @@ function Thinking() {
       // is doing. The text says it, so a screen reader is told the same thing the shimmer implies.
       role="status"
     >
-      Thinking
+      {t("Thinking")}
     </p>
   );
 }
@@ -346,7 +347,7 @@ function Queued({
            * `status` rather than `alert`, matching the thinking line: a person who has just chosen
            * to queue something is not being interrupted by the news that it is queued.
            */}
-          <span role="status">Queued</span>
+          <span role="status">{t("Queued")}</span>
           {onRemove ? (
             <button
               /*
@@ -364,7 +365,7 @@ function Queued({
               onClick={onRemove}
               type="button"
             >
-              Remove
+              {t("Remove")}
             </button>
           ) : null}
         </MessageFooter>
@@ -553,7 +554,7 @@ function RoutineFiring({ instruction }: { instruction: string }) {
     <div className="flex min-w-0 items-baseline gap-2 text-muted-foreground text-sm">
       <IconClock aria-hidden className="size-4 shrink-0 translate-y-0.5" />
       <span className="min-w-0">
-        <span className="font-medium">Routine ran.</span>{" "}
+        <span className="font-medium">{t("Routine ran.")}</span>{" "}
         <span className="whitespace-pre-wrap">{instruction}</span>
       </span>
     </div>
@@ -588,13 +589,13 @@ function ResponsibilityFiring({
       <IconClock aria-hidden className="size-4 shrink-0 translate-y-0.5" />
       <div className="min-w-0">
         <p>
-          <span className="font-medium">Responsibility ran.</span> Trigger:{" "}
-          {describeTrigger(turn.trigger)}
+          <span className="font-medium">{t("Responsibility ran.")}</span>{" "}
+          {t("Trigger:")} {describeTrigger(turn.trigger)}
         </p>
         <p className="whitespace-pre-wrap">{turn.instruction}</p>
         <details className="group mt-1">
           <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-sm text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
-            Details
+            {t("Details")}
             <IconChevronDown
               aria-hidden
               className="size-3 transition-transform group-open:rotate-180 motion-reduce:transition-none"
@@ -679,7 +680,7 @@ const TranscriptMessage = memo(function TranscriptMessage({
                 <span className="whitespace-pre-wrap">
                   {origin && (
                     <span className="mr-1.5 inline-flex items-center rounded bg-foreground/10 px-1.5 py-0.5 align-middle text-foreground/70 text-xs">
-                      via {origin.via}
+                      {t("via")} {origin.via}
                     </span>
                   )}
                   {invoked ? (
@@ -1047,7 +1048,7 @@ function SentAttachmentTile({ attachment }: { attachment: SentAttachment }) {
           <p className="truncate font-medium text-sm" title={filename}>
             {filename ?? "Untitled file"}
           </p>
-          <p className="text-muted-foreground text-xs">Attachment</p>
+          <p className="text-muted-foreground text-xs">{t("Attachment")}</p>
         </div>
       </div>
     );
@@ -1217,7 +1218,7 @@ function AttachmentLightbox({
         <DialogClose
           render={
             <button
-              aria-label="Close"
+              aria-label={t("Close")}
               className="absolute top-4 right-4 grid size-9 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
               type="button"
             />

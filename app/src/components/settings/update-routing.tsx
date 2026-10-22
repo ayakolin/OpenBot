@@ -20,6 +20,7 @@ import {
   updateRoutingQueryOptions,
 } from "@/lib/bot-lifecycle/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 const KIND_LABEL: Record<UpdateKind, { title: string; description: string }> = {
   progress: {
@@ -62,12 +63,14 @@ export function UpdateRoutingSection() {
     reach.data ? reach.data.available[transport] : true;
   return (
     <PageSection
-      description="Where each kind of update goes when you are not looking. The web always shows everything."
-      title="Where updates go"
+      description={t(
+        "Where each kind of update goes when you are not looking. The web always shows everything.",
+      )}
+      title={t("Where updates go")}
     >
       {routing.isPending || reach.isPending ? null : routing.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
-          Could not load where your updates go.
+          {t("Could not load where your updates go.")}
         </p>
       ) : (
         <PageRows>
@@ -119,7 +122,7 @@ export function UpdateRoutingSection() {
                           {transport.label}
                           {configured(transport.id) ? null : (
                             <span className="text-muted-foreground text-xs">
-                              Not set up
+                              {t("Not set up")}
                             </span>
                           )}
                         </span>

@@ -23,6 +23,7 @@ import { researchRoleOfTool } from "@openbot/shared/research";
 import { browserStepDetails, isBrowserStep } from "./browser-activity";
 import type { VisibleChatItem } from "./chat-messages";
 import { ToolLine } from "./tool-line";
+import { t } from "@/lib/i18n";
 
 type ToolItem = Extract<VisibleChatItem, { kind: "tool" }>;
 
@@ -372,15 +373,15 @@ function StepStatus({ step, active }: { step: StepDetails; active: boolean }) {
   if (step.pending)
     return (
       <span className="shrink-0 text-muted-foreground">
-        {active ? "In progress" : "Not completed"}
+        {active ? t("In progress") : t("Not completed")}
       </span>
     );
   if (step.refused)
-    return <span className="shrink-0 text-destructive">Blocked</span>;
+    return <span className="shrink-0 text-destructive">{t("Blocked")}</span>;
   if (step.failed)
     return (
       <span className="shrink-0 text-amber-600 dark:text-amber-500">
-        Didn't work
+        {t("Didn't work")}
       </span>
     );
   return null;

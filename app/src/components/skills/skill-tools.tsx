@@ -4,6 +4,7 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
 import { RESEARCH_ROLES } from "@openbot/shared/research";
 import { undeclaredElsewhere } from "@/lib/skills/form";
+import { t } from "@/lib/i18n";
 
 /**
  * Which tools this skill says it needs.
@@ -78,16 +79,17 @@ export function SkillTools({
 
   return (
     <Field>
-      <FieldLabel>Tools it needs</FieldLabel>
+      <FieldLabel>{t("Tools it needs")}</FieldLabel>
 
       {plugins.isPending ? null : plugins.error ? (
         <p className="text-destructive text-xs" role="alert">
-          Could not load the tools this deployment has.
+          {t("Could not load the tools this deployment has.")}
         </p>
       ) : servers.length === 0 ? (
         <p className="text-muted-foreground text-xs">
-          No connected server offers a tool yet. A skill can still be written —
-          most are instructions rather than tool use.
+          {t(
+            "No connected server offers a tool yet. A skill can still be written — most are instructions rather than tool use.",
+          )}
         </p>
       ) : (
         <div className="flex flex-col gap-3">
@@ -118,7 +120,7 @@ export function SkillTools({
                        */}
                       {tool.effect === "write" ? (
                         <span
-                          aria-label="changes something"
+                          aria-label={t("changes something")}
                           className="ml-1 opacity-60"
                           role="img"
                         >
@@ -136,7 +138,9 @@ export function SkillTools({
 
       {plugins.data ? (
         <div className="flex flex-col gap-1.5">
-          <p className="text-muted-foreground text-xs">Public-web research</p>
+          <p className="text-muted-foreground text-xs">
+            {t("Public-web research")}
+          </p>
           <div className="flex flex-wrap gap-2">
             {RESEARCH_ROLES.map((role) => (
               <Button
@@ -156,7 +160,9 @@ export function SkillTools({
 
       {elsewhere.length > 0 ? (
         <div className="flex flex-col gap-1.5">
-          <p className="text-muted-foreground text-xs">Not connected here</p>
+          <p className="text-muted-foreground text-xs">
+            {t("Not connected here")}
+          </p>
           <div className="flex flex-wrap gap-2">
             {elsewhere.map((ref) => (
               <Button
@@ -176,18 +182,17 @@ export function SkillTools({
             ))}
           </div>
           <p className="text-muted-foreground text-xs">
-            This skill names these, and no server connected here offers them —
-            because the connector has not been added, or was removed. They cost
-            nothing and load nothing until it exists. Click one to stop naming
-            it.
+            {t(
+              "This skill names these, and no server connected here offers them — because the connector has not been added, or was removed. They cost nothing and load nothing until it exists. Click one to stop naming it.",
+            )}
           </p>
         </div>
       ) : null}
 
       <p className="text-muted-foreground text-xs">
-        Picking this skill is what loads these tools for a turn. It does not
-        grant them — a Bot still only calls what it was granted, so naming a
-        tool here gives nobody access to it.
+        {t(
+          "Picking this skill is what loads these tools for a turn. It does not grant them — a Bot still only calls what it was granted, so naming a tool here gives nobody access to it.",
+        )}
       </p>
     </Field>
   );

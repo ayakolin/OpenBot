@@ -2,6 +2,7 @@ import {
   describeApproval,
   type SharedUseApproval,
 } from "@/lib/plugins/shared-use";
+import { t } from "@/lib/i18n";
 
 export function sharedSectionSentence(
   effect: "read" | "write",
@@ -42,7 +43,7 @@ export function SharedApprovalFields({
   return (
     <fieldset className="space-y-2 text-sm">
       <legend className="font-medium">
-        Who may use the shared account through this Bot
+        {t("Who may use the shared account through this Bot")}
       </legend>
       {options.map((option) => (
         <label className="flex items-center gap-2" key={option.audience}>
@@ -69,7 +70,7 @@ export function SharedApprovalFields({
           }
           type="checkbox"
         />
-        Outside input (email, Slack, webhooks) may use it
+        {t("Outside input (email, Slack, webhooks) may use it")}
       </label>
     </fieldset>
   );

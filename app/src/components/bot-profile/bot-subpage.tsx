@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import { PageShell } from "@/components/layout/page-shell";
 import { type AgentProfile, agentQueryOptions } from "@/lib/agents/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * The frame of every `/bots/$agentId/<area>` page: back to the Bot by name, then the area.
@@ -32,7 +33,7 @@ export function BotSubpage({
     >
       {agent.isPending ? null : agent.error ? (
         <p className="mt-6 text-destructive text-sm" role="alert">
-          This Bot is not one you can reach.
+          {t("This Bot is not one you can reach.")}
         </p>
       ) : (
         children(agent.data)

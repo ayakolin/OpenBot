@@ -31,6 +31,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/admin/")({
   component: RouteComponent,
@@ -165,14 +166,21 @@ const SECTIONS: {
 function RouteComponent() {
   return (
     <PageShell
-      description="Settings that apply to everybody in this deployment. Anything here affects every person and every Bot, which is what separates it from your own preferences."
-      title="Admin"
+      description={t(
+        "Settings that apply to everybody in this deployment. Anything here affects every person and every Bot, which is what separates it from your own preferences.",
+      )}
+      title={t("Admin")}
     >
+      {/*
+       * Translated here rather than in the table above, because that table is built when this module
+       * is first imported — before anybody's language is known — and a `t()` there would freeze
+       * whichever language happened to be current into it for the rest of the tab.
+       */}
       {SECTIONS.map((section) => (
         <PageSection
-          description={section.description || undefined}
+          description={section.description ? t(section.description) : undefined}
           key={section.title}
-          title={section.title}
+          title={t(section.title)}
         >
           <PageRows>
             {section.items.map((item, index) => (
@@ -189,8 +197,8 @@ function RouteComponent() {
                     <item.icon className="size-4 text-muted-foreground" />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>{item.title}</ItemTitle>
-                    <ItemDescription>{item.description}</ItemDescription>
+                    <ItemTitle>{t(item.title)}</ItemTitle>
+                    <ItemDescription>{t(item.description)}</ItemDescription>
                   </ItemContent>
                   <IconChevronRight className="size-4 shrink-0 text-muted-foreground" />
                 </Item>

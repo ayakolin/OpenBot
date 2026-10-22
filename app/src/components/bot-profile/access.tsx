@@ -28,6 +28,7 @@ import {
 } from "@/lib/plugins/queries";
 import { readToolName } from "@/lib/plugins/tool-name";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /** "google-drive" as "Google Drive": the connector key, said the way a person would. */
 function connectorName(key: string): string {
@@ -89,8 +90,10 @@ function YourSkills({ agentId }: { agentId: string }) {
   );
   return (
     <PageSection
-      description="A skill this Bot carries is offered in its composer as /name."
-      title="Your skills"
+      description={t(
+        "A skill this Bot carries is offered in its composer as /name.",
+      )}
+      title={t("Your skills")}
     >
       {grant.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
@@ -99,13 +102,13 @@ function YourSkills({ agentId }: { agentId: string }) {
       ) : null}
       {page.isPending ? null : page.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
-          Could not load your skills.
+          {t("Could not load your skills.")}
         </p>
       ) : skills.length === 0 ? (
         <PageEmpty>
-          You have not written a skill yet.{" "}
+          {t("You have not written a skill yet.")}{" "}
           <Link className="underline underline-offset-4" to="/skills">
-            Write one
+            {t("Write one")}
           </Link>
           .
         </PageEmpty>
@@ -120,7 +123,7 @@ function YourSkills({ agentId }: { agentId: string }) {
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>/{skill.slug}</ItemTitle>
-                  <ItemDescription>{skill.summary}</ItemDescription>
+                  <ItemDescription>{t(skill.summary)}</ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <Switch
@@ -157,7 +160,7 @@ function Granted({ agentId }: { agentId: string }) {
   if (!plugins.data) {
     return (
       <p className="mt-6 text-destructive text-sm" role="alert">
-        What this Bot may reach could not be loaded.
+        {t("What this Bot may reach could not be loaded.")}
       </p>
     );
   }
@@ -165,13 +168,16 @@ function Granted({ agentId }: { agentId: string }) {
   const skills = plugins.data.skills;
   return (
     <PageSection
-      description="What this Bot may reach when it works. Anything not listed is refused when called."
-      title="Granted"
+      description={t(
+        "What this Bot may reach when it works. Anything not listed is refused when called.",
+      )}
+      title={t("Granted")}
     >
       {connectors.length === 0 && skills.length === 0 ? (
         <PageEmpty>
-          Nothing granted yet. An administrator grants apps from the Plugins
-          screens; until then this Bot can converse, and nothing more.
+          {t(
+            "Nothing granted yet. An administrator grants apps from the Plugins screens; until then this Bot can converse, and nothing more.",
+          )}
         </PageEmpty>
       ) : (
         <PageRows>
@@ -218,11 +224,13 @@ function Granted({ agentId }: { agentId: string }) {
                   <IconBox />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>{skill.title}</ItemTitle>
-                  <ItemDescription>{skill.summary}</ItemDescription>
+                  <ItemTitle>{t(skill.title)}</ItemTitle>
+                  <ItemDescription>{t(skill.summary)}</ItemDescription>
                 </ItemContent>
                 <ItemActions>
-                  <span className="text-muted-foreground text-sm">Skill</span>
+                  <span className="text-muted-foreground text-sm">
+                    {t("Skill")}
+                  </span>
                 </ItemActions>
               </Item>
             </Fragment>

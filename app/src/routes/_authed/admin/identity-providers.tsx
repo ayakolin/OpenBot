@@ -37,6 +37,7 @@ import {
 } from "@/lib/identity-providers/mutations";
 import { identityProviderListQueryOptions } from "@/lib/identity-providers/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/admin/identity-providers")({
   component: IdentityProvidersPage,
@@ -102,15 +103,19 @@ function IdentityProvidersPage() {
     <PageShell
       action={
         <Button onClick={() => setOpen(true)} size="lg">
-          Add a provider
+          {t("Add a provider")}
         </Button>
       }
-      description="A company's own identity provider, by SAML or OpenID Connect. Somebody types their email address and the domain decides which one they are sent to."
-      title="Identity providers"
+      description={t(
+        "A company's own identity provider, by SAML or OpenID Connect. Somebody types their email address and the domain decides which one they are sent to.",
+      )}
+      title={t("Identity providers")}
     >
       <PageSection
-        description="Google, Microsoft and Okta are configured in the environment instead and do not appear here."
-        title="Registered"
+        description={t(
+          "Google, Microsoft and Okta are configured in the environment instead and do not appear here.",
+        )}
+        title={t("Registered")}
       >
         {failure ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
@@ -119,12 +124,13 @@ function IdentityProvidersPage() {
         ) : null}
         {providers.isPending ? null : providers.error ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
-            Could not load identity providers.
+            {t("Could not load identity providers.")}
           </p>
         ) : providers.data?.length === 0 ? (
           <PageEmpty>
-            No identity providers are registered. Add one with the metadata your
-            identity team supplied.
+            {t(
+              "No identity providers are registered. Add one with the metadata your identity team supplied.",
+            )}
           </PageEmpty>
         ) : (
           <PageRows>
@@ -149,7 +155,7 @@ function IdentityProvidersPage() {
                       variant="destructive"
                     >
                       <IconTrash />
-                      Remove
+                      {t("Remove")}
                     </Button>
                   </ItemActions>
                 </Item>
@@ -163,7 +169,7 @@ function IdentityProvidersPage() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add an identity provider</DialogTitle>
+            <DialogTitle>{t("Add an identity provider")}</DialogTitle>
           </DialogHeader>
           <DialogBody className="mt-4 space-y-4 overflow-y-auto">
             {/* The submit button is in the footer and reaches this form by id, so DialogBody stays a
@@ -186,44 +192,45 @@ function IdentityProvidersPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="providerId">Name</Label>
+                <Label htmlFor="providerId">{t("Name")}</Label>
                 <Input
                   id="providerId"
                   onChange={(event) =>
                     setDraft({ ...draft, providerId: event.target.value })
                   }
-                  placeholder="acme-okta"
+                  placeholder={t("acme-okta")}
                   required
                   value={draft.providerId}
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="domain">Email domain</Label>
+                <Label htmlFor="domain">{t("Email domain")}</Label>
                 <Input
                   id="domain"
                   onChange={(event) =>
                     setDraft({ ...draft, domain: event.target.value })
                   }
-                  placeholder="acme.com"
+                  placeholder={t("acme.com")}
                   required
                   value={draft.domain}
                 />
                 {/* Said out loud because it is the field that decides who this applies to. */}
                 <p className="text-muted-foreground text-xs">
-                  Anybody signing in with an address at this domain is sent
-                  here. Separate several with commas.
+                  {t(
+                    "Anybody signing in with an address at this domain is sent here. Separate several with commas.",
+                  )}
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="issuer">Issuer</Label>
+                <Label htmlFor="issuer">{t("Issuer")}</Label>
                 <Input
                   id="issuer"
                   onChange={(event) =>
                     setDraft({ ...draft, issuer: event.target.value })
                   }
-                  placeholder="https://acme.okta.com"
+                  placeholder={t("https://acme.okta.com")}
                   required
                   type="url"
                   value={draft.issuer}
@@ -233,41 +240,42 @@ function IdentityProvidersPage() {
               {draft.protocol === "saml" ? (
                 <>
                   <div className="space-y-1.5">
-                    <Label htmlFor="entryPoint">Sign-on URL</Label>
+                    <Label htmlFor="entryPoint">{t("Sign-on URL")}</Label>
                     <Input
                       id="entryPoint"
                       onChange={(event) =>
                         setDraft({ ...draft, entryPoint: event.target.value })
                       }
-                      placeholder="https://acme.okta.com/app/.../sso/saml"
+                      placeholder={t("https://acme.okta.com/app/.../sso/saml")}
                       required
                       type="url"
                       value={draft.entryPoint}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="metadata">Metadata XML</Label>
+                    <Label htmlFor="metadata">{t("Metadata XML")}</Label>
                     <Textarea
                       className="font-mono text-xs"
                       id="metadata"
                       onChange={(event) =>
                         setDraft({ ...draft, metadata: event.target.value })
                       }
-                      placeholder="<EntityDescriptor …>"
+                      placeholder={t("<EntityDescriptor …>")}
                       required
                       rows={6}
                       value={draft.metadata}
                     />
                     <p className="text-muted-foreground text-xs">
-                      The document your identity team supplied. It carries the
-                      signing certificate.
+                      {t(
+                        "The document your identity team supplied. It carries the signing certificate.",
+                      )}
                     </p>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="space-y-1.5">
-                    <Label htmlFor="clientId">Client ID</Label>
+                    <Label htmlFor="clientId">{t("Client ID")}</Label>
                     <Input
                       id="clientId"
                       onChange={(event) =>
@@ -278,7 +286,7 @@ function IdentityProvidersPage() {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="clientSecret">Client secret</Label>
+                    <Label htmlFor="clientSecret">{t("Client secret")}</Label>
                     <Input
                       id="clientSecret"
                       onChange={(event) =>
@@ -310,7 +318,7 @@ function IdentityProvidersPage() {
               type="button"
               variant="outline"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               disabled={register.isPending}

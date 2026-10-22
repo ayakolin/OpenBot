@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { removeSkillMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * Personal `/` skills. They are instructions, not capabilities, and can only be granted to Bots the
@@ -109,11 +110,13 @@ function SkillsPage() {
       <PageShell
         description={
           <>
-            A skill is a named instruction you invoke with <code>/</code> and a
-            Bot follows. Yours are yours alone, and go on the Bots you own.
+            {t("A skill is a named instruction you invoke with")} <code>/</code>{" "}
+            {t(
+              "and a Bot follows. Yours are yours alone, and go on the Bots you own.",
+            )}
           </>
         }
-        title="Agent Skills"
+        title={t("Agent Skills")}
       >
         {error ? (
           <p className="text-sm text-destructive" role="alert">
@@ -131,10 +134,10 @@ function SkillsPage() {
               variant="ghost"
             >
               <IconPlus />
-              New skill
+              {t("New skill")}
             </Button>
           }
-          title="Your skills"
+          title={t("Your skills")}
         >
           {/*
            * Nothing while the two queries are still in flight. The alternative is the empty state
@@ -147,13 +150,13 @@ function SkillsPage() {
            */}
           {loading ? null : !data ? (
             <p className="mt-4 text-destructive text-sm" role="alert">
-              Your skills could not be loaded.
+              {t("Your skills could not be loaded.")}
             </p>
           ) : mine.length === 0 ? (
             <Empty className="mt-4 h-[180px] border border-dashed">
               <EmptyHeader>
                 <EmptyTitle className="text-muted-foreground">
-                  You don't have any skills yet.
+                  {t("You don't have any skills yet.")}
                 </EmptyTitle>
               </EmptyHeader>
             </Empty>
@@ -163,7 +166,7 @@ function SkillsPage() {
                 <StaggerItem index={index} key={skill.id}>
                   <Item size="sm">
                     <ItemContent>
-                      <ItemTitle>{skill.title}</ItemTitle>
+                      <ItemTitle>{t(skill.title)}</ItemTitle>
                       {/*
                        * THE COMMAND FIRST, because it is the only part a person has to know. The title
                        * says what the skill is for; `/slug` is what they actually type, and a page that
@@ -176,7 +179,7 @@ function SkillsPage() {
                         <code className="font-mono text-foreground/80 text-xs">
                           /{skill.slug}
                         </code>
-                        {skill.summary ? ` · ${skill.summary}` : null}
+                        {skill.summary ? ` · ${t(skill.summary)}` : null}
                       </ItemDescription>
                     </ItemContent>
                     <ItemActions>
@@ -195,7 +198,7 @@ function SkillsPage() {
                                 navigate({ search: { edit: skill.slug } })
                               }
                             >
-                              Edit
+                              {t("Edit")}
                             </DropdownMenuItem>
                             {/*
                              * Deleting is immediate and there is no undo. It is behind a menu rather
@@ -210,7 +213,8 @@ function SkillsPage() {
                               }}
                               variant="destructive"
                             >
-                              Delete /{skill.slug}
+                              {t("Delete /")}
+                              {skill.slug}
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
@@ -236,15 +240,17 @@ function SkillsPage() {
          */}
         {deployment.length > 0 ? (
           <PageSection
-            description="Written for everyone by an administrator. Which Bots carry them is decided in Admin."
-            title="Workspace skills"
+            description={t(
+              "Written for everyone by an administrator. Which Bots carry them is decided in Admin.",
+            )}
+            title={t("Workspace skills")}
           >
             <PageRows>
               {deployment.map((skill, index) => (
                 <StaggerItem index={index} key={skill.id}>
                   <Item size="sm">
                     <ItemContent>
-                      <ItemTitle>{skill.title}</ItemTitle>
+                      <ItemTitle>{t(skill.title)}</ItemTitle>
                       {/*
                        * THE COMMAND FIRST, because it is the only part a person has to know. The title
                        * says what the skill is for; `/slug` is what they actually type, and a page that
@@ -257,7 +263,7 @@ function SkillsPage() {
                         <code className="font-mono text-foreground/80">
                           /{skill.slug}
                         </code>
-                        {skill.summary ? ` · ${skill.summary}` : null}
+                        {skill.summary ? ` · ${t(skill.summary)}` : null}
                       </ItemDescription>
                     </ItemContent>
                   </Item>

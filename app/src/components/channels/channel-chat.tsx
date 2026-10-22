@@ -53,6 +53,7 @@ import {
 } from "@/lib/voice/archive";
 import { queryClient } from "@/query-client";
 import { newId } from "../../lib/new-id";
+import { t } from "@/lib/i18n";
 
 /**
  * How long a stalled thread join is worth waiting for before it is ended.
@@ -968,7 +969,7 @@ export function ChannelChat({
                 />
                 {voiceArchive.error && (
                   <p className="pb-2 text-sm text-destructive" role="alert">
-                    Voice chats couldn’t be loaded. Refresh to try again.
+                    {t("Voice chats couldn’t be loaded. Refresh to try again.")}
                   </p>
                 )}
                 {voiceContextNotice && (
@@ -992,8 +993,9 @@ export function ChannelChat({
                     className="pb-2 text-sm text-muted-foreground"
                     role="status"
                   >
-                    This coworker has been deleted. The conversation stays
-                    readable, but it can no longer reply.
+                    {t(
+                      "This coworker has been deleted. The conversation stays readable, but it can no longer reply.",
+                    )}
                   </p>
                 )}
               </>

@@ -21,6 +21,7 @@ import {
 } from "@/lib/channels/route";
 import { useStartChannel } from "@/lib/channels/start";
 import { appConfig } from "@/lib/generated/application-config";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/_app/")({
   component: RouteComponent,
@@ -51,7 +52,7 @@ function RouteComponent() {
             {appConfig.brand.productName}
           </h2>
           <h1 className="text-2xl font-bold tracking-tight mt-1.5 text-center">
-            Start a new channel
+            {t("Start a new channel")}
           </h1>
         </div>
         <div className="mt-8 w-full flex flex-col items-center">
@@ -97,8 +98,8 @@ function RouteComponent() {
             // Said out loud: a message that silently reaches somebody you did not choose is the
             // kind of surprise that costs trust the first time it happens.
             <p className="mt-2 w-full max-w-2xl text-xs text-muted-foreground text-center">
-              Sent to the coworker it is for. Type <code>@</code> to choose one
-              yourself.
+              {t("Sent to the coworker it is for. Type")} <code>@</code>{" "}
+              {t("to choose one yourself.")}
             </p>
           ) : null}
           {error ? (
@@ -120,8 +121,9 @@ function RouteComponent() {
               className="mt-2 w-full max-w-2xl text-sm text-destructive"
               role="alert"
             >
-              Your coworkers couldn't be loaded, so there's no one to send this
-              to yet.
+              {t(
+                "Your coworkers couldn't be loaded, so there's no one to send this to yet.",
+              )}
             </p>
           ) : null}
         </div>
@@ -147,7 +149,7 @@ function RouteComponent() {
            */}
           {loading ? (
             <>
-              <h2 className="font-bold text-lg">Explore agents</h2>
+              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
               <Skeleton className="mt-4 h-[180px]" />
             </>
           ) : explore?.length ? (
@@ -160,7 +162,7 @@ function RouteComponent() {
             >
               <div className="flex flex-row items-center justify-between gap-4">
                 <h2 id="explore-agents-heading" className="font-bold text-lg">
-                  Explore agents
+                  {t("Explore agents")}
                 </h2>
                 {/*
                  * `static` undoes the primitive's own absolute placement, which parks these either
@@ -194,11 +196,11 @@ function RouteComponent() {
             // card there would say the opposite of what a populated composer beside it (still
             // working off that same, successfully loaded `agents`) proves.
             <>
-              <h2 className="font-bold text-lg">Explore agents</h2>
+              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
               <Empty className="mt-4 h-[180px] border border-dashed border-destructive">
                 <EmptyHeader>
                   <EmptyTitle className="text-destructive">
-                    Agents shared with you couldn't be loaded.
+                    {t("Agents shared with you couldn't be loaded.")}
                   </EmptyTitle>
                 </EmptyHeader>
               </Empty>
@@ -208,11 +210,11 @@ function RouteComponent() {
             // when it failed but `agents` is defined — a loaded, empty slice either way. Same
             // plain copy for both: an empty roster is a fact, not an error.
             <>
-              <h2 className="font-bold text-lg">Explore agents</h2>
+              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
               <Empty className="mt-4 h-[180px] border border-dashed">
                 <EmptyHeader>
                   <EmptyTitle className="text-muted-foreground">
-                    Nobody has shared an agent with you yet.
+                    {t("Nobody has shared an agent with you yet.")}
                   </EmptyTitle>
                 </EmptyHeader>
               </Empty>

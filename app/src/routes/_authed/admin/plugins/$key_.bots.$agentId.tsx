@@ -47,6 +47,7 @@ import {
   type SharedUseApproval,
   sharedUseKeys,
 } from "@/lib/plugins/shared-use";
+import { t } from "@/lib/i18n";
 
 /**
  * One Bot and one app: every action the app offers, and which of them this Bot holds.
@@ -189,7 +190,7 @@ function RouteComponent() {
 
   /* Nothing rather than a placeholder, so no sentence asserts anything while a fetch is open. */
   if (plugins.isPending || agents.isPending || hiddenAgents.isPending) {
-    return <PageShell title="Bot">{null}</PageShell>;
+    return <PageShell title={t("Bot")}>{null}</PageShell>;
   }
 
   /*
@@ -204,10 +205,10 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={{ label: "Plugins", linkProps: { to: "/admin/plugins" } }}
-        description="This deployment has not enabled an app by that name."
+        description={t("This deployment has not enabled an app by that name.")}
         title={appTitle}
       >
-        <PageEmpty>There is nothing here to grant.</PageEmpty>
+        <PageEmpty>{t("There is nothing here to grant.")}</PageEmpty>
       </PageShell>
     );
   }
@@ -223,10 +224,10 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={{ label: "Plugins", linkProps: { to: "/admin/plugins" } }}
-        title="Plugins"
+        title={t("Plugins")}
       >
         <p className="mt-12 text-destructive text-sm" role="alert">
-          Plugins could not be loaded.
+          {t("Plugins could not be loaded.")}
         </p>
       </PageShell>
     );
@@ -248,11 +249,13 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={back}
-        description="This deployment has no Bot by that name, so there is nobody to grant these actions to."
-        title="Not a Bot"
+        description={t(
+          "This deployment has no Bot by that name, so there is nobody to grant these actions to.",
+        )}
+        title={t("Not a Bot")}
       >
         <PageEmpty>
-          It may have been deleted since this page was opened.
+          {t("It may have been deleted since this page was opened.")}
         </PageEmpty>
       </PageShell>
     );
@@ -350,7 +353,7 @@ function RouteComponent() {
                */}
               {tool.destructive ? (
                 <span className="text-destructive text-xs">
-                  destroys things
+                  {t("destroys things")}
                 </span>
               ) : null}
               {/*
@@ -428,7 +431,7 @@ function RouteComponent() {
             aria-label={`Search ${appTitle} actions`}
             className="mt-6"
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by action name"
+            placeholder={t("Search by action name")}
             value={search}
           />
 
@@ -467,7 +470,7 @@ function RouteComponent() {
               sharedSectionSentence("read", shared) ??
               "These only read. A boundary written about writes does not apply to them."
             }
-            title="Reads"
+            title={t("Reads")}
           >
             {reads.length === 0 ? (
               <PageEmpty>
@@ -485,7 +488,7 @@ function RouteComponent() {
               sharedSectionSentence("write", shared) ??
               "These change something at the vendor. A boundary written about writes applies to them, and each call is refused when one matches."
             }
-            title="Changes things"
+            title={t("Changes things")}
           >
             {writes.length === 0 ? (
               <PageEmpty>
@@ -512,7 +515,8 @@ function RouteComponent() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  Let {botName} use the shared {appTitle} account?
+                  {t("Let")} {botName} {t("use the shared")} {appTitle}{" "}
+                  {t("account?")}
                 </DialogTitle>
               </DialogHeader>
               <DialogBody className="mt-4">
@@ -534,14 +538,14 @@ function RouteComponent() {
                   size="sm"
                   variant="outline"
                 >
-                  Cancel
+                  {t("Cancel")}
                 </Button>
                 <Button
                   disabled={grantingShared}
                   onClick={() => void confirmSharedGrant()}
                   size="sm"
                 >
-                  {grantingShared ? "Granting…" : "Let it in"}
+                  {grantingShared ? t("Granting…") : t("Let it in")}
                 </Button>
               </DialogFooter>
             </DialogContent>

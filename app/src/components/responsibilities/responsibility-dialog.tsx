@@ -49,6 +49,7 @@ import {
 } from "@/lib/responsibilities";
 import { queryClient } from "@/query-client";
 import { KIND_LABEL, Triggers } from "./triggers";
+import { t } from "@/lib/i18n";
 
 type Status = ResponsibilityRecord["status"];
 type Source = ResponsibilityRecord["subscriptions"][number]["source"];
@@ -161,16 +162,18 @@ export function ResponsibilityDialog({
                     <IconTarget />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>Active</ItemTitle>
+                    <ItemTitle>{t("Active")}</ItemTitle>
                     <ItemDescription>
                       {goal.status === "active"
-                        ? "Its events and triggers start runs."
-                        : "Paused. Its triggers are acknowledged but never run it."}
+                        ? t("Its events and triggers start runs.")
+                        : t(
+                            "Paused. Its triggers are acknowledged but never run it.",
+                          )}
                     </ItemDescription>
                   </ItemContent>
                   <ItemActions>
                     <Switch
-                      aria-label="Active"
+                      aria-label={t("Active")}
                       checked={goal.status === "active"}
                       disabled={action.isPending}
                       onCheckedChange={(active) =>
@@ -205,10 +208,11 @@ export function ResponsibilityDialog({
                     <IconPlayerPlay />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>Run now (real run)</ItemTitle>
+                    <ItemTitle>{t("Run now (real run)")}</ItemTitle>
                     <ItemDescription>
-                      Runs it for real, now: the Bot does the work and can post
-                      and act.
+                      {t(
+                        "Runs it for real, now: the Bot does the work and can post and act.",
+                      )}
                     </ItemDescription>
                   </ItemContent>
                 </Item>
@@ -234,9 +238,9 @@ export function ResponsibilityDialog({
                     <IconCircleCheck />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>Complete</ItemTitle>
+                    <ItemTitle>{t("Complete")}</ItemTitle>
                     <ItemDescription>
-                      Mark it done. Nothing starts it after this.
+                      {t("Mark it done. Nothing starts it after this.")}
                     </ItemDescription>
                   </ItemContent>
                 </Item>
@@ -257,7 +261,7 @@ export function ResponsibilityDialog({
                 <IconMessage />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Open conversation</ItemTitle>
+                <ItemTitle>{t("Open conversation")}</ItemTitle>
               </ItemContent>
               <ItemActions>
                 <IconChevronRight className="size-4 text-muted-foreground" />
@@ -287,7 +291,9 @@ export function ResponsibilityDialog({
           >
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor={`${formId}-title`}>Title</FieldLabel>
+                <FieldLabel htmlFor={`${formId}-title`}>
+                  {t("Title")}
+                </FieldLabel>
                 <Input
                   id={`${formId}-title`}
                   value={title}
@@ -298,7 +304,7 @@ export function ResponsibilityDialog({
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${formId}-instruction`}>
-                  Instruction
+                  {t("Instruction")}
                 </FieldLabel>
                 <Textarea
                   id={`${formId}-instruction`}
@@ -310,7 +316,7 @@ export function ResponsibilityDialog({
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${formId}-criteria`}>
-                  Success criteria
+                  {t("Success criteria")}
                 </FieldLabel>
                 <Textarea
                   id={`${formId}-criteria`}
@@ -347,7 +353,7 @@ export function ResponsibilityDialog({
                       <IconWebhook />
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle>Events</ItemTitle>
+                      <ItemTitle>{t("Events")}</ItemTitle>
                       <ItemDescription className="line-clamp-none">
                         {goal.subscriptions
                           .map(
@@ -373,7 +379,7 @@ export function ResponsibilityDialog({
         </DialogBody>
         <DialogFooter className="mt-4">
           <Button onClick={onClose} size="sm" type="button" variant="outline">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={edit.isPending}
@@ -427,9 +433,9 @@ function Runs({
   return (
     <section className="grid gap-2">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="font-medium text-sm">Runs</h3>
+        <h3 className="font-medium text-sm">{t("Runs")}</h3>
         <Button onClick={onToggle} size="sm" type="button" variant="ghost">
-          {shown ? "Hide runs" : "View runs"}
+          {shown ? t("Hide runs") : t("View runs")}
         </Button>
       </div>
       {!shown ? null : runs.isPending ? null : runs.error ? (
@@ -459,15 +465,15 @@ function Runs({
                     params={{ channelId }}
                     className="text-sm underline"
                   >
-                    Open thread
+                    {t("Open thread")}
                   </Link>
                 </ItemActions>
                 {run.waiting || run.error || run.replyText ? (
                   <ItemFooter className="min-w-0 flex-col items-stretch">
                     {run.waiting && (
                       <p>
-                        Waiting for {run.waiting.kind}. Respond at the top of
-                        this Bot's page, or in the conversation.
+                        {t("Waiting for")} {run.waiting.kind}. Respond at the
+                        top of this Bot's page, or in the conversation.
                       </p>
                     )}
                     {run.error && (
@@ -483,7 +489,7 @@ function Runs({
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground text-sm">No runs yet.</p>
+        <p className="text-muted-foreground text-sm">{t("No runs yet.")}</p>
       )}
     </section>
   );

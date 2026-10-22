@@ -20,6 +20,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { t } from "@/lib/i18n";
 
 const appLinkOptions = { to: "/" } satisfies LinkOptions;
 
@@ -96,7 +97,7 @@ export function SettingsSidebar({
               render={(props) => (
                 <Link {...appLinkOptions} {...props}>
                   <IconArrowLeft className="mr-2 h-4 w-4" />
-                  Back to app
+                  {t("Back to app")}
                 </Link>
               )}
             />
@@ -121,7 +122,7 @@ export function SettingsSidebar({
                       {...props}
                     >
                       <option.icon className="mr-2 h-4 w-4" />
-                      {option.title}
+                      {t(option.title)}
                     </Link>
                   )}
                 />

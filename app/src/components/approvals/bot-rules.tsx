@@ -16,6 +16,7 @@ import {
 } from "@/lib/approvals";
 import { queryClient } from "@/query-client";
 import { RuleForm, RuleRow } from "./rules";
+import { t } from "@/lib/i18n";
 
 /**
  * The person's approval rules for one Bot, and the team rules that reach it, locked, as one card of
@@ -46,13 +47,14 @@ export function BotApprovalRules({ agentId }: { agentId: string }) {
     <PageSection
       description={
         <>
-          The strictest matching rule wins, so an "ask" rule beats an "allow"
-          one. Rules for every Bot are in{" "}
+          {t(
+            'The strictest matching rule wins, so an "ask" rule beats an "allow" one. Rules for every Bot are in',
+          )}{" "}
           <Link
             className="underline underline-offset-4"
             to="/settings/approvals"
           >
-            Settings → Approvals
+            {t("Settings → Approvals")}
           </Link>
           .
           {rulesOff
@@ -60,14 +62,16 @@ export function BotApprovalRules({ agentId }: { agentId: string }) {
             : ""}
         </>
       }
-      title="Rules"
+      title={t("Rules")}
     >
       {error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
           {error.message}
         </p>
       ) : null}
-      {saved === 0 ? <PageEmpty>No rules for this Bot.</PageEmpty> : null}
+      {saved === 0 ? (
+        <PageEmpty>{t("No rules for this Bot.")}</PageEmpty>
+      ) : null}
       {saved > 0 || canAdd ? (
         <PageRows>
           {team.map((rule, index) => (
@@ -103,7 +107,7 @@ export function BotApprovalRules({ agentId }: { agentId: string }) {
               <RuleForm
                 botField={false}
                 forBot={agentId}
-                label="Add a rule"
+                label={t("Add a rule")}
                 save={addRule}
               />
             </>

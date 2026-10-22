@@ -14,6 +14,8 @@ export type AgentInput = {
   visibility: AgentVisibility;
   /** Where this coworker runs. Empty means the Bot in the box. */
   endpoint?: string;
+  /** The model it runs on; empty means the deployment's own. Built-in coworkers only. */
+  model?: string;
   /** Write-only auth value; omitted when the user leaves the key field empty. */
   auth?: { header: string; value: string };
 };

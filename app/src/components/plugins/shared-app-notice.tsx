@@ -5,6 +5,7 @@ import {
   botSharedAppsQueryOptions,
   requestSharedUseMutationOptions,
 } from "@/lib/plugins/shared-use";
+import { t } from "@/lib/i18n";
 
 /**
  * What changing who can reach a Bot means for the shared accounts it uses, said BEFORE the change.
@@ -33,8 +34,8 @@ export function SharedAppNotice({
       <div className="space-y-1 text-sm">
         {apps.map((app) => (
           <p key={app.serverId}>
-            Saving also approves the shared {app.title} account for whoever can
-            reach this Bot.
+            {t("Saving also approves the shared")} {app.title}{" "}
+            {t("account for whoever can reach this Bot.")}
           </p>
         ))}
       </div>
@@ -49,13 +50,15 @@ export function SharedAppNotice({
       {apps.map((app) =>
         waiting.has(app.serverId) ? (
           <p className="text-muted-foreground" key={app.serverId}>
-            Waiting for an administrator: shared {app.title}
+            {t("Waiting for an administrator: shared")} {app.title}
           </p>
         ) : app.covered ? null : (
           <div className="flex flex-wrap items-center gap-2" key={app.serverId}>
             <p className="text-amber-700 dark:text-amber-400">
-              {app.title} calls from this Bot are refused until an administrator
-              approves who can reach it.
+              {app.title}{" "}
+              {t(
+                "calls from this Bot are refused until an administrator approves who can reach it.",
+              )}
             </p>
             <Button
               aria-label={`Request approval for ${app.title}`}
@@ -67,7 +70,7 @@ export function SharedAppNotice({
               type="button"
               variant="outline"
             >
-              Request approval
+              {t("Request approval")}
             </Button>
           </div>
         ),

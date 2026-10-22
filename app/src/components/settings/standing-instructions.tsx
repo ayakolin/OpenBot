@@ -9,6 +9,7 @@ import {
   instructionsQueryOptions,
 } from "@/lib/settings/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * One box, applied to every coworker in every channel.
@@ -57,8 +58,10 @@ export function StandingInstructions() {
 
   return (
     <PageSection
-      description="Applies to every coworker in every channel. Your role text on a coworker says what it does; this says how you want things done, for example writing style or how to describe your company."
-      title="Standing instructions"
+      description={t(
+        "Applies to every coworker in every channel. Your role text on a coworker says what it does; this says how you want things done, for example writing style or how to describe your company.",
+      )}
+      title={t("Standing instructions")}
     >
       {stored.isPending ? null : stored.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
@@ -67,25 +70,27 @@ export function StandingInstructions() {
       ) : (
         <div className="mt-4 flex flex-col gap-2">
           <Textarea
-            aria-label="Standing instructions"
+            aria-label={t("Standing instructions")}
             className="min-h-40"
             disabled={save.isPending}
             onChange={(event) => {
               setDraft(event.target.value);
               setSaved(false);
             }}
-            placeholder="We are two people, not a team. Write in British English, and never call our product a platform."
+            placeholder={t(
+              "We are two people, not a team. Write in British English, and never call our product a platform.",
+            )}
             value={text}
           />
           <div className="flex flex-row items-center justify-between gap-4">
             <p
               className={
                 over
-                  ? "text-destructive text-xs"
-                  : "text-muted-foreground text-xs"
+                  ? t("text-destructive text-xs")
+                  : t("text-muted-foreground text-xs")
               }
             >
-              {text.trim().length} of {INSTRUCTIONS_LIMIT} characters
+              {text.trim().length} of {INSTRUCTIONS_LIMIT} {t("characters")}
             </p>
             <div className="flex flex-row items-center gap-3">
               {/*
@@ -97,14 +102,16 @@ export function StandingInstructions() {
                   {problem}
                 </span>
               ) : saved ? (
-                <span className="text-muted-foreground text-xs">Saved</span>
+                <span className="text-muted-foreground text-xs">
+                  {t("Saved")}
+                </span>
               ) : null}
               <Button
                 disabled={save.isPending || over || unchanged}
                 onClick={submit}
                 size="sm"
               >
-                Save
+                {t("Save")}
               </Button>
             </div>
           </div>

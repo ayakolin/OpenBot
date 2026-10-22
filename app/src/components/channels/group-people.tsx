@@ -26,6 +26,7 @@ import {
   groupQueryOptions,
   removeGroupMemberMutationOptions,
 } from "@/lib/groups";
+import { t } from "@/lib/i18n";
 
 /**
  * Who is in a group, from its top bar: how many people, and a dialog listing them where the creator
@@ -65,10 +66,11 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>People in this group</DialogTitle>
+            <DialogTitle>{t("People in this group")}</DialogTitle>
             <DialogDescription>
-              Everyone here sees the whole conversation, and every Bot in it
-              answers them.
+              {t(
+                "Everyone here sees the whole conversation, and every Bot in it answers them.",
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogBody className="mt-4 grid gap-4 overflow-y-auto">
@@ -121,9 +123,9 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
               }}
             >
               <Input
-                aria-label="Their email"
+                aria-label={t("Their email")}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="Add someone by email"
+                placeholder={t("Add someone by email")}
                 type="email"
                 value={email}
               />
@@ -132,7 +134,7 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
                 size="sm"
                 type="submit"
               >
-                Add
+                {t("Add")}
               </Button>
             </form>
             {add.error || remove.error ? (

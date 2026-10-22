@@ -59,6 +59,7 @@ import { type RejectedFile, RejectedFiles } from "./rejected-files";
 import { PLACEHOLDER_COMMANDS } from "./sources";
 import { type AgentOption, buildTriggers } from "./triggers";
 import { useDictation } from "./use-dictation";
+import { t } from "@/lib/i18n";
 
 /**
  * The SDK's upload failure, derived rather than imported for the reason `attachments.ts` records
@@ -1347,7 +1348,7 @@ export function Composer({
   );
   const primaryAction = canStop ? (
     <Button
-      aria-label="Stop the Bot"
+      aria-label={t("Stop the Bot")}
       className={actionClassName}
       data-testid="composer-stop"
       onClick={onStop}
@@ -1358,7 +1359,9 @@ export function Composer({
     </Button>
   ) : callAction ? (
     <Button
-      aria-label={callAction.active ? "Show voice call" : "Start voice call"}
+      aria-label={
+        callAction.active ? t("Show voice call") : t("Start voice call")
+      }
       title={
         callAction.supported
           ? callAction.active
@@ -1522,7 +1525,7 @@ export function Composer({
             <div className="flex items-center gap-3">
               {attachmentsEnabled ? (
                 <Button
-                  aria-label="Attach a file"
+                  aria-label={t("Attach a file")}
                   className="self-end"
                   // The button stays, and stays labelled: a conversation that cannot take another
                   // message has not lost the ability to attach, it has lost the message. Swapping it
@@ -1537,7 +1540,7 @@ export function Composer({
                 </Button>
               ) : (
                 <Button
-                  aria-label="More message options unavailable"
+                  aria-label={t("More message options unavailable")}
                   className="self-end disabled:opacity-100"
                   disabled
                   size="icon"
@@ -1548,7 +1551,7 @@ export function Composer({
                 </Button>
               )}
               <PromptArea
-                aria-label="Message"
+                aria-label={t("Message")}
                 className={cn(
                   "min-w-0 flex-1 border-0 bg-transparent p-0 text-sm shadow-none",
                   editorClassName,
@@ -1559,7 +1562,7 @@ export function Composer({
                 onChange={handleChange}
                 onImagePaste={canAttach ? stagePastedImage : undefined}
                 onSubmit={submitDraft}
-                placeholder="Ask anything"
+                placeholder={t("Ask anything")}
                 ref={promptAreaRef}
                 triggers={triggers}
                 value={value}
@@ -1605,7 +1608,7 @@ export function Composer({
               onRemove={discardAttachment}
             />
             <PromptArea
-              aria-label="Message"
+              aria-label={t("Message")}
               autoGrow
               className={cn(
                 "w-full border-0 bg-transparent p-0 text-sm shadow-none",
@@ -1616,7 +1619,7 @@ export function Composer({
               onChange={handleChange}
               onImagePaste={canAttach ? stagePastedImage : undefined}
               onSubmit={submitDraft}
-              placeholder="Ask anything"
+              placeholder={t("Ask anything")}
               ref={promptAreaRef}
               triggers={triggers}
               value={value}
@@ -1626,7 +1629,7 @@ export function Composer({
           <div className="flex items-center justify-between">
             {attachmentsEnabled ? (
               <Button
-                aria-label="Attach a file"
+                aria-label={t("Attach a file")}
                 className="size-7 rounded-full p-0"
                 disabled={disabled}
                 onClick={() => fileInputRef.current?.click()}

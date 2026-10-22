@@ -12,6 +12,7 @@
 import { eq } from "drizzle-orm";
 import type { Context, MiddlewareHandler } from "hono";
 import { recordAuditEvent } from "../audit";
+import { effectiveBuiltInModel } from "../agents/model-choice";
 import type { AppVariables } from "../auth/guards";
 import { agents } from "../db/schema";
 import { type Capability, capabilityRefusal } from "./capabilities";
@@ -225,20 +226,34 @@ async function governRun(
   const actor = context.var.actor;
 
   let builtIn = false;
+  /* This Bot's model, which may be one it chose; see `effectiveBuiltInModel`. */
+  let builtInModel: string | undefined;
   try {
     const [row] = await controls.deps.database
-      .select({ type: agents.type })
+      .select({
+        type: agents.type,
+        configuration: agents.configuration,
+        /* An administrator's model choice for a package Bot. */
+        override: agents.override,
+      })
       .from(agents)
       .where(eq(agents.id, agentId))
       .limit(1);
     builtIn = row?.type === "built_in";
+    builtInModel = builtIn
+      ? effectiveBuiltInModel(
+          row?.configuration,
+          controls.deps.builtInModel,
+          row?.override,
+        )
+      : undefined;
   } catch {
     builtIn = false;
   }
   const allowlist = controls.snapshot()?.settings.modelAllowlist;
   const isAllowed = (model: string) =>
     !allowlist?.enabled || allowlist.models.includes(model);
-  const configured = builtIn ? controls.deps.builtInModel : undefined;
+  const configured = builtIn ? builtInModel : undefined;
 
   const record = (
     model: string,

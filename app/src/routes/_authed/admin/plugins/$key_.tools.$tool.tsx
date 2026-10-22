@@ -20,6 +20,7 @@ import { grantRoster } from "@/lib/agents/grant-roster";
 import { agentListQueryOptions } from "@/lib/agents/queries";
 import { setPluginGrantMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * One tool, and which Bots hold it.
@@ -80,7 +81,7 @@ function RouteComponent() {
 
   /* Nothing rather than a placeholder, so no sentence asserts anything while the fetch is open. */
   if (plugins.isPending) {
-    return <PageShell title="Tool">{null}</PageShell>;
+    return <PageShell title={t("Tool")}>{null}</PageShell>;
   }
 
   /*
@@ -93,7 +94,7 @@ function RouteComponent() {
     return (
       <PageShell backButton={back} title={toolName}>
         <p className="mt-12 text-destructive text-sm" role="alert">
-          Plugins could not be loaded.
+          {t("Plugins could not be loaded.")}
         </p>
       </PageShell>
     );
@@ -103,7 +104,9 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={back}
-        description="This connector does not advertise a tool by that name."
+        description={t(
+          "This connector does not advertise a tool by that name.",
+        )}
         title={toolName}
       >
         {/*
@@ -112,8 +115,10 @@ function RouteComponent() {
          */}
         <PageEmpty>
           {server
-            ? "It may have been withdrawn since the tool list was last refreshed."
-            : "This deployment has not enabled that connector."}
+            ? t(
+                "It may have been withdrawn since the tool list was last refreshed.",
+              )
+            : t("This deployment has not enabled that connector.")}
         </PageEmpty>
       </PageShell>
     );
@@ -149,10 +154,14 @@ function RouteComponent() {
       <PageSection
         description={
           tool.effect === "write"
-            ? "This tool changes something at the vendor. A boundary written about writes applies to it, and it is refused when one matches."
-            : "This tool only reads. A boundary written about writes does not apply to it."
+            ? t(
+                "This tool changes something at the vendor. A boundary written about writes applies to it, and it is refused when one matches.",
+              )
+            : t(
+                "This tool only reads. A boundary written about writes does not apply to it.",
+              )
         }
-        title="What it does"
+        title={t("What it does")}
       >
         <PageRows>
           {/*
@@ -162,18 +171,19 @@ function RouteComponent() {
            */}
           <Item size="sm">
             <ItemContent>
-              <ItemTitle>Effect</ItemTitle>
+              <ItemTitle>{t("Effect")}</ItemTitle>
               <ItemDescription>
-                Decided by the connector, not by the tool's name. Anything
-                unrecognised counts as a write.
+                {t(
+                  "Decided by the connector, not by the tool's name. Anything unrecognised counts as a write.",
+                )}
               </ItemDescription>
             </ItemContent>
             <ItemActions>
               <span
                 className={
                   tool.effect === "write"
-                    ? "text-amber-600 text-xs dark:text-amber-500"
-                    : "text-muted-foreground text-xs"
+                    ? t("text-amber-600 text-xs dark:text-amber-500")
+                    : t("text-muted-foreground text-xs")
                 }
               >
                 {tool.effect === "write" ? "changes things" : "reads"}
@@ -184,13 +194,16 @@ function RouteComponent() {
       </PageSection>
 
       <PageSection
-        description="A Bot may call this tool only while its switch is on. Turning one off takes effect on the next call, with nothing cached in between."
-        title="Bots"
+        description={t(
+          "A Bot may call this tool only while its switch is on. Turning one off takes effect on the next call, with nothing cached in between.",
+        )}
+        title={t("Bots")}
       >
         {bots.length === 0 ? (
           <PageEmpty>
-            This deployment has no Bots yet, so there is nobody to grant this
-            to.
+            {t(
+              "This deployment has no Bots yet, so there is nobody to grant this to.",
+            )}
           </PageEmpty>
         ) : (
           <PageRows>

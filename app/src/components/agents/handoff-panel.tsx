@@ -23,6 +23,7 @@ import {
   agentListQueryOptions,
 } from "@/lib/agents/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * Which Bots this one may hand work to.
@@ -76,22 +77,25 @@ export function HandoffPanel({ agentId }: { agentId: string }) {
           </span>
         ) : null
       }
-      description="Who this Bot may ask, not who may ask it. What the asked Bot says comes back into the conversation that asked, relayed and attributed."
-      title="Bots it may ask"
+      description={t(
+        "Who this Bot may ask, not who may ask it. What the asked Bot says comes back into the conversation that asked, relayed and attributed.",
+      )}
+      title={t("Bots it may ask")}
     >
       {/* Facts about the deployment rather than rows to act on, so said as sentences. */}
       {enabled ? null : (
         <PageEmpty>
-          Switched off for this deployment. These grants are kept but none takes
-          effect until handing work between Bots is switched back on.
+          {t(
+            "Switched off for this deployment. These grants are kept but none takes effect until handing work between Bots is switched back on.",
+          )}
         </PageEmpty>
       )}
 
       {grantable ? null : (
         <PageEmpty>
-          This coworker cannot hand work on. This deployment has nowhere to
-          record which Bots it may hand work to, so there is nothing to grant
-          it. It can still be asked by Bots that can.
+          {t(
+            "This coworker cannot hand work on. This deployment has nowhere to record which Bots it may hand work to, so there is nothing to grant it. It can still be asked by Bots that can.",
+          )}
         </PageEmpty>
       )}
 
@@ -103,8 +107,9 @@ export function HandoffPanel({ agentId }: { agentId: string }) {
 
       {grantable && total === 0 ? (
         <PageEmpty>
-          No other Bot here yet. When this deployment has more Bots, this is
-          where this one is allowed to ask them.
+          {t(
+            "No other Bot here yet. When this deployment has more Bots, this is where this one is allowed to ask them.",
+          )}
         </PageEmpty>
       ) : null}
       {candidates.length > 0 ? (
@@ -154,7 +159,9 @@ export function HandoffPanel({ agentId }: { agentId: string }) {
       ) : null}
 
       {canGrant ? null : (
-        <PageEmpty>An administrator decides which Bots may be asked.</PageEmpty>
+        <PageEmpty>
+          {t("An administrator decides which Bots may be asked.")}
+        </PageEmpty>
       )}
     </PageSection>
   );

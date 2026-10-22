@@ -24,6 +24,7 @@ import {
 import type { MessageListEmphasis } from "@/lib/settings/message-list";
 import { useTypedReveal } from "@/lib/typed-reveal";
 import { ChannelItemContent } from "./channel-item-content";
+import { t } from "@/lib/i18n";
 
 /**
  * Memoized roster row. `use-channel-events` preserves unchanged row identity, and
@@ -147,7 +148,7 @@ export const Channel = memo(function Channel({
             }}
           >
             {pinned ? <IconPinnedOff /> : <IconPin />}
-            {pinned ? "Unpin channel" : "Pin channel"}
+            {pinned ? t("Unpin channel") : t("Pin channel")}
           </ContextMenuItem>
           <ContextMenuItem
             variant="destructive"
@@ -158,7 +159,7 @@ export const Channel = memo(function Channel({
             }}
           >
             <IconTrash />
-            Delete channel…
+            {t("Delete channel…")}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
@@ -175,9 +176,11 @@ export const Channel = memo(function Channel({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete {name}?</DialogTitle>
+            <DialogTitle>
+              {t("Delete")} {name}?
+            </DialogTitle>
             <DialogDescription>
-              The conversation will no longer appear for anyone in it.
+              {t("The conversation will no longer appear for anyone in it.")}
             </DialogDescription>
           </DialogHeader>
           {deleteChannel.error ? (
@@ -191,7 +194,7 @@ export const Channel = memo(function Channel({
               size="sm"
               variant="ghost"
             >
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               disabled={deleteChannel.isPending}

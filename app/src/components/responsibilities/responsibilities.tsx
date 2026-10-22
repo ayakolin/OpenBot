@@ -27,6 +27,7 @@ import {
   STATUS,
   summaryFor,
 } from "./responsibility-dialog";
+import { t } from "@/lib/i18n";
 
 /**
  * Lasting goals and their runs. Given a Bot, only that Bot's, and a new one is that Bot's without
@@ -51,10 +52,10 @@ export function BotResponsibilities({ agentId }: { agentId?: string }) {
       action={
         <Button onClick={() => setCreating(true)} size="sm" variant="ghost">
           <IconPlus />
-          New responsibility
+          {t("New responsibility")}
         </Button>
       }
-      title="Goals"
+      title={t("Goals")}
     >
       {/* Pending, error, empty, rows — pending first, so no sentence asserts anything mid-fetch. */}
       {goals.isPending ? null : goals.error ? (
@@ -64,8 +65,8 @@ export function BotResponsibilities({ agentId }: { agentId?: string }) {
       ) : shown.length === 0 ? (
         <PageEmpty>
           {agentId
-            ? "No responsibilities for this Bot yet."
-            : "You have no responsibilities yet."}
+            ? t("No responsibilities for this Bot yet.")
+            : t("You have no responsibilities yet.")}
         </PageEmpty>
       ) : (
         <PageRows>

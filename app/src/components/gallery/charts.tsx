@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { GalleryComponent } from "@/lib/copilot/gallery-registry";
 import { GalleryFrame } from "./frame";
 import { seriesColour } from "./palette";
+import { t } from "@/lib/i18n";
 
 const point = z.object({
   label: z
@@ -34,7 +35,7 @@ function formatNumber(value: number): string {
 function Empty() {
   return (
     <p className="py-10 text-center text-sm text-muted-foreground">
-      There is no data to chart.
+      {t("There is no data to chart.")}
     </p>
   );
 }

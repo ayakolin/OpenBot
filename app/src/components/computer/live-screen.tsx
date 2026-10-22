@@ -8,6 +8,7 @@ import { keyOf } from "@/lib/hotkeys/hotkeys";
 import { socketUrl } from "@/lib/socket-url";
 import { currentPageVisible } from "./preview-visibility";
 import { pageCoordinates } from "./take-the-wheel";
+import { t } from "@/lib/i18n";
 
 /**
  * Low-latency screencast used while a human is driving the Bot's browser.
@@ -496,8 +497,8 @@ export function LiveScreen({
         : {})}
       aria-label={
         driving
-          ? "The assistant's screen. You have control: click and type here."
-          : "The assistant's screen, live"
+          ? t("The assistant's screen. You have control: click and type here.")
+          : t("The assistant's screen, live")
       }
       data-connected={connected}
     />

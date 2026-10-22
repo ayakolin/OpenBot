@@ -15,6 +15,7 @@ import { SidebarToggle } from "@/components/layout/sidebar-toggle";
 import { Button } from "@/components/ui/button";
 import { useMarkOpenChannelRead } from "@/lib/channels/mark-read";
 import { type AgentChannel, channelQueryOptions } from "@/lib/channels/queries";
+import { t } from "@/lib/i18n";
 
 const chatSearchSchema = z.object({
   settings: z.boolean().optional(),
@@ -141,7 +142,7 @@ function RouteComponent() {
               onOpenChange={(open) => show(open ? "watch" : null)}
             />
             <Button
-              aria-label="Channel coworker"
+              aria-label={t("Channel coworker")}
               aria-pressed={isSettingsOpen}
               className={isSettingsOpen ? "bg-foreground/5" : undefined}
               disabled={agentId === undefined}
@@ -184,7 +185,7 @@ function ChannelBody({
   if (hasError || !channel) {
     return (
       <p className="p-8 text-sm text-destructive" role="alert">
-        Could not load this channel.
+        {t("Could not load this channel.")}
       </p>
     );
   }

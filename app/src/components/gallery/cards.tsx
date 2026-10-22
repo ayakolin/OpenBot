@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { GalleryComponent } from "@/lib/copilot/gallery-registry";
 import { Badge, GalleryFrame, type Tone } from "./frame";
+import { t } from "@/lib/i18n";
 
 const tone = z
   .enum(["neutral", "positive", "caution", "negative"])
@@ -44,8 +45,8 @@ export function RecordCard({
     >
       <dl className="grid grid-cols-[minmax(0,10rem)_1fr] gap-x-4 gap-y-2 text-sm">
         {fields.map((field) => (
-          <div className="contents" key={field.label}>
-            <dt className="truncate text-muted-foreground">{field.label}</dt>
+          <div className="contents" key={t(field.label)}>
+            <dt className="truncate text-muted-foreground">{t(field.label)}</dt>
             {/* Field values wrap because truncation can hide the reported data. */}
             <dd className="min-w-0 break-words">{field.value}</dd>
           </div>

@@ -12,6 +12,7 @@ import { ComputerControlButton } from "./computer-controls";
 import { DemonstrationRecorder } from "./demonstration-recorder";
 import { LiveScreen } from "./live-screen";
 import { useElementVisible, usePageVisible } from "./preview-visibility";
+import { t } from "@/lib/i18n";
 
 /** Explicit blank-browser URLs use placeholder artwork; missing URL fields are treated as real pages. */
 function isBlankBrowser(shot: Screenshot): boolean {
@@ -137,7 +138,7 @@ function NothingToSee({
               <span className="font-medium">{page.title || "A page"}</span>
               <span className="break-all">{hostOf(page.url)}</span>
               <span>
-                Opened during this turn. The screen has moved on since.
+                {t("Opened during this turn. The screen has moved on since.")}
               </span>
             </>
           ) : (
@@ -145,24 +146,25 @@ function NothingToSee({
              * A turn that ended without getting anywhere: refused by a boundary, stopped, or failed.
              * Saying "opened during this turn" here would describe something that did not happen.
              */
-            <span>This turn did not open a page.</span>
+            <span>{t("This turn did not open a page.")}</span>
           )}
         </>
       ) : problem ? (
         <>
           <span className="font-medium">
-            You cannot see the screen right now
+            {t("You cannot see the screen right now")}
           </span>
           <span>{problem}</span>
           <span>
-            The assistant may still be working. An administrator can check
-            whether its computer is running.
+            {t(
+              "The assistant may still be working. An administrator can check whether its computer is running.",
+            )}
           </span>
         </>
       ) : blankBrowser ? (
-        <span>The assistant has not opened a page yet.</span>
+        <span>{t("The assistant has not opened a page yet.")}</span>
       ) : (
-        <span>Waiting for the assistant's screen…</span>
+        <span>{t("Waiting for the assistant's screen…")}</span>
       )}
     </span>
   );
@@ -430,7 +432,7 @@ export function ComputerView({
   const polledScreen = showScreen ? (
     <img
       src={`data:image/png;base64,${drawn.base64}`}
-      alt="What the assistant is looking at"
+      alt={t("What the assistant is looking at")}
       // Keep unexpected screenshot dimensions inside the reserved frame.
       className="absolute inset-0 h-full w-full object-contain opacity-100 transition-opacity duration-300 starting:opacity-0"
     />
@@ -452,7 +454,7 @@ export function ComputerView({
            */
           className="relative block w-full cursor-pointer bg-muted"
           style={frameStyle}
-          aria-label="Open the assistant's screen full size"
+          aria-label={t("Open the assistant's screen full size")}
         >
           {polledScreen}
 
@@ -467,7 +469,7 @@ export function ComputerView({
               ) : null}
               {wheelHere ? (
                 <span className="rounded-full bg-white px-2.5 py-1 font-medium text-black text-xs shadow-sm">
-                  You have control
+                  {t("You have control")}
                 </span>
               ) : null}
             </span>
@@ -487,7 +489,9 @@ export function ComputerView({
         {!driving && !settled && control?.requested ? (
           <div className="flex items-start justify-between gap-3 border-t bg-amber-500/10 px-3 py-2 text-sm">
             <span>
-              <strong className="font-medium">The assistant needs you.</strong>{" "}
+              <strong className="font-medium">
+                {t("The assistant needs you.")}
+              </strong>{" "}
               {control.reason}
             </span>
           </div>
@@ -501,13 +505,15 @@ export function ComputerView({
               disabled={changingControl}
               onClick={() => void changeControl?.("cancel")}
             >
-              Cancel request
+              {t("Cancel request")}
             </button>
           </div>
         ) : null}
         {!settled && control?.transitioning ? (
           <p className="px-3 py-2 text-sm">
-            Finishing the assistant's current action before giving you control…
+            {t(
+              "Finishing the assistant's current action before giving you control…",
+            )}
           </p>
         ) : null}
         {/*
@@ -516,14 +522,15 @@ export function ComputerView({
         */}
         {!settled && control?.recoveryRequired ? (
           <p className="px-3 py-2 text-sm">
-            The Computer stopped while you had control, so the assistant can't
-            use the browser yet. Take control to check the page, then hand it
-            back.
+            {t(
+              "The Computer stopped while you had control, so the assistant can't use the browser yet. Take control to check the page, then hand it back.",
+            )}
           </p>
         ) : !settled && control?.request?.status === "interrupted" ? (
           <p className="px-3 py-2 text-sm text-muted-foreground">
-            The Computer stopped before anyone took control. The assistant will
-            ask again if it still needs you.
+            {t(
+              "The Computer stopped before anyone took control. The assistant will ask again if it still needs you.",
+            )}
           </p>
         ) : null}
         {/*
@@ -547,7 +554,7 @@ export function ComputerView({
             }}
           >
             <label className="block" htmlFor="openbot-secret">
-              <span className="font-medium">The assistant needs </span>
+              <span className="font-medium">{t("The assistant needs")} </span>
               <span>{control.secretWanted}</span>
             </label>
             <div className="mt-1.5 flex gap-2">
@@ -559,7 +566,7 @@ export function ComputerView({
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                placeholder="Typed here, never shown to the assistant"
+                placeholder={t("Typed here, never shown to the assistant")}
                 className="min-w-0 flex-1 rounded-md border bg-background px-2 py-1 text-sm"
               />
               <button
@@ -567,12 +574,13 @@ export function ComputerView({
                 disabled={!secret || sendingSecret}
                 className="shrink-0 rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground disabled:opacity-50"
               >
-                {sendingSecret ? "Sending…" : "Send to the page"}
+                {sendingSecret ? t("Sending…") : t("Send to the page")}
               </button>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              This goes straight to the page. It is not shown in the
-              conversation and the assistant never receives it.
+              {t(
+                "This goes straight to the page. It is not shown in the conversation and the assistant never receives it.",
+              )}
             </p>
             {secretProblem ? (
               <p className="mt-1 text-xs text-destructive">{secretProblem}</p>
@@ -607,7 +615,7 @@ export function ComputerView({
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="The assistant's screen"
+              aria-label={t("The assistant's screen")}
               className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 sm:p-8"
             >
               {/*
@@ -617,7 +625,7 @@ export function ComputerView({
               <button
                 type="button"
                 onClick={() => !wheelHere && setExpanded(false)}
-                aria-label="Close the assistant's screen"
+                aria-label={t("Close the assistant's screen")}
                 aria-hidden={wheelHere}
                 tabIndex={wheelHere ? -1 : 0}
                 className={`absolute inset-0 bg-black/80 ${wheelHere ? "cursor-default" : "cursor-zoom-out"}`}
@@ -643,7 +651,7 @@ export function ComputerView({
                      */
                     <div className="relative w-full" style={{ aspectRatio }}>
                       <img
-                        alt="What this turn had open"
+                        alt={t("What this turn had open")}
                         className="absolute inset-0 h-full w-full object-contain"
                         src={`data:image/png;base64,${drawn.base64}`}
                       />
@@ -673,7 +681,7 @@ export function ComputerView({
                               setRetryKey((value) => value + 1);
                             }}
                           >
-                            Retry
+                            {t("Retry")}
                           </button>
                         </div>
                       ) : null}
@@ -697,7 +705,9 @@ export function ComputerView({
                 */}
                 {control?.transitioning ? (
                   <p className="mt-3 text-center text-sm">
-                    Finishing the current action before giving you control…
+                    {t(
+                      "Finishing the current action before giving you control…",
+                    )}
                   </p>
                 ) : null}
                 {settled ? null : (
@@ -714,13 +724,13 @@ export function ComputerView({
                       ) : null}
                       {driving ? (
                         <span className="truncate text-muted-foreground">
-                          You have control — click and type on the page.
+                          {t("You have control — click and type on the page.")}
                           {control?.reason ? ` ${control.reason}` : null}
                         </span>
                       ) : control?.requested ? (
                         <span className="truncate text-muted-foreground">
                           <strong className="font-medium text-foreground">
-                            The assistant needs you.
+                            {t("The assistant needs you.")}
                           </strong>{" "}
                           {control.reason}
                         </span>

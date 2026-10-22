@@ -6,6 +6,7 @@ import {
   approvalInboxOptions,
   decideApproval,
 } from "@/lib/approvals";
+import { t } from "@/lib/i18n";
 
 /**
  * A pending approval, drawn in the conversation where the action it holds would have been.
@@ -47,11 +48,11 @@ export function InlineApproval({
       ];
   return (
     <section
-      aria-label="Waiting for your approval"
+      aria-label={t("Waiting for your approval")}
       className="space-y-2 rounded-lg border p-3 text-sm"
     >
       <p className="font-medium">
-        {handOff ? "This needs you" : "Waiting for your approval"}:{" "}
+        {handOff ? t("This needs you") : t("Waiting for your approval")}:{" "}
         {request.action.toolRef
           .replace(/^computer_|^host\//, "")
           .replaceAll("_", " ")}{" "}

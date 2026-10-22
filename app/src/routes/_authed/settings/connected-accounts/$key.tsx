@@ -34,6 +34,7 @@ import {
   personalConnections,
   pluginsPageQueryOptions,
 } from "@/lib/plugins/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * Whether this server is reached through Composio AS THIS PERSON.
@@ -153,7 +154,7 @@ function RouteComponent() {
    * whole of its state defaulted to "you have never connected this".
    */
   if (plugins.isPending || connections.isPending) {
-    return <PageShell title="Account">{null}</PageShell>;
+    return <PageShell title={t("Account")}>{null}</PageShell>;
   }
 
   const back = {
@@ -181,9 +182,9 @@ function RouteComponent() {
     return (
       <PageShell backButton={back} title={server?.title ?? key}>
         <p className="mt-12 text-destructive text-sm" role="alert">
-          Whether you have connected this account could not be loaded, so
-          nothing about it is shown here rather than something that may be
-          wrong. Reload the page, and tell an administrator if it persists.
+          {t(
+            "Whether you have connected this account could not be loaded, so nothing about it is shown here rather than something that may be wrong. Reload the page, and tell an administrator if it persists.",
+          )}
         </p>
       </PageShell>
     );
@@ -198,9 +199,9 @@ function RouteComponent() {
     return (
       <PageShell backButton={back} title={key}>
         <p className="mt-12 text-destructive text-sm" role="alert">
-          This connector could not be loaded, so nothing about it is shown here
-          rather than something that may be wrong. Reload the page, and tell an
-          administrator if it persists.
+          {t(
+            "This connector could not be loaded, so nothing about it is shown here rather than something that may be wrong. Reload the page, and tell an administrator if it persists.",
+          )}
         </p>
       </PageShell>
     );
@@ -223,9 +224,11 @@ function RouteComponent() {
           <PageRows className="mt-0">
             <Item size="sm">
               <ItemContent>
-                <ItemTitle>Team account</ItemTitle>
+                <ItemTitle>{t("Team account")}</ItemTitle>
                 <ItemDescription>
-                  Shared by your organisation. Bots act as the team account.
+                  {t(
+                    "Shared by your organisation. Bots act as the team account.",
+                  )}
                 </ItemDescription>
               </ItemContent>
             </Item>
@@ -251,7 +254,9 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={back}
-        description="Reached through Composio, which holds the account, so a Bot sees only what you can see."
+        description={t(
+          "Reached through Composio, which holds the account, so a Bot sees only what you can see.",
+        )}
         title={server.title}
       >
         {notice ? (
@@ -291,13 +296,15 @@ function RouteComponent() {
     return (
       <PageShell
         backButton={back}
-        description="This is not a service you connect for yourself."
+        description={t("This is not a service you connect for yourself.")}
         title={entry?.title ?? key}
       >
         <PageEmpty>
           {entry
-            ? "A Bot reaches this one with a credential the deployment holds, the same for everybody."
-            : "This deployment has no connector by that name."}
+            ? t(
+                "A Bot reaches this one with a credential the deployment holds, the same for everybody.",
+              )
+            : t("This deployment has no connector by that name.")}
         </PageEmpty>
       </PageShell>
     );
@@ -307,7 +314,7 @@ function RouteComponent() {
     <PageShell
       backButton={back}
       description={entry.summary}
-      title={entry.title}
+      title={t(entry.title)}
     >
       {notice ? (
         <p className="text-destructive text-sm" role="alert">
@@ -322,7 +329,7 @@ function RouteComponent() {
             <ItemContent>
               {/* Not "Connect your account": the row is also the connected state, and a title has to
                   read for both. */}
-              <ItemTitle>Your account</ItemTitle>
+              <ItemTitle>{t("Your account")}</ItemTitle>
               <ItemDescription>
                 {!enabled
                   ? "An administrator has not enabled this connector, so there is nothing to connect to yet."
@@ -347,7 +354,7 @@ function RouteComponent() {
                           aria-hidden="true"
                           className="size-1.5 rounded-full bg-emerald-500"
                         />
-                        Connected
+                        {t("Connected")}
                         <IconChevronDown />
                       </Button>
                     }
@@ -376,7 +383,7 @@ function RouteComponent() {
                       className="whitespace-nowrap"
                       variant="destructive"
                     >
-                      Disconnect your {entry.title} account
+                      {t("Disconnect your")} {entry.title} {t("account")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -395,7 +402,7 @@ function RouteComponent() {
                   type="button"
                   variant="outline"
                 >
-                  Connect
+                  {t("Connect")}
                   <IconArrowUpRight />
                 </Button>
               )}
@@ -406,13 +413,15 @@ function RouteComponent() {
 
       {connection ? (
         <PageSection
-          description="What you agreed to, as the vendor recorded it — not what was asked for. The two differ when a consent screen is only partly accepted."
-          title="Access"
+          description={t(
+            "What you agreed to, as the vendor recorded it — not what was asked for. The two differ when a consent screen is only partly accepted.",
+          )}
+          title={t("Access")}
         >
           <PageRows>
             <Item size="sm">
               <ItemContent>
-                <ItemTitle>Granted</ItemTitle>
+                <ItemTitle>{t("Granted")}</ItemTitle>
                 <ItemDescription className="line-clamp-none">
                   {connection.scope || "The vendor named no scope."}
                 </ItemDescription>
@@ -421,7 +430,7 @@ function RouteComponent() {
             <Separator />
             <Item size="sm">
               <ItemContent>
-                <ItemTitle>Connected</ItemTitle>
+                <ItemTitle>{t("Connected")}</ItemTitle>
               </ItemContent>
               <ItemActions>
                 <span className="text-muted-foreground text-xs">

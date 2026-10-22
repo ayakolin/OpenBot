@@ -1,4 +1,5 @@
 import { GALLERY_COMPONENTS } from "@/lib/copilot/gallery-registry";
+import { t } from "@/lib/i18n";
 
 /**
  * The answers a Bot can give, drawn rather than described.
@@ -48,7 +49,9 @@ export function GalleryPreview({
 }) {
   if (!available) {
     return (
-      <p className="text-muted-foreground text-sm">Loading what it can draw…</p>
+      <p className="text-muted-foreground text-sm">
+        {t("Loading what it can draw…")}
+      </p>
     );
   }
 
@@ -62,7 +65,9 @@ export function GalleryPreview({
   if (shown.length === 0) {
     return (
       <p className="text-muted-foreground text-sm">
-        This Bot has not been granted any components, so it answers in prose.
+        {t(
+          "This Bot has not been granted any components, so it answers in prose.",
+        )}
       </p>
     );
   }
@@ -79,7 +84,7 @@ export function GalleryPreview({
           key={component.name}
         >
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-medium text-sm">{component.title}</h3>
+            <h3 className="font-medium text-sm">{t(component.title)}</h3>
             <span className="shrink-0 text-[11px] text-muted-foreground uppercase tracking-wider">
               {component.kind}
             </span>
@@ -117,8 +122,9 @@ function PreviewOf({ name }: { name: string }) {
      */
     return (
       <p className="text-muted-foreground text-sm">
-        Draws this deployment's own records, so it has nothing to show until a
-        Bot asks for it.
+        {t(
+          "Draws this deployment's own records, so it has nothing to show until a Bot asks for it.",
+        )}
       </p>
     );
   }

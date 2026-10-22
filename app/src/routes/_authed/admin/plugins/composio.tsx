@@ -28,6 +28,7 @@ import {
   composioAppsQueryOptions,
 } from "@/lib/plugins/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * Composio's directory, searched rather than listed.
@@ -129,12 +130,16 @@ function RouteComponent() {
   return (
     <PageShell
       backButton={{ label: "Plugins", linkProps: { to: "/admin/plugins" } }}
-      description="Composio's own directory. Adding an app makes its tools available to grant; each person still connects their own account before any of them reads anything."
-      title="Browse Composio"
+      description={t(
+        "Composio's own directory. Adding an app makes its tools available to grant; each person still connects their own account before any of them reads anything.",
+      )}
+      title={t("Browse Composio")}
     >
       <PageSection
-        description="Search by name. The directory is too long to read, and nothing here has been reviewed by this deployment."
-        title="Apps"
+        description={t(
+          "Search by name. The directory is too long to read, and nothing here has been reviewed by this deployment.",
+        )}
+        title={t("Apps")}
       >
         {enableError ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
@@ -143,10 +148,10 @@ function RouteComponent() {
         ) : null}
 
         <Input
-          aria-label="Search Composio apps"
+          aria-label={t("Search Composio apps")}
           className="mt-4"
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by app name"
+          placeholder={t("Search by app name")}
           value={search}
         />
 
@@ -195,7 +200,7 @@ function RouteComponent() {
                       {/* The size of the decision, stated before it is made: an app is not one
                           tool, and "167 actions" is what says so. */}
                       <span className="text-muted-foreground text-xs">
-                        {entry.actionCount} actions
+                        {entry.actionCount} {t("actions")}
                       </span>
                       {/*
                        * An app this deployment already has says so rather than offering Add again.
@@ -204,7 +209,7 @@ function RouteComponent() {
                        */}
                       {entry.enabled ? (
                         <span className="text-muted-foreground text-xs">
-                          Added
+                          {t("Added")}
                         </span>
                       ) : (
                         <Button

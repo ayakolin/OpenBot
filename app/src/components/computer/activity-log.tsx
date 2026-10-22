@@ -19,6 +19,7 @@ import {
   subscribeToActivity,
 } from "@/lib/computers/activity";
 import { CommandOutput } from "./command-output";
+import { t } from "@/lib/i18n";
 
 const ICONS = {
   command: IconTerminal2,
@@ -106,8 +107,9 @@ export function ActivityLog({ computerId }: { computerId: string }) {
       <Empty className="h-[180px] border border-dashed">
         <EmptyHeader>
           <EmptyTitle className="text-muted-foreground">
-            Nothing yet. Commands the Bot runs, and files it reads, appear here
-            as they happen.
+            {t(
+              "Nothing yet. Commands the Bot runs, and files it reads, appear here as they happen.",
+            )}
           </EmptyTitle>
         </EmptyHeader>
       </Empty>

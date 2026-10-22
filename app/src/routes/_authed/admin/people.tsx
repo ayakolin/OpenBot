@@ -29,6 +29,7 @@ import {
 } from "@/lib/people/mutations";
 import { type Person, peopleListQueryOptions } from "@/lib/people/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/admin/people")({
   component: PeoplePage,
@@ -89,12 +90,16 @@ function PeoplePage() {
 
   return (
     <PageShell
-      description="Everybody who has signed in. Administrators reach these screens; everybody else talks to Bots."
-      title="People"
+      description={t(
+        "Everybody who has signed in. Administrators reach these screens; everybody else talks to Bots.",
+      )}
+      title={t("People")}
     >
       <PageSection
-        description="An address named in INITIAL_ADMIN_EMAILS is an administrator whatever this screen says, so it cannot be changed here."
-        title="Who is here"
+        description={t(
+          "An address named in INITIAL_ADMIN_EMAILS is an administrator whatever this screen says, so it cannot be changed here.",
+        )}
+        title={t("Who is here")}
       >
         {failure ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
@@ -103,7 +108,7 @@ function PeoplePage() {
         ) : null}
         {terminate.data ? (
           <p className="mt-4 text-muted-foreground text-sm" role="status">
-            Stopped {terminate.data.stopped.length}{" "}
+            {t("Stopped")} {terminate.data.stopped.length}{" "}
             {terminate.data.stopped.length === 1 ? "computer" : "computers"}
             {terminate.data.failed.length > 0
               ? `; ${terminate.data.failed.length} could not be stopped`
@@ -116,16 +121,16 @@ function PeoplePage() {
           is the opposite of what somebody looking for a colleague needs.
         */}
         <Input
-          aria-label="Search people"
+          aria-label={t("Search people")}
           className="mt-4"
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by name or address"
+          placeholder={t("Search by name or address")}
           value={search}
         />
 
         {people.isPending ? null : people.error ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
-            Could not load people.
+            {t("Could not load people.")}
           </p>
         ) : rows.length === 0 ? (
           <PageEmpty>
@@ -170,7 +175,7 @@ function PeoplePage() {
                         size="sm"
                         variant="outline"
                       >
-                        Stop computers
+                        {t("Stop computers")}
                       </Button>
                       <Button
                         disabled={busy || isSelf || person.configuredAdmin}
@@ -183,7 +188,7 @@ function PeoplePage() {
                         size="sm"
                         variant={person.revoked ? "outline" : "destructive"}
                       >
-                        {person.revoked ? "Restore" : "Remove"}
+                        {person.revoked ? t("Restore") : t("Remove")}
                       </Button>
                       <Switch
                         aria-label={`Administrator: ${person.email}`}
@@ -217,7 +222,7 @@ function PeoplePage() {
             size="sm"
             variant="outline"
           >
-            {people.isFetchingNextPage ? "Loading…" : "Show more"}
+            {people.isFetchingNextPage ? t("Loading…") : t("Show more")}
           </Button>
         ) : null}
       </PageSection>

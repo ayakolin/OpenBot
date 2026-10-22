@@ -5,6 +5,7 @@ import {
   PageSection,
   PageShell,
 } from "@/components/layout/page-shell";
+import { LocalePreference } from "@/components/settings/locale-preference";
 import { MessageListPreference } from "@/components/settings/message-list-preference";
 import { StandingInstructions } from "@/components/settings/standing-instructions";
 import { useTheme } from "@/components/theme-provider";
@@ -18,6 +19,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { formatHotkey, HOTKEYS } from "@/lib/hotkeys/hotkeys";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/settings/")({
   component: RouteComponent,
@@ -36,27 +38,32 @@ function RouteComponent() {
    */
   return (
     <PageShell
-      description="How OpenBot looks and behaves for you. Message list preferences sync with your account. Theme is saved in this browser."
-      title="Preferences"
+      description={t(
+        "How OpenBot looks and behaves for you. Language and message list preferences sync with your account. Theme is saved in this browser.",
+      )}
+      title={t("Preferences")}
     >
-      <PageSection title="General">
+      <PageSection title={t("General")}>
         <PageRows>
           <Item size="sm">
             <ItemContent>
-              <ItemTitle>Dark theme</ItemTitle>
+              <ItemTitle>{t("Dark theme")}</ItemTitle>
               <ItemDescription>
-                Use the dark appearance across OpenBot.
+                {t("Use the dark appearance across OpenBot.")}
               </ItemDescription>
             </ItemContent>
             <ItemActions>
               <Switch
-                aria-label="Dark theme"
+                aria-label={t("Dark theme")}
                 checked={dark}
                 onCheckedChange={setDark}
               />
             </ItemActions>
           </Item>
         </PageRows>
+        {/* Before the message list: a person who cannot read the labels will not find the switch
+            below three of them. */}
+        <LocalePreference />
         <MessageListPreference />
       </PageSection>
       {/*
@@ -69,14 +76,14 @@ function RouteComponent() {
        * actually do rather than what somebody remembered they did. Read-only on purpose: these
        * are not rebindable, and a row with nothing to click says so by having nothing to click.
        */}
-      <PageSection title="Keyboard shortcuts">
+      <PageSection title={t("Keyboard shortcuts")}>
         <PageRows>
           {HOTKEYS.map((hotkey, index) => (
             <React.Fragment key={hotkey.id}>
               <Item size="sm">
                 <ItemContent>
-                  <ItemTitle>{hotkey.label}</ItemTitle>
-                  <ItemDescription>{hotkey.description}</ItemDescription>
+                  <ItemTitle>{t(hotkey.label)}</ItemTitle>
+                  <ItemDescription>{t(hotkey.description)}</ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <span className="flex gap-1">

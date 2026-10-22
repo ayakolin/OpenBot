@@ -17,6 +17,7 @@ import {
   useComputerAvailable,
   useComputerToolsOffered,
 } from "./computer-available";
+import { t } from "@/lib/i18n";
 
 /**
  * Frontend registrations for computer tools, including inline rendering and policy-refusal display.
@@ -304,7 +305,7 @@ export function ComputerTools() {
       return (
         <ActionLine
           running={status !== "complete"}
-          label="Read the page"
+          label={t("Read the page")}
           detail={
             elements.length
               ? `${elements.length} thing${elements.length === 1 ? "" : "s"} it can act on`
@@ -354,7 +355,7 @@ export function ComputerTools() {
     render: ({ args, result, status }) => (
       <ActionLine
         running={status !== "complete"}
-        label="Filled in"
+        label={t("Filled in")}
         detail={
           // Never show typed values; identify only the target field.
           labelOf(result) ??
@@ -398,7 +399,7 @@ export function ComputerTools() {
       return (
         <ActionLine
           running={status !== "complete"}
-          label="Clicked"
+          label={t("Clicked")}
           detail={
             // Show refusal reason instead of an internal element ref.
             outcome.refused === true
@@ -447,7 +448,7 @@ export function ComputerTools() {
     render: ({ args, result, status }) => (
       <ActionLine
         running={status !== "complete"}
-        label="Pressed"
+        label={t("Pressed")}
         detail={typeof args?.key === "string" ? args.key : undefined}
         refused={outcomeOf(result).refused === true}
         failed={didNotWork(outcomeOf(result))}
@@ -615,7 +616,7 @@ export function ComputerTools() {
       return (
         <ActionLine
           running={status !== "complete"}
-          label="Listed files"
+          label={t("Listed files")}
           detail={
             outcome.refused === true || didNotWork(outcome)
               ? String(outcome.reason ?? "")
@@ -661,7 +662,7 @@ export function ComputerTools() {
       return (
         <ActionLine
           running={status !== "complete"}
-          label="Read file"
+          label={t("Read file")}
           detail={
             outcome.refused === true
               ? String(outcome.reason ?? "")
@@ -738,7 +739,7 @@ export function ComputerTools() {
       return (
         <ToolLine
           running={status !== "complete"}
-          label="Ran a command"
+          label={t("Ran a command")}
           detail={
             outcome.refused === true
               ? String(outcome.reason ?? "")
@@ -857,7 +858,7 @@ export function ComputerTools() {
     render: ({ result, status }) => (
       <ActionLine
         running={status !== "complete"}
-        label="Scrolled"
+        label={t("Scrolled")}
         refused={outcomeOf(result).refused === true}
         failed={didNotWork(outcomeOf(result))}
       />

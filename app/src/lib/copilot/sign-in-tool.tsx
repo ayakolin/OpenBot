@@ -22,6 +22,7 @@ import {
 import { useActiveBotHolder } from "./active-bot";
 import { useFrontendTool } from "./approval-tools";
 import { useComputerToolsOffered } from "./computer-available";
+import { t } from "@/lib/i18n";
 
 /** How long the open chat waits for the person to answer. The server's request lasts as long. */
 const WAIT_MS = 15 * 60_000;
@@ -198,14 +199,16 @@ function SignInCard({
         <div>
           <Button size="sm" onClick={() => setOpen(true)}>
             <IconLock />
-            Open private sign-in
+            {t("Open private sign-in")}
           </Button>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Sign in to {site}</DialogTitle>
+                <DialogTitle>
+                  {t("Sign in to")} {site}
+                </DialogTitle>
                 <DialogDescription>
-                  Goes to your Bot's browser, not into this conversation.
+                  {t("Goes to your Bot's browser, not into this conversation.")}
                 </DialogDescription>
               </DialogHeader>
               <DialogBody className="mt-4 overflow-y-auto">

@@ -9,6 +9,7 @@ import useEmblaCarousel, {
 
 import { Button } from "@/components/ui/button";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { t } from "@/lib/i18n";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -220,7 +221,7 @@ function CarouselPrevious({
       {...props}
     >
       <IconChevronLeft />
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{t("Previous slide")}</span>
     </Button>
   );
 }
@@ -250,7 +251,7 @@ function CarouselNext({
       {...props}
     >
       <IconChevronRight />
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{t("Next slide")}</span>
     </Button>
   );
 }

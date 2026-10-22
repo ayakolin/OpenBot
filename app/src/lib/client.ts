@@ -12,6 +12,8 @@
  * guessed the envelope would be a client that had to be argued with.
  */
 
+import { t } from "@/lib/i18n";
+
 export type ClientOptions = {
   /** Absent means GET. */
   method?: string;
@@ -22,6 +24,12 @@ export type ClientOptions = {
    *
    * Name the entity in it — "Could not load coworkers" rather than "Request failed" — because this
    * is the sentence that reaches the screen when the server is the one that broke.
+   *
+   * WRITTEN IN ENGLISH AT THE CALL SITE AND TRANSLATED HERE. These are a hundred-odd sentences across
+   * forty files, and they are also the strings nobody sees while the deployment is working: a screen
+   * that has never failed is a screen whose error text nobody has checked. Translating them in one
+   * place means a new call site gets the treatment by being written, rather than by somebody
+   * remembering that this particular sentence needed a `t()` too.
    */
   fallback?: string;
   /** For the calls a Bot makes on a person's behalf, which are abandoned when the turn is. */
@@ -93,7 +101,15 @@ export async function client<T>(
       .json()
       .then((body: { error?: string }) => body.error)
       .catch(() => undefined);
-    throw new Error(message ?? options.fallback ?? "That request failed.");
+    /*
+     * The server's message is translated too. Its sentences are English in `server/src`, and a
+     * deployment whose interface is Chinese should not answer a failed permission check in English.
+     * A message with a value spliced into it — `Bot x was not found` — is not a dictionary key, so
+     * it comes back unchanged, which is the same fallback every missing entry takes.
+     */
+    throw new Error(
+      message ? t(message) : t(options.fallback ?? "That request failed."),
+    );
   }
 
   if (key === undefined) return response;
@@ -102,7 +118,7 @@ export async function client<T>(
   // a TypeError on property access. Malformed success is a failed request with the fallback.
   const body = (await response.json().catch(() => null)) as unknown;
   if (!body || typeof body !== "object" || Array.isArray(body)) {
-    throw new Error(options.fallback ?? "That request failed.");
+    throw new Error(t(options.fallback ?? "That request failed."));
   }
   return (body as Record<string, T>)[key];
 }

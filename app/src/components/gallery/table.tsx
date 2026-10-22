@@ -2,6 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import type { GalleryComponent } from "@/lib/copilot/gallery-registry";
 import { Badge, GalleryFrame } from "./frame";
+import { t } from "@/lib/i18n";
 
 export const DataTableProps = z
   .object({
@@ -42,9 +43,9 @@ export function DataTable(props: Record<string, unknown>) {
   const parsed = DataTableProps.safeParse(props);
   if (!parsed.success) {
     return (
-      <GalleryFrame title="Table">
+      <GalleryFrame title={t("Table")}>
         <p className="text-sm text-muted-foreground">
-          Waiting for complete table data…
+          {t("Waiting for complete table data…")}
         </p>
       </GalleryFrame>
     );
@@ -145,7 +146,7 @@ export function DataTable(props: Record<string, unknown>) {
                         >
                           —
                         </span>
-                        <span className="sr-only">Empty</span>
+                        <span className="sr-only">{t("Empty")}</span>
                       </>
                     ) : (
                       row.cells[index]
@@ -160,7 +161,7 @@ export function DataTable(props: Record<string, unknown>) {
                   colSpan={columns.length}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
-                  No rows to show.
+                  {t("No rows to show.")}
                 </td>
               </tr>
             )}

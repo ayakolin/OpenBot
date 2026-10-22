@@ -21,6 +21,7 @@ import {
   removePushDeviceMutationOptions,
 } from "@/lib/delivery";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 const PLATFORM: Record<"ios" | "android", string> = {
   ios: "iOS",
@@ -34,8 +35,10 @@ export function NativeDevices() {
   const error = reach.error ?? remove.error;
   return (
     <PageSection
-      description="Sign in to the OpenBot app on your phone and turn on notifications to add it here."
-      title="Your devices"
+      description={t(
+        "Sign in to the OpenBot app on your phone and turn on notifications to add it here.",
+      )}
+      title={t("Your devices")}
     >
       {error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
@@ -44,7 +47,7 @@ export function NativeDevices() {
       ) : null}
       {reach.isPending || !reach.data ? null : reach.data.devices.length ===
         0 ? (
-        <PageEmpty>No devices yet.</PageEmpty>
+        <PageEmpty>{t("No devices yet.")}</PageEmpty>
       ) : (
         <PageRows>
           {reach.data.devices.map((device, index) => (
@@ -64,7 +67,7 @@ export function NativeDevices() {
                     size="sm"
                     variant="outline"
                   >
-                    Remove
+                    {t("Remove")}
                   </Button>
                 </ItemActions>
               </Item>
@@ -80,7 +83,7 @@ export function NativeDevices() {
 export function RecentDeliveries() {
   const reach = useQuery(deliveryQueryOptions());
   return (
-    <PageSection title="Recent deliveries">
+    <PageSection title={t("Recent deliveries")}>
       {reach.error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
           {reach.error.message}
@@ -88,7 +91,7 @@ export function RecentDeliveries() {
       ) : null}
       {reach.isPending || !reach.data ? null : reach.data.deliveries.length ===
         0 ? (
-        <PageEmpty>No deliveries yet.</PageEmpty>
+        <PageEmpty>{t("No deliveries yet.")}</PageEmpty>
       ) : (
         <PageRows>
           {reach.data.deliveries.map((delivery, index) => (

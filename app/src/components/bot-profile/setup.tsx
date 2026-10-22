@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import type { ZodType } from "zod";
 import { CallbackTokenPanel } from "@/components/agents/callback-token-panel";
+import { ModelSection } from "./model-section";
 import { PageRows, PageSection } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +49,7 @@ import { updateAgentMutationOptions } from "@/lib/agents/mutations";
 import type { AgentProfile } from "@/lib/agents/queries";
 import { isComposing } from "@/lib/composing";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 type TextField = "name" | "title" | "roleDescription";
 
@@ -82,7 +84,7 @@ export function SetupSections({ agent }: { agent: AgentProfile }) {
 
   return (
     <>
-      <PageSection title="Identity">
+      <PageSection title={t("Identity")}>
         <PageRows>
           {TEXT_FIELDS.map(({ field, label, icon: Icon }, index) => (
             <Fragment key={field}>
@@ -99,8 +101,8 @@ export function SetupSections({ agent }: { agent: AgentProfile }) {
                   <Icon />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>{label}</ItemTitle>
-                  <ItemDescription>{agent[field]}</ItemDescription>
+                  <ItemTitle>{t(label)}</ItemTitle>
+                  <ItemDescription>{t(agent[field])}</ItemDescription>
                 </ItemContent>
                 {agent.canManage ? (
                   <ItemActions>
@@ -123,10 +125,11 @@ export function SetupSections({ agent }: { agent: AgentProfile }) {
                   <IconShieldCheck />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>System owned</ItemTitle>
+                  <ItemTitle>{t("System owned")}</ItemTitle>
                   <ItemDescription>
-                    Ships with this deployment rather than belonging to a
-                    person.
+                    {t(
+                      "Ships with this deployment rather than belonging to a person.",
+                    )}
                   </ItemDescription>
                 </ItemContent>
               </Item>
@@ -135,6 +138,18 @@ export function SetupSections({ agent }: { agent: AgentProfile }) {
         </PageRows>
       </PageSection>
       <ConnectionSection agent={agent} />
+      {/*
+       * Only for a Bot that runs here; `ModelSection` renders nothing for a remote one, because a
+       * model it was given would be a setting that changes nothing.
+       */}
+      <PageSection
+        description={t(
+          "The model this Bot answers on, when this deployment offers a choice.",
+        )}
+        title={t("Model")}
+      >
+        <ModelSection agent={agent} />
+      </PageSection>
       {open ? (
         <EditTextDialog
           label={open.label}
@@ -165,12 +180,12 @@ function VisibilityRow({
         <IconEye />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>Visibility</ItemTitle>
+        <ItemTitle>{t("Visibility")}</ItemTitle>
         <ItemDescription>
           {error ??
             (agent.visibility === "private"
-              ? "Only you can see it and start conversations with it."
-              : "Everyone in the deployment can find and use it.")}
+              ? t("Only you can see it and start conversations with it.")
+              : t("Everyone in the deployment can find and use it."))}
         </ItemDescription>
       </ItemContent>
       <ItemActions>
@@ -178,7 +193,7 @@ function VisibilityRow({
           <Select
             disabled={saving}
             // The label map, so the closed trigger says "Private" rather than the raw value.
-            items={{ private: "Private", public: "Public" }}
+            items={{ private: t("Private"), public: t("Public") }}
             onValueChange={async (next) => {
               if (next === agent.visibility) return;
               setError(null);
@@ -189,7 +204,7 @@ function VisibilityRow({
                 setError(
                   failure instanceof Error
                     ? failure.message
-                    : "Could not save.",
+                    : t("Could not save."),
                 );
               } finally {
                 setSaving(false);
@@ -201,13 +216,13 @@ function VisibilityRow({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="private">Private</SelectItem>
-              <SelectItem value="public">Public</SelectItem>
+              <SelectItem value="private">{t("Private")}</SelectItem>
+              <SelectItem value="public">{t("Public")}</SelectItem>
             </SelectContent>
           </Select>
         ) : (
           <span className="text-muted-foreground text-sm">
-            {agent.visibility === "private" ? "Private" : "Public"}
+            {agent.visibility === "private" ? t("Private") : t("Public")}
           </span>
         )}
       </ItemActions>
@@ -258,12 +273,12 @@ function EditTextDialog({
     <Dialog onOpenChange={(next) => !next && onClose()} open>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{label}</DialogTitle>
+          <DialogTitle>{t(label)}</DialogTitle>
         </DialogHeader>
         <DialogBody className="mt-4 grid gap-2">
           {multiline ? (
             <Textarea
-              aria-label={label}
+              aria-label={t(label)}
               autoFocus
               onChange={(event) => setDraft(event.target.value)}
               rows={5}
@@ -271,7 +286,7 @@ function EditTextDialog({
             />
           ) : (
             <Input
-              aria-label={label}
+              aria-label={t(label)}
               autoFocus
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={(event) => {
@@ -296,7 +311,7 @@ function EditTextDialog({
             size="sm"
             variant="outline"
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button disabled={saving} onClick={() => void submit()} size="sm">
             {saving ? "Saving…" : "Save"}
@@ -314,21 +329,23 @@ function EditTextDialog({
 function ConnectionSection({ agent }: { agent: AgentProfile }) {
   const builtIn = !agent.endpoint || agent.builtIn;
   return (
-    <PageSection title="Connection">
+    <PageSection title={t("Connection")}>
       <PageRows>
         <Item size="sm">
           <ItemMedia variant="icon">
             <IconPlugConnected />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>{builtIn ? "Built in" : "Endpoint"}</ItemTitle>
+            <ItemTitle>{builtIn ? t("Built in") : t("Endpoint")}</ItemTitle>
             <ItemDescription
               className={
                 builtIn ? undefined : "line-clamp-none break-all font-mono"
               }
             >
               {builtIn
-                ? "Runs on this deployment's own Bot. Nothing to connect and nothing to authenticate."
+                ? t(
+                    "Runs on this deployment's own Bot. Nothing to connect and nothing to authenticate.",
+                  )
                 : agent.endpoint}
             </ItemDescription>
           </ItemContent>

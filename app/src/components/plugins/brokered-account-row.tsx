@@ -26,6 +26,7 @@ import {
   disconnectBrokeredMutationOptions,
   recheckBrokeredConnectionMutationOptions,
 } from "@/lib/plugins/mutations";
+import { t } from "@/lib/i18n";
 
 /**
  * One person's own brokered account, on whichever screen is asking.
@@ -924,7 +925,9 @@ export function BrokeredAccountRow({
                * at it twice. A button that cannot work is worse than no button — it invites the
                * second press that files a record of an act that did not happen.
                */
-              <span className="text-muted-foreground text-xs">Key missing</span>
+              <span className="text-muted-foreground text-xs">
+                {t("Key missing")}
+              </span>
             ) : account.connected ? (
               <>
                 {/* Decorative: the word beside it already says which. */}
@@ -933,7 +936,9 @@ export function BrokeredAccountRow({
                   className="size-1.5 rounded-full bg-emerald-500"
                 />
                 {/* The same word for both kinds. The line beneath says what it rests on. */}
-                <span className="text-muted-foreground text-xs">Connected</span>
+                <span className="text-muted-foreground text-xs">
+                  {t("Connected")}
+                </span>
                 {/*
                  * OFFERED ONLY ON A KEY APP, BECAUSE THAT IS THE ONLY KIND A RE-CHECK IS AN ACT ON.
                  * A consent connection is written verified by the confirm, with no probe behind it,
@@ -978,7 +983,7 @@ export function BrokeredAccountRow({
                   type="button"
                   variant="outline"
                 >
-                  Disconnect
+                  {t("Disconnect")}
                 </Button>
               </>
             ) : (
@@ -1002,7 +1007,7 @@ export function BrokeredAccountRow({
                 type="button"
                 variant="outline"
               >
-                Connect
+                {t("Connect")}
                 <IconArrowUpRight />
               </Button>
             )}
@@ -1015,7 +1020,7 @@ export function BrokeredAccountRow({
           <DialogHeader>
             {/* The title the row above cannot have: this exists only while the account is not
                 connected, so it is free to name the act rather than the subject. */}
-            <DialogTitle>Connect your account</DialogTitle>
+            <DialogTitle>{t("Connect your account")}</DialogTitle>
           </DialogHeader>
           <DialogBody className="mt-4">
             {/*
@@ -1054,7 +1059,7 @@ export function BrokeredAccountRow({
               />
             ) : account.requestingFields ? (
               <p className="text-muted-foreground text-sm">
-                Asking the app what it needs…
+                {t("Asking the app what it needs…")}
               </p>
             ) : (
               /*
@@ -1066,8 +1071,9 @@ export function BrokeredAccountRow({
                * on a second open and not only on a first.
                */
               <p className="text-muted-foreground text-sm">
-                That app could not be asked what it needs. Close this and try
-                again.
+                {t(
+                  "That app could not be asked what it needs. Close this and try again.",
+                )}
               </p>
             )}
             {/*

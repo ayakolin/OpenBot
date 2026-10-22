@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/layout/page-shell";
 import { NativeDevices, RecentDeliveries } from "@/components/settings/devices";
 import { UpdateRoutingSection } from "@/components/settings/update-routing";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/settings/notifications")({
   component: NotificationsPage,
@@ -11,8 +12,10 @@ export const Route = createFileRoute("/_authed/settings/notifications")({
 function NotificationsPage() {
   return (
     <PageShell
-      description="Where updates from all your Bots reach you when you are not looking. How much each Bot sends is on its own page."
-      title="Notifications"
+      description={t(
+        "Where updates from all your Bots reach you when you are not looking. How much each Bot sends is on its own page.",
+      )}
+      title={t("Notifications")}
     >
       <UpdateRoutingSection />
       <NativeDevices />

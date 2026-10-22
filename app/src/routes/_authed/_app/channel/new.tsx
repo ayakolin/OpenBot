@@ -31,6 +31,7 @@ import {
 import { useStartChannel } from "@/lib/channels/start";
 import { useSkillCommands } from "@/lib/plugins/skill-commands";
 import { newId } from "../../../../lib/new-id";
+import { t } from "@/lib/i18n";
 
 /**
  * Creates the conversation on first send. One Bot in the To: field is an ordinary channel; two or
@@ -116,7 +117,7 @@ function RouteComponent() {
     <div className="flex h-full flex-col">
       <div className="h-12 border-b border-border sticky top-0 flex flex-row px-2 items-center">
         <SidebarToggle className="mr-1" />
-        <span className="text-sm text-muted-foreground">To:</span>
+        <span className="text-sm text-muted-foreground">{t("To:")}</span>
         <Combobox
           // Do not auto-open when the recipient came from the URL; the field is already answered.
           defaultOpen={!chosen && !loadError && !waitingForUrlAgent}
@@ -161,8 +162,8 @@ function RouteComponent() {
               autoFocus={!chosen}
               placeholder={
                 selected.length
-                  ? "Add another Bot for a group…"
-                  : "Choose a Bot…"
+                  ? t("Add another Bot for a group…")
+                  : t("Choose a Bot…")
               }
             />
           </ComboboxChips>
@@ -172,14 +173,14 @@ function RouteComponent() {
             className="min-w-0 max-w-lg"
             sideOffset={12}
           >
-            <ComboboxEmpty>No Bots found.</ComboboxEmpty>
+            <ComboboxEmpty>{t("No Bots found.")}</ComboboxEmpty>
             <ComboboxList>
               {(item: AgentProfile) => (
                 <ComboboxItem key={item.id} value={item} className="h-10">
                   <ChannelAvatar participantIds={[item.id]} size={24} />
                   {item.name}
                   <span className="truncate text-muted-foreground ml-1">
-                    {item.title}
+                    {t(item.title)}
                   </span>
                 </ComboboxItem>
               )}

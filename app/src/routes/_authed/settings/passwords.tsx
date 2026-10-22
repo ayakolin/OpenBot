@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { deleteSavedLoginMutationOptions } from "@/lib/passwords/mutations";
 import { savedLoginsQueryOptions } from "@/lib/passwords/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/settings/passwords")({
   component: PasswordsPage,
@@ -36,23 +37,27 @@ function PasswordsPage() {
   const remove = useMutation(deleteSavedLoginMutationOptions(queryClient));
   return (
     <PageShell
-      title="Passwords"
-      description="Logins you saved when signing a Bot in to a website. A Bot never sees them, and each use needs your confirmation."
+      title={t("Passwords")}
+      description={t(
+        "Logins you saved when signing a Bot in to a website. A Bot never sees them, and each use needs your confirmation.",
+      )}
     >
-      <PageSection title="Saved logins">
+      <PageSection title={t("Saved logins")}>
         {logins.isPending ? null : logins.error ? (
           <p className="text-destructive text-sm" role="alert">
-            Could not load your passwords.
+            {t("Could not load your passwords.")}
           </p>
         ) : !logins.data.passwordManager ? (
           <PageEmpty>
-            Saved passwords are turned off for this workspace. Existing logins
-            are kept but not offered.
+            {t(
+              "Saved passwords are turned off for this workspace. Existing logins are kept but not offered.",
+            )}
           </PageEmpty>
         ) : logins.data.logins.length === 0 ? (
           <PageEmpty>
-            No saved logins. Choose Save to Passwords when you sign a Bot in to
-            a website.
+            {t(
+              "No saved logins. Choose Save to Passwords when you sign a Bot in to a website.",
+            )}
           </PageEmpty>
         ) : (
           <PageRows>

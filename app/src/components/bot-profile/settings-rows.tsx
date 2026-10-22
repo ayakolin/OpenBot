@@ -41,6 +41,7 @@ import { agentPluginsQueryOptions } from "@/lib/plugins/queries";
 import { routinesQueryOptions } from "@/lib/routines/queries";
 import { teamBotsQueryOptions } from "@/lib/team-bots";
 import { connectorCount } from "./access";
+import { t } from "@/lib/i18n";
 
 type Row = {
   to:
@@ -184,7 +185,7 @@ export function BotSettingsRows({ agent }: { agent: AgentProfile }) {
   ];
 
   return (
-    <PageSection title="Settings for this Bot">
+    <PageSection title={t("Settings for this Bot")}>
       <PageRows>
         {rows.map(({ to, title, icon: Icon, summary }, index) => (
           <Fragment key={to}>
@@ -197,8 +198,10 @@ export function BotSettingsRows({ agent }: { agent: AgentProfile }) {
                 <Icon />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{title}</ItemTitle>
-                <ItemDescription>{summary}</ItemDescription>
+                {/* Translated where it is drawn: the table above is built when this module is
+                    imported, before anybody's language is known. */}
+                <ItemTitle>{t(title)}</ItemTitle>
+                <ItemDescription>{t(summary)}</ItemDescription>
               </ItemContent>
               <ItemActions>
                 <IconChevronRight className="size-4 text-muted-foreground" />

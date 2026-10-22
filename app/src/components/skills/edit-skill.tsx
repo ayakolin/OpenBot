@@ -4,6 +4,7 @@ import { SkillAgents } from "@/components/skills/skill-agents";
 import { SkillFields } from "@/components/skills/skill-fields";
 import { saveSkillMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * Editing a skill, in the same panel that writes one.
@@ -38,7 +39,7 @@ export function EditSkill({ slug }: { slug: string }) {
     return (
       <div className="mx-auto flex w-full max-w-xl flex-col gap-6 p-8">
         <p className="text-destructive text-sm" role="alert">
-          This skill could not be loaded.
+          {t("This skill could not be loaded.")}
         </p>
       </div>
     );
@@ -54,7 +55,7 @@ export function EditSkill({ slug }: { slug: string }) {
          * not own.
          */}
         <p className="text-muted-foreground text-sm">
-          That skill no longer exists, or it is not yours to edit.
+          {t("That skill no longer exists, or it is not yours to edit.")}
         </p>
       </div>
     );
@@ -63,10 +64,10 @@ export function EditSkill({ slug }: { slug: string }) {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-6 p-8">
       <header>
-        <h1 className="text-2xl font-semibold">Edit skill</h1>
+        <h1 className="text-2xl font-semibold">{t("Edit skill")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Changes apply the next time <code>/{skill.slug}</code> is used. Agents
-          already carrying it keep it.
+          {t("Changes apply the next time")} <code>/{skill.slug}</code>{" "}
+          {t("is used. Agents already carrying it keep it.")}
         </p>
       </header>
 

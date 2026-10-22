@@ -18,6 +18,7 @@ import {
 import { auditEventsQueryOptions, auditExportUrl } from "@/lib/audit/queries";
 import { silenceOf } from "@/lib/audit/silence";
 import { client } from "@/lib/client";
+import { t } from "@/lib/i18n";
 
 /**
  * Read surface for policy, computer, component, MCP, and credential audit events.
@@ -125,16 +126,18 @@ function AuditPage() {
             variant="outline"
           >
             <IconDownload />
-            {exporting ? "Exporting…" : "Export CSV"}
+            {exporting ? t("Exporting…") : t("Export CSV")}
           </Button>
           <Button onClick={() => events.refetch()} size="sm" variant="ghost">
             <IconRefresh />
-            Refresh
+            {t("Refresh")}
           </Button>
         </div>
       }
-      description="Every action a Bot took, and every one this deployment's policy refused."
-      title="Audit"
+      description={t(
+        "Every action a Bot took, and every one this deployment's policy refused.",
+      )}
+      title={t("Audit")}
       width="wide"
     >
       <PageSection>
@@ -148,7 +151,7 @@ function AuditPage() {
               /* The fill is the state, as on every other set of switches in the app. */
               variant={search === filter.search ? "default" : "outline"}
             >
-              {filter.label}
+              {t(filter.label)}
             </Button>
           ))}
         </div>
@@ -160,27 +163,29 @@ function AuditPage() {
         ) : null}
         {exportCapped ? (
           <p className="mt-4 text-muted-foreground text-sm" role="status">
-            The file holds the newest {exportCapped.toLocaleString()} events,
-            not all of them. Narrow the filter or the dates to export the rest.
+            {t("The file holds the newest")} {exportCapped.toLocaleString()}{" "}
+            {t(
+              "events, not all of them. Narrow the filter or the dates to export the rest.",
+            )}
           </p>
         ) : null}
         {events.isPending ? null : events.isError ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
-            The audit trail could not be loaded.
+            {t("The audit trail could not be loaded.")}
           </p>
         ) : rows.length === 0 ? (
-          <PageEmpty>No events match this filter yet.</PageEmpty>
+          <PageEmpty>{t("No events match this filter yet.")}</PageEmpty>
         ) : (
           <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-card">
             <table className="w-full text-left text-sm">
               <thead className="text-muted-foreground text-xs uppercase">
                 <tr className="border-border border-b">
-                  <th className="px-4 py-2 font-medium">When</th>
-                  <th className="px-4 py-2 font-medium">What</th>
+                  <th className="px-4 py-2 font-medium">{t("When")}</th>
+                  <th className="px-4 py-2 font-medium">{t("What")}</th>
                   <th className="px-4 py-2 font-medium">On</th>
-                  <th className="px-4 py-2 font-medium">Bot</th>
-                  <th className="px-4 py-2 font-medium">Started by</th>
-                  <th className="px-4 py-2 font-medium">Decision</th>
+                  <th className="px-4 py-2 font-medium">{t("Bot")}</th>
+                  <th className="px-4 py-2 font-medium">{t("Started by")}</th>
+                  <th className="px-4 py-2 font-medium">{t("Decision")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -209,7 +214,7 @@ function StartedBy({
         className="font-medium text-amber-600 dark:text-amber-500"
         title={event.initiatorId ?? undefined}
       >
-        A routine
+        {t("A routine")}
       </span>
     );
   }
@@ -235,15 +240,17 @@ function StartedBy({
         title={event.initiatorId ?? undefined}
       >
         {event.initiatorKind === "memory"
-          ? "A memory source"
-          : "A responsibility"}
+          ? t("A memory source")
+          : t("A responsibility")}
       </span>
     );
   }
   if (event.initiatorKind === "deployment") {
-    return <span className="text-muted-foreground">This deployment</span>;
+    return (
+      <span className="text-muted-foreground">{t("This deployment")}</span>
+    );
   }
-  return <span className="text-muted-foreground">A person</span>;
+  return <span className="text-muted-foreground">{t("A person")}</span>;
 }
 
 function Row({
@@ -383,7 +390,11 @@ function Row({
         >
           {routed ??
             DECISIONS[event.eventType] ??
-            (refused ? "Blocked" : failed ? "Did not happen" : "Allowed")}
+            (refused
+              ? t("Blocked")
+              : failed
+                ? t("Did not happen")
+                : t("Allowed"))}
         </span>
         {/* Refusal reasons mirror the conversation-facing reason. */}
         {(event.eventType === "component.refused" ||
@@ -462,7 +473,7 @@ function Row({
         decision.allowed === false &&
         decision.carriedOut ? (
           <div className="text-xs text-muted-foreground">
-            dry-run: recorded, not enforced
+            {t("dry-run: recorded, not enforced")}
           </div>
         ) : null}
       </td>

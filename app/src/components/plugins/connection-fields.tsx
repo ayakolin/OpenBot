@@ -8,6 +8,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import type { BrokerField } from "@/lib/plugins/mutations";
+import { t } from "@/lib/i18n";
 
 /**
  * What one app asks for, drawn from what that app published.
@@ -111,7 +112,7 @@ export function ConnectionFields({
         <Item key={field.name} variant="muted">
           <ItemContent>
             <ItemTitle>
-              <label htmlFor={`${form}-${field.name}`}>{field.label}</label>
+              <label htmlFor={`${form}-${field.name}`}>{t(field.label)}</label>
             </ItemTitle>
             {/* Unclamped: the app's own instructions are the point of the row, not a hint under it. */}
             {field.help ? (

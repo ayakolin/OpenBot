@@ -59,6 +59,7 @@ import {
   triggersQueryOptions,
 } from "@/lib/responsibilities";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 export const KIND_LABEL: Record<TriggerKind, string> = {
   webhook: "Webhook",
@@ -184,7 +185,7 @@ export function Triggers({ goal }: { goal: ResponsibilityRecord }) {
   return (
     <section className="grid gap-2">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="font-medium text-sm">Triggers</h3>
+        <h3 className="font-medium text-sm">{t("Triggers")}</h3>
         <Button
           size="sm"
           variant="outline"
@@ -192,13 +193,13 @@ export function Triggers({ goal }: { goal: ResponsibilityRecord }) {
           onClick={() => setAdding(true)}
         >
           <IconPlus />
-          Add trigger
+          {t("Add trigger")}
         </Button>
       </div>
       {goal.status !== "active" && (
         <p className="text-muted-foreground text-xs">
-          This responsibility is {goal.status}, so its triggers are acknowledged
-          but never run it.
+          {t("This responsibility is")} {goal.status}, so its triggers are
+          acknowledged but never run it.
         </p>
       )}
       {triggers.error && (
@@ -208,8 +209,9 @@ export function Triggers({ goal }: { goal: ResponsibilityRecord }) {
       )}
       {triggers.data?.length === 0 && (
         <p className="text-muted-foreground text-xs">
-          No triggers. It runs when you press Run now, or on the event
-          subscriptions above.
+          {t(
+            "No triggers. It runs when you press Run now, or on the event subscriptions above.",
+          )}
         </p>
       )}
       {triggers.data?.length ? (
@@ -310,14 +312,14 @@ function TriggerRow({
               disabled={remove.isPending}
               onClick={() => remove.mutate(trigger)}
             >
-              Remove for good
+              {t("Remove for good")}
             </Button>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setConfirmRemove(false)}
             >
-              Keep
+              {t("Keep")}
             </Button>
           </>
         ) : (
@@ -327,7 +329,7 @@ function TriggerRow({
               variant="ghost"
               onClick={() => setConfirmRemove(true)}
             >
-              Remove
+              {t("Remove")}
             </Button>
             <Switch
               aria-label={`Run on this ${KIND_LABEL[trigger.kind]} trigger`}
@@ -346,36 +348,35 @@ function TriggerRow({
         </p>
         {url && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs">POST to</span>
+            <span className="text-xs">{t("POST to")}</span>
             <Copyable>{url}</Copyable>
-            <CopyButton value={url} label="Copy URL" />
+            <CopyButton value={url} label={t("Copy URL")} />
           </div>
         )}
         {trigger.kind === "email" &&
           (trigger.address ? (
             <div className="flex flex-wrap items-center gap-2">
               <Copyable>{trigger.address}</Copyable>
-              <CopyButton value={trigger.address} label="Copy address" />
+              <CopyButton value={trigger.address} label={t("Copy address")} />
             </div>
           ) : (
             <p className="text-amber-600 text-xs dark:text-amber-500">
-              Inbound email is not configured on this deployment
-              (OPENBOT_INBOUND_EMAIL_DOMAIN and
-              OPENBOT_INBOUND_EMAIL_SNS_TOPIC_ARNS), so this address cannot
-              receive mail yet.
+              {t(
+                "Inbound email is not configured on this deployment (OPENBOT_INBOUND_EMAIL_DOMAIN and OPENBOT_INBOUND_EMAIL_SNS_TOPIC_ARNS), so this address cannot receive mail yet.",
+              )}
             </p>
           ))}
         {generated && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs">Key</span>
+            <span className="text-xs">{t("Key")}</span>
             {shown ? (
               <>
                 <Copyable>{shown}</Copyable>
-                <CopyButton value={shown} label="Copy key" />
+                <CopyButton value={shown} label={t("Copy key")} />
                 {trigger.kind === "webhook" && (
                   <CopyButton
                     value={`Authorization: Bearer ${shown}`}
-                    label="Copy header"
+                    label={t("Copy header")}
                   />
                 )}
               </>
@@ -388,7 +389,7 @@ function TriggerRow({
                   reveal.mutate(trigger.id, { onSuccess: setSecret })
                 }
               >
-                Show key
+                {t("Show key")}
               </Button>
             )}
             <Button
@@ -397,7 +398,7 @@ function TriggerRow({
               disabled={rotate.isPending}
               onClick={rotateSecret}
             >
-              Rotate key
+              {t("Rotate key")}
             </Button>
           </div>
         )}
@@ -420,25 +421,25 @@ function TriggerRow({
               }
             >
               {trigger.hasSecret
-                ? "Signing secret stored"
-                : "Waiting for the signing secret"}
+                ? t("Signing secret stored")
+                : t("Waiting for the signing secret")}
             </span>
             <div className="flex items-center gap-2">
               <Input
-                aria-label="Signing secret"
+                aria-label={t("Signing secret")}
                 type="password"
                 autoComplete="new-password"
                 placeholder={
                   trigger.hasSecret
-                    ? "Paste a new secret to rotate"
-                    : "Paste the signing secret"
+                    ? t("Paste a new secret to rotate")
+                    : t("Paste the signing secret")
                 }
                 value={pasted}
                 onChange={(event) => setPasted(event.target.value)}
                 required
               />
               <Button size="sm" type="submit" disabled={rotate.isPending}>
-                Save secret
+                {t("Save secret")}
               </Button>
             </div>
           </form>
@@ -533,9 +534,9 @@ function NewTriggerDialog({
           would otherwise render a nested dialog with no backdrop at all. */}
       <DialogContent overlayClassName="bg-black/20 supports-backdrop-filter:backdrop-blur-sm">
         <DialogHeader>
-          <DialogTitle>Add trigger</DialogTitle>
+          <DialogTitle>{t("Add trigger")}</DialogTitle>
           <DialogDescription>
-            Something outside OpenBot that starts this responsibility.
+            {t("Something outside OpenBot that starts this responsibility.")}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4 overflow-y-auto">
@@ -559,7 +560,7 @@ function NewTriggerDialog({
           >
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor={`${id}-kind`}>Trigger</FieldLabel>
+                <FieldLabel htmlFor={`${id}-kind`}>{t("Trigger")}</FieldLabel>
                 <Select
                   items={KIND_LABEL}
                   onValueChange={(value) => {
@@ -584,18 +585,20 @@ function NewTriggerDialog({
                 <FieldGroup className="sm:grid sm:grid-cols-2">
                   <Field>
                     <FieldLabel htmlFor={`${id}-team`}>
-                      Slack team ID
+                      {t("Slack team ID")}
                     </FieldLabel>
                     <Input
                       id={`${id}-team`}
                       required
-                      placeholder="T0123ABCD"
+                      placeholder={t("T0123ABCD")}
                       value={teamId}
                       onChange={(event) => setTeamId(event.target.value)}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`${id}-mode`}>Fire on</FieldLabel>
+                    <FieldLabel htmlFor={`${id}-mode`}>
+                      {t("Fire on")}
+                    </FieldLabel>
                     <Select
                       items={SLACK_MODE}
                       onValueChange={(value) => {
@@ -620,7 +623,7 @@ function NewTriggerDialog({
                   {mode === "phrase" && (
                     <Field>
                       <FieldLabel htmlFor={`${id}-phrases`}>
-                        Phrases (comma separated)
+                        {t("Phrases (comma separated)")}
                       </FieldLabel>
                       <Input
                         id={`${id}-phrases`}
@@ -633,11 +636,11 @@ function NewTriggerDialog({
                   {mode === "reaction" && (
                     <Field>
                       <FieldLabel htmlFor={`${id}-reactions`}>
-                        Reactions (blank: any)
+                        {t("Reactions (blank: any)")}
                       </FieldLabel>
                       <Input
                         id={`${id}-reactions`}
-                        placeholder="eyes, rotating_light"
+                        placeholder={t("eyes, rotating_light")}
                         value={reactions}
                         onChange={(event) => setReactions(event.target.value)}
                       />
@@ -645,11 +648,11 @@ function NewTriggerDialog({
                   )}
                   <Field>
                     <FieldLabel htmlFor={`${id}-channels`}>
-                      Channel IDs (blank: all the Bot is in)
+                      {t("Channel IDs (blank: all the Bot is in)")}
                     </FieldLabel>
                     <Input
                       id={`${id}-channels`}
-                      placeholder="C0123ABCD"
+                      placeholder={t("C0123ABCD")}
                       value={channels}
                       onChange={(event) => setChannels(event.target.value)}
                     />
@@ -658,7 +661,9 @@ function NewTriggerDialog({
               ) : (
                 <FieldGroup className="sm:grid sm:grid-cols-2">
                   <Field className="sm:col-span-2">
-                    <FieldLabel htmlFor={`${id}-types`}>Event types</FieldLabel>
+                    <FieldLabel htmlFor={`${id}-types`}>
+                      {t("Event types")}
+                    </FieldLabel>
                     <Input
                       id={`${id}-types`}
                       placeholder={placeholder[kind]}
@@ -668,20 +673,22 @@ function NewTriggerDialog({
                   </Field>
                   <Field>
                     <FieldLabel htmlFor={`${id}-path`}>
-                      Only when field
+                      {t("Only when field")}
                     </FieldLabel>
                     <Input
                       id={`${id}-path`}
-                      placeholder="data.team.key"
+                      placeholder={t("data.team.key")}
                       value={fieldPath}
                       onChange={(event) => setFieldPath(event.target.value)}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`${id}-equals`}>equals</FieldLabel>
+                    <FieldLabel htmlFor={`${id}-equals`}>
+                      {t("equals")}
+                    </FieldLabel>
                     <Input
                       id={`${id}-equals`}
-                      placeholder="ENG"
+                      placeholder={t("ENG")}
                       value={fieldEquals}
                       onChange={(event) => setFieldEquals(event.target.value)}
                     />
@@ -689,11 +696,11 @@ function NewTriggerDialog({
                   {kind === "github" && (
                     <Field className="sm:col-span-2">
                       <FieldLabel htmlFor={`${id}-repo`}>
-                        Repository (optional)
+                        {t("Repository (optional)")}
                       </FieldLabel>
                       <Input
                         id={`${id}-repo`}
-                        placeholder="owner/name"
+                        placeholder={t("owner/name")}
                         value={repository}
                         onChange={(event) => setRepository(event.target.value)}
                       />
@@ -702,11 +709,11 @@ function NewTriggerDialog({
                   {kind === "email" && (
                     <Field className="sm:col-span-2">
                       <FieldLabel htmlFor={`${id}-senders`}>
-                        Allowed senders (blank: anyone)
+                        {t("Allowed senders (blank: anyone)")}
                       </FieldLabel>
                       <Input
                         id={`${id}-senders`}
-                        placeholder="ops@example.com, example.com"
+                        placeholder={t("ops@example.com, example.com")}
                         value={senders}
                         onChange={(event) => setSenders(event.target.value)}
                       />
@@ -715,7 +722,7 @@ function NewTriggerDialog({
                   {VENDOR_SECRET.has(kind) && (
                     <Field className="sm:col-span-2">
                       <FieldLabel htmlFor={`${id}-secret`}>
-                        Signing secret (can be added later)
+                        {t("Signing secret (can be added later)")}
                       </FieldLabel>
                       <Input
                         id={`${id}-secret`}
@@ -739,7 +746,7 @@ function NewTriggerDialog({
         </DialogBody>
         <DialogFooter className="mt-4">
           <Button onClick={onClose} size="sm" type="button" variant="outline">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={create.isPending}

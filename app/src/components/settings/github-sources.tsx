@@ -33,6 +33,7 @@ import {
   removeGithubBindingMutationOptions,
 } from "@/lib/responsibilities";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * The repositories whose GitHub events can start this person's responsibilities. One per person, not
@@ -51,11 +52,13 @@ export function GithubSources() {
       action={
         <Button onClick={() => setAdding(true)} size="sm" variant="ghost">
           <IconPlus />
-          Add a repository
+          {t("Add a repository")}
         </Button>
       }
-      description="Register a repository, then add its webhook in GitHub using the address below and the same secret. A responsibility can then start on one of its events, such as issues.opened."
-      title="GitHub events"
+      description={t(
+        "Register a repository, then add its webhook in GitHub using the address below and the same secret. A responsibility can then start on one of its events, such as issues.opened.",
+      )}
+      title={t("GitHub events")}
     >
       {error ? (
         <p className="mt-4 text-destructive text-sm" role="alert">
@@ -64,7 +67,7 @@ export function GithubSources() {
       ) : null}
       {bindings.isPending || !bindings.data ? null : bindings.data.length ===
         0 ? (
-        <PageEmpty>No repositories connected.</PageEmpty>
+        <PageEmpty>{t("No repositories connected.")}</PageEmpty>
       ) : (
         <PageRows>
           {bindings.data.map((binding, index) => (
@@ -77,7 +80,9 @@ export function GithubSources() {
                 <ItemContent>
                   <ItemTitle>{binding.repository}</ItemTitle>
                   <ItemDescription className="line-clamp-none break-all font-mono text-xs">
-                    {window.location.origin}/api/events/github/{binding.id}
+                    {window.location.origin}
+                    {t("/api/events/github/")}
+                    {binding.id}
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions>
@@ -87,7 +92,7 @@ export function GithubSources() {
                     size="sm"
                     variant="outline"
                   >
-                    Disconnect
+                    {t("Disconnect")}
                   </Button>
                 </ItemActions>
               </Item>
@@ -112,9 +117,9 @@ function AddRepositoryDialog({ onClose }: { onClose: () => void }) {
     <Dialog onOpenChange={(next) => !next && onClose()} open>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a repository</DialogTitle>
+          <DialogTitle>{t("Add a repository")}</DialogTitle>
           <DialogDescription>
-            Use the same secret when you add the webhook in GitHub.
+            {t("Use the same secret when you add the webhook in GitHub.")}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4">
@@ -139,20 +144,20 @@ function AddRepositoryDialog({ onClose }: { onClose: () => void }) {
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor={`${formId}-repository`}>
-                  Repository
+                  {t("Repository")}
                 </FieldLabel>
                 <Input
                   autoFocus
                   id={`${formId}-repository`}
                   onChange={(event) => setRepository(event.target.value)}
-                  placeholder="owner/repository"
+                  placeholder={t("owner/repository")}
                   required
                   value={repository}
                 />
               </Field>
               <Field>
                 <FieldLabel htmlFor={`${formId}-secret`}>
-                  Webhook secret
+                  {t("Webhook secret")}
                 </FieldLabel>
                 <Input
                   autoComplete="new-password"
@@ -173,7 +178,7 @@ function AddRepositoryDialog({ onClose }: { onClose: () => void }) {
         </DialogBody>
         <DialogFooter className="mt-4">
           <Button onClick={onClose} size="sm" variant="outline">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={create.isPending}
@@ -181,7 +186,7 @@ function AddRepositoryDialog({ onClose }: { onClose: () => void }) {
             size="sm"
             type="submit"
           >
-            Connect events
+            {t("Connect events")}
           </Button>
         </DialogFooter>
       </DialogContent>

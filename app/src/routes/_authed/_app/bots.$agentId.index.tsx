@@ -5,6 +5,7 @@ import { BotProfile } from "@/components/bot-profile/profile";
 import { BotSettingsRows } from "@/components/bot-profile/settings-rows";
 import { PageShell } from "@/components/layout/page-shell";
 import { agentQueryOptions } from "@/lib/agents/queries";
+import { t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/_app/bots/$agentId/")({
   component: BotProfilePage,
@@ -18,12 +19,12 @@ function BotProfilePage() {
   return (
     <PageShell
       backButton={{ label: "Bots", linkProps: { to: "/bots" } }}
-      description="What this Bot is doing for you, and how it is set up."
+      description={t("What this Bot is doing for you, and how it is set up.")}
       title={agent.data?.name ?? "Bot"}
     >
       {agent.isPending ? null : agent.error ? (
         <p className="mt-6 text-destructive text-sm" role="alert">
-          This Bot is not one you can reach.
+          {t("This Bot is not one you can reach.")}
         </p>
       ) : (
         <BotProfile

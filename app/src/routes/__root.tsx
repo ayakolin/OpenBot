@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LocaleProvider } from "@/lib/i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import type { RouterContext } from "../router-context";
 import "@fontsource-variable/inter/wght.css";
@@ -118,13 +119,21 @@ export function useUnclaimedDropGuard() {
 
 function RootComponent() {
   useUnclaimedDropGuard();
+  /*
+   * The language wraps everything inside the query client (mounted in main.tsx), because it reads the
+   * person's preference from the server and every screen below it renders through `useTranslate`.
+   * Above `ThemeProvider` so the sign-in screen is translated too: somebody who cannot read English
+   * needs the language switch before they have an account to save a preference to.
+   */
   return (
-    <div className="min-h-dvh w-full antialiased">
-      <ThemeProvider>
-        <TooltipProvider>
-          <Outlet />
-        </TooltipProvider>
-      </ThemeProvider>
-    </div>
+    <LocaleProvider>
+      <div className="min-h-dvh w-full antialiased">
+        <ThemeProvider>
+          <TooltipProvider>
+            <Outlet />
+          </TooltipProvider>
+        </ThemeProvider>
+      </div>
+    </LocaleProvider>
   );
 }

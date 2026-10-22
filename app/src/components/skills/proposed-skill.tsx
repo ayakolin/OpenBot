@@ -9,6 +9,7 @@ import {
   skillCardAnswer,
   wasSaved,
 } from "@/lib/skills/proposal";
+import { t } from "@/lib/i18n";
 
 /**
  * The skill a Bot has written, put in front of the person before it is saved.
@@ -60,7 +61,7 @@ export function ProposedSkillCard({
   if (result !== undefined) {
     return (
       <GalleryFrame
-        action={<Badge tone="neutral">Done</Badge>}
+        action={<Badge tone="neutral">{t("Done")}</Badge>}
         title={titleFor(args.slug, replaces)}
       >
         <p className="text-sm">{result}</p>
@@ -74,7 +75,9 @@ export function ProposedSkillCard({
   if (!respond) {
     return (
       <GalleryFrame title={titleFor(args.slug, replaces)}>
-        <p className="text-sm text-muted-foreground">Writing the skill…</p>
+        <p className="text-sm text-muted-foreground">
+          {t("Writing the skill…")}
+        </p>
       </GalleryFrame>
     );
   }
@@ -108,7 +111,7 @@ export function ProposedSkillCard({
 
   return (
     <GalleryFrame
-      action={<Badge tone="caution">Waiting on you</Badge>}
+      action={<Badge tone="caution">{t("Waiting on you")}</Badge>}
       caption={
         replaces
           ? `This replaces ${replaces.title}, which is ${replaces.ownership}.`
@@ -117,19 +120,19 @@ export function ProposedSkillCard({
       title={titleFor(values.slug, replaces)}
     >
       <dl className="grid grid-cols-[minmax(0,7rem)_1fr] gap-x-4 gap-y-1.5 text-sm">
-        <dt className="truncate text-muted-foreground">Command</dt>
+        <dt className="truncate text-muted-foreground">{t("Command")}</dt>
         <dd className="min-w-0 break-words font-mono">/{values.slug}</dd>
-        <dt className="truncate text-muted-foreground">Title</dt>
+        <dt className="truncate text-muted-foreground">{t("Title")}</dt>
         <dd className="min-w-0 break-words">{values.title}</dd>
         {values.summary ? (
           <>
-            <dt className="truncate text-muted-foreground">One-liner</dt>
+            <dt className="truncate text-muted-foreground">{t("One-liner")}</dt>
             <dd className="min-w-0 break-words">{values.summary}</dd>
           </>
         ) : null}
         {values.tools.length > 0 ? (
           <>
-            <dt className="truncate text-muted-foreground">Needs</dt>
+            <dt className="truncate text-muted-foreground">{t("Needs")}</dt>
             <dd className="min-w-0 break-words font-mono text-xs">
               {values.tools.join(", ")}
             </dd>
@@ -137,7 +140,7 @@ export function ProposedSkillCard({
         ) : null}
       </dl>
 
-      <p className="mt-3 text-muted-foreground text-xs">Instructions</p>
+      <p className="mt-3 text-muted-foreground text-xs">{t("Instructions")}</p>
       {/* Scrolled rather than clamped: this is the part worth reading before agreeing to it. */}
       <p className="mt-1 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-muted/40 px-3 py-2 text-sm">
         {values.instructions}
@@ -145,8 +148,9 @@ export function ProposedSkillCard({
 
       {values.tools.length > 0 ? (
         <p className="mt-2 text-muted-foreground text-xs">
-          Naming a tool grants nothing. A Bot is offered these only if an
-          administrator has already granted them to it.
+          {t(
+            "Naming a tool grants nothing. A Bot is offered these only if an administrator has already granted them to it.",
+          )}
         </p>
       ) : null}
 
@@ -197,7 +201,7 @@ function PutItOnABot({ slug }: { slug: string }) {
       search={{ edit: slug }}
       to="/skills"
     >
-      Put it on a Bot
+      {t("Put it on a Bot")}
     </Link>
   );
 }
@@ -232,12 +236,13 @@ function Unwritable({
 
   return (
     <GalleryFrame
-      action={<Badge tone="negative">Not saved</Badge>}
-      title="Skill"
+      action={<Badge tone="negative">{t("Not saved")}</Badge>}
+      title={t("Skill")}
     >
       <p className="text-sm">
-        The Bot's draft was not a valid skill, so nothing was saved. It has been
-        told what to fix.
+        {t(
+          "The Bot's draft was not a valid skill, so nothing was saved. It has been told what to fix.",
+        )}
       </p>
     </GalleryFrame>
   );

@@ -8,6 +8,7 @@ import {
   personalConnections,
 } from "@/lib/plugins/queries";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 /**
  * The app a Bot needed, offered where the person is reading, instead of the name of a screen.
@@ -113,23 +114,28 @@ export function ConnectAppCard({
       data-connect-app={serverId}
     >
       <div className="flex flex-col gap-1">
-        <p className="font-medium text-sm">Connect {title}</p>
+        <p className="font-medium text-sm">
+          {t("Connect")} {title}
+        </p>
         <p className="text-muted-foreground text-sm">{message}</p>
       </div>
       {connected ? (
         <p className="text-sm" role="status">
-          {title} is connected. Ask again and the Bot can use it.
+          {title} {t("is connected. Ask again and the Bot can use it.")}
         </p>
       ) : needsKey ? (
         <p className="text-sm" role="status">
-          {title} is connected with a key you hold rather than by visiting a
-          page.{" "}
+          {title}{" "}
+          {t(
+            "is connected with a key you hold rather than by visiting a page.",
+          )}{" "}
           <Link
             className="underline underline-offset-2"
             params={{ key: serverId }}
             to="/settings/connected-accounts/$key"
           >
-            Enter it on {title}'s page
+            {t("Enter it on")} {title}
+            {t("'s page")}
           </Link>
           , then ask again.
         </p>
@@ -141,19 +147,20 @@ export function ConnectAppCard({
           </Button>
           {waiting ? (
             <p className="text-muted-foreground text-sm" role="status">
-              Finish in the tab that opened, then come back here.
+              {t("Finish in the tab that opened, then come back here.")}
             </p>
           ) : null}
           {blockedUrl ? (
             <p className="text-sm" role="status">
-              This browser blocked the tab.{" "}
+              {t("This browser blocked the tab.")}{" "}
               <a
                 className="underline underline-offset-2"
                 href={blockedUrl}
                 rel="noreferrer"
                 target="_blank"
               >
-                Open {title}'s sign-in
+                {t("Open")} {title}
+                {t("'s sign-in")}
               </a>
               .
             </p>

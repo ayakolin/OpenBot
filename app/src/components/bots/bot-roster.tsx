@@ -28,6 +28,7 @@ import {
   type BotAttention,
   botAttentionQueryOptions,
 } from "@/lib/bot-lifecycle/queries";
+import { t } from "@/lib/i18n";
 
 /**
  * Every Bot the person can reach, in the one place they are listed: pinned first, then their own,
@@ -46,7 +47,7 @@ export function BotRoster() {
   if (agents.data === undefined) {
     return (
       <p className="mt-6 text-destructive text-sm" role="alert">
-        Could not load your Bots.
+        {t("Could not load your Bots.")}
       </p>
     );
   }
@@ -63,33 +64,33 @@ export function BotRoster() {
   return (
     <>
       {needsYou.length ? (
-        <PageSection title="Needs you">
+        <PageSection title={t("Needs you")}>
           <RosterRows agents={needsYou} byId={byId} />
         </PageSection>
       ) : null}
       {pinned.length ? (
-        <PageSection title="Pinned">
+        <PageSection title={t("Pinned")}>
           <RosterRows agents={pinned} byId={byId} />
         </PageSection>
       ) : null}
-      <PageSection title="Yours">
+      <PageSection title={t("Yours")}>
         {yours.length ? (
           <RosterRows agents={yours} byId={byId} />
         ) : (
           <PageEmpty>
             {yoursPinned
-              ? "Your Bots are all pinned above."
+              ? t("Your Bots are all pinned above.")
               : yoursWaiting
-                ? "Your Bots are all under Needs you."
-                : "You have no Bots of your own yet."}
+                ? t("Your Bots are all under Needs you.")
+                : t("You have no Bots of your own yet.")}
           </PageEmpty>
         )}
       </PageSection>
-      <PageSection title="Shared with you">
+      <PageSection title={t("Shared with you")}>
         {shared.length ? (
           <RosterRows agents={shared} byId={byId} />
         ) : (
-          <PageEmpty>Nobody has shared a Bot with you yet.</PageEmpty>
+          <PageEmpty>{t("Nobody has shared a Bot with you yet.")}</PageEmpty>
         )}
       </PageSection>
       {hidden.data?.length ? (
@@ -119,7 +120,7 @@ function HiddenSection({
         </Button>
       }
       description={`${agents.length} ${agents.length === 1 ? "Bot" : "Bots"} you took off this list. Nobody else's list changed.`}
-      title="Hidden"
+      title={t("Hidden")}
     >
       {open ? <RosterRows agents={agents} byId={byId} /> : null}
     </PageSection>
@@ -159,8 +160,8 @@ function RosterRows({
                 />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{agent.name}</ItemTitle>
-                <ItemDescription>{summary || agent.title}</ItemDescription>
+                <ItemTitle>{t(agent.name)}</ItemTitle>
+                <ItemDescription>{summary || t(agent.title)}</ItemDescription>
               </ItemContent>
               <ItemActions>
                 {state && needsInput(state) > 0 ? (

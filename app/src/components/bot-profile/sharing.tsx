@@ -53,6 +53,7 @@ import {
   unpublishTeamBotMutationOptions,
 } from "@/lib/team-bots";
 import { queryClient } from "@/query-client";
+import { t } from "@/lib/i18n";
 
 const list = (value: string) =>
   value
@@ -84,7 +85,7 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
 
   return (
     <>
-      <PageSection title="Published">
+      <PageSection title={t("Published")}>
         {unpublish.error ? (
           <p className="mt-4 text-destructive text-sm" role="alert">
             {unpublish.error.message}
@@ -104,8 +105,10 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                 </ItemTitle>
                 <ItemDescription>
                   {published.visibleToTeam
-                    ? "Each chat with it is private to the person having it."
-                    : "Hidden from teammates until it has a real name and a description."}
+                    ? t("Each chat with it is private to the person having it.")
+                    : t(
+                        "Hidden from teammates until it has a real name and a description.",
+                      )}
                 </ItemDescription>
               </ItemContent>
               {agent.mine ? (
@@ -116,7 +119,7 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                     size="sm"
                     variant="outline"
                   >
-                    Unpublish
+                    {t("Unpublish")}
                   </Button>
                 </ItemActions>
               ) : null}
@@ -127,8 +130,10 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                 <IconLink />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Link</ItemTitle>
-                <ItemDescription>Opens a private chat with it.</ItemDescription>
+                <ItemTitle>{t("Link")}</ItemTitle>
+                <ItemDescription>
+                  {t("Opens a private chat with it.")}
+                </ItemDescription>
               </ItemContent>
               <ItemActions>
                 <Button
@@ -157,7 +162,9 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
       </PageSection>
       {agent.mine && (published || publishable) ? (
         <PageSection
-          description="Publishing does not change its visibility, and it can be undone."
+          description={t(
+            "Publishing does not change its visibility, and it can be undone.",
+          )}
           title={published ? "Who it is published to" : "Publish"}
         >
           {/* More than one value — an audience, then people and groups — so a summary row and a
@@ -173,7 +180,7 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                 <IconUsersGroup />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>Audience</ItemTitle>
+                <ItemTitle>{t("Audience")}</ItemTitle>
                 <ItemDescription>{audienceSummary(published)}</ItemDescription>
               </ItemContent>
               <ItemActions>
@@ -192,8 +199,10 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
       ) : null}
       {me?.role === "admin" && published ? (
         <PageSection
-          description="An assigned Bot is pinned at the top of every member's Bots list. Use * for the whole team."
-          title="Assign to groups"
+          description={t(
+            "An assigned Bot is pinned at the top of every member's Bots list. Use * for the whole team.",
+          )}
+          title={t("Assign to groups")}
         >
           <Assignments bot={published} />
         </PageSection>
@@ -246,7 +255,9 @@ function PublishDialog({
             {current ? "Who it is published to" : "Publish"}
           </DialogTitle>
           <DialogDescription>
-            Publishing does not change its visibility, and it can be undone.
+            {t(
+              "Publishing does not change its visibility, and it can be undone.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4 overflow-y-auto">
@@ -270,7 +281,7 @@ function PublishDialog({
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor={`${formId}-audience`}>
-                  Published to
+                  {t("Published to")}
                 </FieldLabel>
                 <Select
                   items={AUDIENCES}
@@ -299,21 +310,23 @@ function PublishDialog({
                 <>
                   <Field>
                     <FieldLabel htmlFor={`${formId}-people`}>
-                      People, by email
+                      {t("People, by email")}
                     </FieldLabel>
                     <Input
                       id={`${formId}-people`}
                       onChange={(event) => setEmails(event.target.value)}
-                      placeholder="Comma separated"
+                      placeholder={t("Comma separated")}
                       value={emails}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor={`${formId}-groups`}>Groups</FieldLabel>
+                    <FieldLabel htmlFor={`${formId}-groups`}>
+                      {t("Groups")}
+                    </FieldLabel>
                     <Input
                       id={`${formId}-groups`}
                       onChange={(event) => setGroups(event.target.value)}
-                      placeholder="Comma separated"
+                      placeholder={t("Comma separated")}
                       value={groups}
                     />
                   </Field>
@@ -330,7 +343,7 @@ function PublishDialog({
         </DialogBody>
         <DialogFooter className="mt-4">
           <Button onClick={onClose} size="sm" type="button" variant="outline">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={publish.isPending}
@@ -362,7 +375,7 @@ function Assignments({ bot }: { bot: TeamBot }) {
         </p>
       ) : null}
       {assigned.length === 0 ? (
-        <PageEmpty>Not assigned to any group.</PageEmpty>
+        <PageEmpty>{t("Not assigned to any group.")}</PageEmpty>
       ) : null}
       <PageRows>
         {assigned.map((name) => (
@@ -384,7 +397,7 @@ function Assignments({ bot }: { bot: TeamBot }) {
                   size="sm"
                   variant="outline"
                 >
-                  Remove
+                  {t("Remove")}
                 </Button>
               </ItemActions>
             </Item>
@@ -399,7 +412,7 @@ function Assignments({ bot }: { bot: TeamBot }) {
             <IconPlus />
           </ItemMedia>
           <ItemContent>
-            <ItemTitle>Assign to a group</ItemTitle>
+            <ItemTitle>{t("Assign to a group")}</ItemTitle>
           </ItemContent>
           <ItemActions>
             <IconChevronRight className="size-4 text-muted-foreground" />
@@ -422,9 +435,11 @@ function AssignDialog({ bot, onClose }: { bot: TeamBot; onClose: () => void }) {
     <Dialog onOpenChange={(next) => !next && onClose()} open>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Assign {bot.name} to a group</DialogTitle>
+          <DialogTitle>
+            {t("Assign")} {bot.name} {t("to a group")}
+          </DialogTitle>
           <DialogDescription>
-            It is pinned at the top of every member's Bots list.
+            {t("It is pinned at the top of every member's Bots list.")}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4">
@@ -436,11 +451,13 @@ function AssignDialog({ bot, onClose }: { bot: TeamBot; onClose: () => void }) {
             }}
           >
             <Field>
-              <FieldLabel htmlFor={`${formId}-group`}>Group, or *</FieldLabel>
+              <FieldLabel htmlFor={`${formId}-group`}>
+                {t("Group, or *")}
+              </FieldLabel>
               <Input
                 id={`${formId}-group`}
                 onChange={(event) => setGroup(event.target.value)}
-                placeholder="* for the whole team"
+                placeholder={t("* for the whole team")}
                 value={group}
               />
             </Field>
@@ -453,7 +470,7 @@ function AssignDialog({ bot, onClose }: { bot: TeamBot; onClose: () => void }) {
         </DialogBody>
         <DialogFooter className="mt-4">
           <Button onClick={onClose} size="sm" type="button" variant="outline">
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={!group.trim() || assign.isPending}
@@ -461,7 +478,7 @@ function AssignDialog({ bot, onClose }: { bot: TeamBot; onClose: () => void }) {
             size="sm"
             type="submit"
           >
-            Assign
+            {t("Assign")}
           </Button>
         </DialogFooter>
       </DialogContent>
