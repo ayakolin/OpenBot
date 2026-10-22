@@ -71,19 +71,21 @@ export function DataTable(props: Record<string, unknown>) {
       caption={caption}
       action={
         <Badge>
-          {rows.length} {rows.length === 1 ? "row" : "rows"}
+          {rows.length === 1
+            ? t("{count} row", { count: rows.length })
+            : t("{count} rows", { count: rows.length })}
         </Badge>
       }
     >
       <section
         className="overflow-x-auto rounded-lg border border-border focus-visible:outline-2 focus-visible:outline-ring"
-        aria-label={`${title} table, scroll for more columns`}
+        aria-label={t("{title} table, scroll for more columns", { title })}
         // biome-ignore lint/a11y/noNoninteractiveTabindex: Overflow regions need keyboard focus to scroll in Safari; the region has an accessible name.
         tabIndex={0}
       >
         <table className="w-full border-collapse text-left text-sm">
           <caption className="sr-only">
-            {title}. Select a column heading to sort.
+            {t("{title}. Select a column heading to sort.", { title })}
           </caption>
           <thead className="bg-muted/50 text-xs text-muted-foreground">
             <tr>
@@ -171,8 +173,14 @@ export function DataTable(props: Record<string, unknown>) {
       {rows.length > 1 && (
         <p className="mt-2 text-xs text-muted-foreground" aria-live="polite">
           {sort
-            ? `Sorted by ${columns[sort.column]}, ${sort.ascending ? "ascending" : "descending"}.`
-            : "Select a column heading to sort."}
+            ? sort.ascending
+              ? t("Sorted by {column}, ascending.", {
+                  column: columns[sort.column],
+                })
+              : t("Sorted by {column}, descending.", {
+                  column: columns[sort.column],
+                })
+            : t("Select a column heading to sort.")}
         </p>
       )}
     </GalleryFrame>
@@ -182,22 +190,28 @@ export function DataTable(props: Record<string, unknown>) {
 export const GALLERY: GalleryComponent[] = [
   {
     name: "showTable",
-    title: "Data table",
+    get title() {
+      return t("Data table");
+    },
     kind: "card",
     description:
       "Show a sortable table to compare records, plans, or other structured facts. Supply up to eight columns and 100 rows, with exactly one cell per column. Use numbers for quantities so sorting is numeric. Show only data you have; do not invent rows.",
     parameters: DataTableProps,
     Component: DataTable,
     confirmation: "The sortable table is now on screen for the person.",
-    preview: {
-      title: "Team capacity",
-      caption: "Three teams, one shared launch. Hours available this week.",
-      columns: ["Team", "Available hours", "Focus"],
-      rows: [
-        { cells: ["Product", 24, "Customer onboarding"] },
-        { cells: ["Engineering", 72, "Release readiness"] },
-        { cells: ["Design", 18, "Workspace polish"] },
-      ],
+    get preview() {
+      return {
+        title: t("Team capacity"),
+        caption: t(
+          "Three teams, one shared launch. Hours available this week.",
+        ),
+        columns: [t("Team"), t("Available hours"), t("Focus")],
+        rows: [
+          { cells: [t("Product"), 24, t("Customer onboarding")] },
+          { cells: [t("Engineering"), 72, t("Release readiness")] },
+          { cells: [t("Design"), 18, t("Workspace polish")] },
+        ],
+      };
     },
   },
 ];

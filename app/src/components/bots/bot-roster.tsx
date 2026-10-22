@@ -28,6 +28,7 @@ import {
   type BotAttention,
   botAttentionQueryOptions,
 } from "@/lib/bot-lifecycle/queries";
+import { displayAgentName } from "@/lib/agents/display-name";
 import { t } from "@/lib/i18n";
 
 /**
@@ -164,13 +165,13 @@ function RosterRows({
             >
               <ItemMedia>
                 <AbstractAvatar
-                  name={agent.name}
+                  name={displayAgentName(agent, t)}
                   seed={agent.avatarSeed}
                   size={28}
                 />
               </ItemMedia>
               <ItemContent>
-                <ItemTitle>{t(agent.name)}</ItemTitle>
+                <ItemTitle>{displayAgentName(agent, t)}</ItemTitle>
                 <ItemDescription>{summary || t(agent.title)}</ItemDescription>
               </ItemContent>
               <ItemActions>

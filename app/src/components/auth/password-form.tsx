@@ -21,6 +21,8 @@ import { t } from "@/lib/i18n";
 export function PasswordForm({
   canSignUp,
   onDone,
+  mode: controlledMode,
+  onModeChange,
 }: {
   /**
    * Whether to offer "create an account".
@@ -31,8 +33,17 @@ export function PasswordForm({
   canSignUp: boolean;
   /** Called after a successful sign-in or sign-up, so the screen can leave for the app. */
   onDone: () => void;
+  mode?: "sign-in" | "sign-up";
+  onModeChange?: (mode: "sign-in" | "sign-up") => void;
 }) {
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+  const [internalMode, setInternalMode] = useState<"sign-in" | "sign-up">(
+    "sign-in",
+  );
+  const mode = controlledMode ?? internalMode;
+  const setMode = (next: "sign-in" | "sign-up") => {
+    setInternalMode(next);
+    onModeChange?.(next);
+  };
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

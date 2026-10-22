@@ -43,6 +43,7 @@ import {
 import { queryClient } from "@/query-client";
 import { BotActivitySections } from "./activity";
 import { BotPausedBanner } from "./pause-banner";
+import { displayAgentName } from "@/lib/agents/display-name";
 import { t } from "@/lib/i18n";
 
 const NOTIFY_LABEL = (): Record<BotNotify, string> => ({
@@ -80,7 +81,11 @@ export function BotProfile({
   return (
     <>
       <div className="mt-6 flex items-center gap-3">
-        <AbstractAvatar name={agent.name} seed={agent.avatarSeed} size={40} />
+        <AbstractAvatar
+          name={displayAgentName(agent, t)}
+          seed={agent.avatarSeed}
+          size={40}
+        />
         <div className="min-w-0">
           <p className="truncate font-medium">{t(agent.title)}</p>
           <p className="line-clamp-2 text-muted-foreground text-sm">
@@ -219,7 +224,7 @@ export function BotProfile({
               </ItemMedia>
               <ItemContent>
                 <ItemTitle>
-                  {t("Message")} {agent.name}
+                  {t("Message")} {displayAgentName(agent, t)}
                 </ItemTitle>
                 <ItemDescription>{t("Start a conversation.")}</ItemDescription>
               </ItemContent>

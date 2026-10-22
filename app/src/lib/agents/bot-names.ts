@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { t } from "@/lib/i18n";
+import { displayAgentName } from "./display-name";
 import { type AgentProfile, agentListQueryOptions } from "./queries";
 
 /**
@@ -8,8 +10,8 @@ import { type AgentProfile, agentListQueryOptions } from "./queries";
  */
 
 /** Stable query selector so the id-to-name map only rebuilds when the roster changes. */
-const toNames = (agents: AgentProfile[]): Map<string, string> =>
-  new Map(agents.map((agent) => [agent.id, agent.name]));
+const toNames = (agents: AgentProfile[]): Map<string, AgentProfile> =>
+  new Map(agents.map((agent) => [agent.id, agent]));
 
 export function useBotNames(): (botId: string) => string {
   const { data: names } = useQuery({
@@ -17,5 +19,15 @@ export function useBotNames(): (botId: string) => string {
     select: toNames,
   });
 
-  return useCallback((botId: string) => names?.get(botId) ?? botId, [names]);
+  /*
+   * Translated when asked rather than inside the selector, so the cached map never holds a name
+   * rendered in a language that has since changed.
+   */
+  return useCallback(
+    (botId: string) => {
+      const agent = names?.get(botId);
+      return agent ? displayAgentName(agent, t) : botId;
+    },
+    [names],
+  );
 }

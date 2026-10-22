@@ -50,6 +50,7 @@ function SignScreen() {
   const { data: options } = useQuery(authProvidersQueryOptions());
   const providers = options?.providers ?? [];
   const [email, setEmail] = useState("");
+  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
 
   /**
    * Sign in through whichever identity provider covers this address.
@@ -156,7 +157,9 @@ function SignScreen() {
           transition={{ duration: ENTRANCE_SECONDS, ease: EASE_OUT }}
           variants={{ hidden, shown }}
         >
-          {t("Sign in to")} {appConfig.brand.productName}
+          {mode === "sign-up"
+            ? t("Create your account")
+            : `${t("Sign in to")} ${appConfig.brand.productName}`}
         </motion.h1>
         <motion.div
           className="mt-8 w-full"
@@ -233,6 +236,8 @@ function SignScreen() {
               ) : null}
               <PasswordForm
                 canSignUp={options.credentials}
+                mode={mode}
+                onModeChange={setMode}
                 onDone={() => {
                   /*
                    * A full reload rather than a router navigation: the session cookie is set by the

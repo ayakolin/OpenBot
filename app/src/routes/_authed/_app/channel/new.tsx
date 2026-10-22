@@ -104,6 +104,7 @@ function RouteComponent() {
   const recipients: Recipient[] = selected.map((profile) => ({
     id: profile.id,
     name: profile.name,
+    systemOwned: profile.systemOwned,
   }));
   const group = startsGroup(recipients);
   // A group's first message goes to all of its Bots, so no one Bot's commands are offered.

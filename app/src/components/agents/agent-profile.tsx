@@ -5,6 +5,7 @@ import { AbstractAvatar } from "@/components/agents/abstract-avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { agentQueryOptions } from "@/lib/agents/queries";
+import { displayAgentName } from "@/lib/agents/display-name";
 import { t } from "@/lib/i18n";
 
 function Tag({ children }: { children: ReactNode }) {
@@ -69,13 +70,13 @@ export function AgentProfile({ agentId }: { agentId: string }) {
     <div className="flex w-full flex-col gap-6 p-8">
       <header className="flex flex-col items-center gap-3 text-center">
         <AbstractAvatar
-          name={profile.name}
+          name={displayAgentName(profile, t)}
           seed={profile.avatarSeed}
           size={80}
         />
         <div className="flex w-full flex-col items-center gap-0.5">
           <h1 className="w-full text-balance text-2xl font-semibold leading-tight tracking-tight">
-            {profile.name}
+            {displayAgentName(profile, t)}
           </h1>
           <p className="w-full text-balance text-sm text-muted-foreground">
             {profile.title}
@@ -115,7 +116,7 @@ export function AgentProfile({ agentId }: { agentId: string }) {
           )}
           variant="outline"
         >
-          {t("Open")} {profile.name}
+          {t("Open")} {displayAgentName(profile, t)}
         </Button>
       </div>
     </div>
