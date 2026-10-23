@@ -212,6 +212,13 @@ describe("strings that were never asked for a translation", () => {
     );
   });
 
+  test("the group participant count", () => {
+    expect(EN("{count} person", { count: 1 })).toBe("1 person");
+    expect(EN("{count} people", { count: 3 })).toBe("3 people");
+    expect(ZH("{count} person", { count: 1 })).toBe("1 人");
+    expect(ZH("{count} people", { count: 3 })).toBe("3 人");
+  });
+
   test("the two research labels, wherever the app reads them", () => {
     expect(readToolName("mcp__exa__web_search_exa").label).toBe(
       "Search the web",

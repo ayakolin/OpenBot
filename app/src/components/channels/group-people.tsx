@@ -50,7 +50,10 @@ export function GroupPeopleButton({ channelId }: { channelId: string }) {
   const iCreated = people.some(
     (person) => person.creator && person.userId === me?.id,
   );
-  const count = `${people.length} ${people.length === 1 ? "person" : "people"}`;
+  const count =
+    people.length === 1
+      ? t("{count} person", { count: people.length })
+      : t("{count} people", { count: people.length });
 
   return (
     <>
