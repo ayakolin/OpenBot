@@ -63,7 +63,7 @@ import {
   botSharedAppsQueryOptions,
   describeApproval,
 } from "@/lib/plugins/shared-use";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /**
  * One vendor: what it needs from this deployment, and which Bots hold its tools.
@@ -183,6 +183,17 @@ export function connectionKindFor(
  * buttons — somebody reading with a screen reader has to be told the controls are gone and why,
  * not left to notice their absence.
  */
+/** "Not listed by {vendor}[ as of the last refresh]." as one sentence per case, so each translates whole. */
+export function notListedSentence(
+  title: string,
+  refreshed: boolean,
+  tr: Translate = t,
+): string {
+  return refreshed
+    ? tr("Not listed by {title} as of the last refresh.", { title })
+    : tr("Not listed by {title}.", { title });
+}
+
 function ConnectionStateUnreadable() {
   return (
     <Item size="sm">
@@ -1178,9 +1189,7 @@ function RouteComponent() {
                       {held.name}
                     </ItemTitle>
                     <ItemDescription>
-                      {t("Not listed by")} {title}
-                      {server.toolsRefreshedAt ? ` as of the last refresh` : ""}
-                      .
+                      {notListedSentence(title, !!server.toolsRefreshedAt)}
                     </ItemDescription>
                   </ItemContent>
                   <ItemActions>

@@ -2,7 +2,24 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { agentListQueryOptions } from "@/lib/agents/queries";
 import { setPluginGrantMutationOptions } from "@/lib/plugins/mutations";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** What carrying a skill does for an Agent, with the skill's command set in a <code>. */
+export function SkillOfferHint({
+  slug,
+  tr = t,
+}: {
+  slug: string;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "An Agent carrying this offers {command} in its composer.",
+    { command: <code>/{slug}</code> },
+    undefined,
+    tr,
+  );
+}
 
 /**
  * Which of your Agents carry this skill.
@@ -67,8 +84,7 @@ export function SkillAgents({
             })}
           </div>
           <p className="text-muted-foreground text-xs">
-            {t("An Agent carrying this offers")} <code>/{slug}</code>{" "}
-            {t("in its composer.")}
+            <SkillOfferHint slug={slug} />
           </p>
         </>
       )}

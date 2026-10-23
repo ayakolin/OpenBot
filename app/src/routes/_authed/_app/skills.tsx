@@ -32,7 +32,8 @@ import { Separator } from "@/components/ui/separator";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { removeSkillMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 /**
  * Personal `/` skills. They are instructions, not capabilities, and can only be granted to Bots the
@@ -54,6 +55,16 @@ export const Route = createFileRoute("/_authed/_app/skills")({
   validateSearch: skillsSearchSchema,
   component: SkillsPage,
 });
+
+/** What a skill is, as one sentence with the slash command set in it. */
+export function SkillsIntro({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "A skill is a named instruction you invoke with {slash} and a Bot follows. Yours are yours alone, and go on the Bots you own.",
+    { slash: <code>/</code> },
+    undefined,
+    tr,
+  );
+}
 
 function SkillsPage() {
   const queryClient = useQueryClient();
@@ -107,17 +118,7 @@ function SkillsPage() {
       onClose={() => navigate({ search: {} })}
       open={showCreate || showEdit}
     >
-      <PageShell
-        description={
-          <>
-            {t("A skill is a named instruction you invoke with")} <code>/</code>{" "}
-            {t(
-              "and a Bot follows. Yours are yours alone, and go on the Bots you own.",
-            )}
-          </>
-        }
-        title={t("Agent Skills")}
-      >
+      <PageShell description={<SkillsIntro />} title={t("Agent Skills")}>
         {error ? (
           <p className="text-sm text-destructive" role="alert">
             {error}

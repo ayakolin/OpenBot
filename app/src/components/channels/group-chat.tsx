@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { Streamdown } from "streamdown";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import {
@@ -19,7 +19,47 @@ import { newId } from "@/lib/new-id";
 import { ChannelAvatar } from "./avatar";
 import { Composer, toAgentOptions } from "./composer";
 import { TeamBotConsentCard } from "./team-bot-consent";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** The empty-group prompt. `names` is the Bots' own names, joined; the rest is one translated sentence. */
+export function sayTo(names: string, tr: Translate = t): string {
+  return tr(
+    "Say something to {names}. Every Bot answers in turn; start with @Name to ask just one.",
+    { names },
+  );
+}
+
+/** What a teammate sees when a Bot asked for the consent that only the account's owner can give. */
+export function consentAsk(serverId: string, tr: Translate = t): string {
+  return tr(
+    "Asked a teammate for permission to use their own {server} account.",
+    {
+      server: serverId,
+    },
+  );
+}
+
+/**
+ * Why a Bot is waiting, then the way to it. A reason the Bot wrote is its own text and keeps the
+ * plain space; our fallback sentence is translated, and Chinese does not space between sentences.
+ */
+export function WaitingLine({
+  reason,
+  link,
+  tr = t,
+}: {
+  reason: string | null | undefined;
+  link: ReactNode;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {reason ?? tr("Waiting for your response.")}
+      {reason == null ? tr(" ") : " "}
+      {link}
+    </>
+  );
+}
 
 /**
  * One conversation with several Bots, read from the server's shared transcript.
@@ -64,11 +104,7 @@ export function GroupChat({ channelId }: { channelId: string }) {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 py-6">
           {messages.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {t("Say something to")}{" "}
-              {bots.map((bot) => bot.name).join(" and ")}
-              {t(
-                ". Every Bot answers in turn; start with @Name to ask just one.",
-              )}
+              {sayTo(bots.map((bot) => bot.name).join(" and "))}
             </p>
           ) : null}
           {messages.map((message) => (
@@ -171,14 +207,18 @@ function GroupLine({
           </p>
         ) : message.status === "waiting" ? (
           <p className="text-sm text-muted-foreground">
-            {message.reason ?? t("Waiting for your response.")}{" "}
-            <Link
-              className="underline"
-              params={{ agentId: message.agentId }}
-              to="/bots/$agentId"
-            >
-              {t("Open")} {name}
-            </Link>
+            <WaitingLine
+              reason={message.reason}
+              link={
+                <Link
+                  className="underline"
+                  params={{ agentId: message.agentId }}
+                  to="/bots/$agentId"
+                >
+                  {t("Open")} {name}
+                </Link>
+              }
+            />
           </p>
         ) : message.consent ? (
           // Only the person whose account it asked for can answer; everyone else sees the ask.
@@ -190,8 +230,7 @@ function GroupLine({
             />
           ) : (
             <p className="text-sm text-muted-foreground">
-              {t("Asked a teammate for permission to use their own")}{" "}
-              {message.consent.serverId} {t("account.")}
+              {consentAsk(message.consent.serverId)}
             </p>
           )
         ) : message.status === "failed" ? (

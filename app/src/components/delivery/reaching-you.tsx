@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Fragment, useEffect, useId, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useId, useState } from "react";
 import {
   PageEmpty,
   PageRows,
@@ -54,6 +54,7 @@ import {
 } from "@/lib/delivery";
 import { queryClient } from "@/query-client";
 import { t, type Translate } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 /**
  * The phone verification waiting for its code, kept for the tab.
@@ -113,6 +114,34 @@ export const TRANSPORTS: Record<
     summary: "Continue a conversation by text message.",
   },
 };
+
+/** Where the person's devices and deliveries are, as one sentence with the link set in it. */
+export function DevicesHint({
+  link,
+  tr = t,
+}: {
+  link: ReactNode;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "Your devices, recent deliveries, and where each kind of update goes are in {link}.",
+    { link },
+    undefined,
+    tr,
+  );
+}
+
+/** Tells the person what to send to the OpenBot app, as one sentence with the platform and the minutes in it. */
+export function linkInstruction(
+  platform: string,
+  minutes: number,
+  tr: Translate = t,
+): string {
+  return tr(
+    "Send this message to the OpenBot app in {platform} within {minutes} minutes. It links that account to this conversation and Bot.",
+    { platform, minutes },
+  );
+}
 
 /**
  * What a transport's row says under its title: the step the person is in the middle of first, then
@@ -193,16 +222,16 @@ export function ReachingYou({ agentId: fixedBot }: { agentId?: string }) {
     <>
       {fixedBot === undefined ? (
         <p className="mt-6 text-muted-foreground text-sm">
-          {t(
-            "Your devices, recent deliveries, and where each kind of update goes are in",
-          )}{" "}
-          <Link
-            className="underline underline-offset-4"
-            to="/settings/notifications"
-          >
-            {t("Settings → Notifications")}
-          </Link>
-          .
+          <DevicesHint
+            link={
+              <Link
+                className="underline underline-offset-4"
+                to="/settings/notifications"
+              >
+                {t("Settings → Notifications")}
+              </Link>
+            }
+          />
         </p>
       ) : null}
       <PageSection title={t("Connected destinations")}>
@@ -541,12 +570,9 @@ function ConnectDialog({
             <Item size="sm" variant="muted">
               <ItemContent>
                 <ItemDescription className="line-clamp-none">
-                  {t("Send this message to the OpenBot app in")}{" "}
-                  {linked.platform === "teams" ? "Microsoft Teams" : "Slack"}{" "}
-                  {t("within")}{" "}
-                  {Math.ceil((linked.expiresAt - Date.now()) / 60_000)}{" "}
-                  {t(
-                    "minutes. It links that account to this conversation and Bot.",
+                  {linkInstruction(
+                    linked.platform === "teams" ? "Microsoft Teams" : "Slack",
+                    Math.ceil((linked.expiresAt - Date.now()) / 60_000),
                   )}
                 </ItemDescription>
                 <ItemTitle className="break-all font-mono">

@@ -19,7 +19,16 @@ import {
   type SharedUseRequestReason,
   sharedUseRequestsQueryOptions,
 } from "@/lib/plugins/shared-use";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** The request's headline: names are placeholders in one translation, not seams between four. */
+export function wantsSharedTitle(
+  bot: string,
+  app: string,
+  tr: Translate = t,
+): string {
+  return tr("{bot} wants the shared {app} account", { bot, app });
+}
 
 const WHY: Record<SharedUseRequestReason, string> = {
   refused_call:
@@ -59,15 +68,15 @@ export function SharedUseRequests() {
               </ItemMedia>
               <ItemContent>
                 <ItemTitle className="line-clamp-none">
-                  {request.botName} {t("wants the shared")} {request.title}{" "}
-                  {t("account")}
+                  {wantsSharedTitle(request.botName, request.title)}
                 </ItemTitle>
                 <ItemDescription className="line-clamp-none">
                   {WHY[request.reason as SharedUseRequestReason] ??
                     request.reason}
                 </ItemDescription>
                 <p className="text-sm">
-                  {t("Now:")}{" "}
+                  {t("Now:")}
+                  {t(" ")}
                   {request.current
                     ? describeApproval(request.current)
                     : t("Not approved")}

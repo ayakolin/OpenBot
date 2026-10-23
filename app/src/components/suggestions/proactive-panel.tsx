@@ -53,7 +53,17 @@ import {
   resolveSuggestionMutationOptions,
 } from "@/lib/proactive";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** Where a suggestion came from. The app's name is data; the fallback is a translated phrase. */
+export function suggestionSource(
+  sourceApp: string | null | undefined,
+  tr: Translate = t,
+): string {
+  return sourceApp
+    ? tr("From {app}", { app: sourceApp })
+    : tr("From a connected app");
+}
 
 const intervals = [
   { minutes: 60, label: "Every hour" },
@@ -115,8 +125,7 @@ export function SuggestionsInbox({
                     {suggestion.sourceApp || suggestion.sourceLink ? (
                       <>
                         {" · "}
-                        {t("From")}{" "}
-                        {suggestion.sourceApp ?? t("a connected app")}
+                        {suggestionSource(suggestion.sourceApp)}
                         {suggestion.sourceLink && (
                           <>
                             {" · "}

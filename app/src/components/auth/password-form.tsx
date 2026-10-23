@@ -2,7 +2,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInWithPassword, signUpWithPassword } from "@/lib/auth/client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** The question before the mode switch; the space before the button is English's alone. */
+export function ModePrompt({
+  signingUp,
+  tr = t,
+}: {
+  signingUp: boolean;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {signingUp ? tr("Already have an account?") : tr("No account yet?")}
+      {tr(" ")}
+    </>
+  );
+}
 
 /**
  * The form for a deployment that checks its own passwords.
@@ -127,7 +143,7 @@ export function PasswordForm({
       ) : null}
       {canSignUp ? (
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          {signingUp ? t("Already have an account?") : t("No account yet?")}{" "}
+          <ModePrompt signingUp={signingUp} />
           <button
             className="underline underline-offset-2"
             onClick={() => {

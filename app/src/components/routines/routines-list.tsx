@@ -49,7 +49,33 @@ import {
 } from "@/lib/routines/queries";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** The warning when no worker runs routines: a bold lead, then the detail. */
+export function NoWorkerNotice({
+  lastSweptAt,
+  tr = t,
+}: {
+  lastSweptAt: string | null | undefined;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      <span className="font-medium text-amber-600 dark:text-amber-500">
+        {tr("Nothing is running these.")}
+      </span>
+      {tr(" ")}
+      {lastSweptAt
+        ? tr(
+            "The routines worker last checked {time}. Until it is running again, none of these will fire.",
+            { time: relativeTime(lastSweptAt) },
+          )
+        : tr(
+            "No routines worker has ever checked in, so none of these will fire. A deployment needs one running to carry them out.",
+          )}
+    </>
+  );
+}
 
 /**
  * What the last-run cell says, and in what tone.
@@ -259,17 +285,7 @@ export function RoutinesList({
       {/* A fact about the deployment rather than a row to act on, so said as a sentence. */}
       {noWorker ? (
         <p className="mt-4 text-muted-foreground text-sm" role="alert">
-          <span className="font-medium text-amber-600 dark:text-amber-500">
-            {t("Nothing is running these.")}
-          </span>{" "}
-          {sweep?.lastSweptAt
-            ? t(
-                "The routines worker last checked {time}. Until it is running again, none of these will fire.",
-                { time: relativeTime(sweep.lastSweptAt) },
-              )
-            : t(
-                "No routines worker has ever checked in, so none of these will fire. A deployment needs one running to carry them out.",
-              )}
+          <NoWorkerNotice lastSweptAt={sweep?.lastSweptAt} />
         </p>
       ) : null}
 
