@@ -15,11 +15,12 @@ import { IllustrationFrame } from "@/components/onboarding/illustration-frame";
 import { LaptopIllustration } from "@/components/onboarding/laptop-illustration";
 import { OrganizationFlow } from "@/components/onboarding/organization-flow";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { displayAgentName } from "@/lib/agents/display-name";
+import { joinList } from "@/lib/agents/bot-summaries";
 import { type AgentProfile, agentListQueryOptions } from "@/lib/agents/queries";
 import { currentUserQueryOptions, needsOnboarding } from "@/lib/auth/queries";
 import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
 import { appConfig } from "@/lib/generated/application-config";
+import { rosterCardName } from "@/lib/onboarding/roster-name";
 import { completeOnboardingMutationOptions } from "@/lib/onboarding/mutations";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/query-client";
@@ -71,7 +72,7 @@ function WelcomeStep() {
             compact
             className="scale-90"
             editorClassName="text-base"
-            initialValue="Hand off tasks to your team of agents"
+            initialValue={t("Hand off tasks to your team of agents")}
           />
         </div>
       </IllustrationFrame>
@@ -138,7 +139,10 @@ function RosterStep() {
       <div className="h-8" />
       <IllustrationFrame
         className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6"
-        label={`Bots you can work with, such as ${roster.map((a) => a.name).join(", ")}, and one of your own`}
+        label={t(
+          "Bots you can work with, such as {names}, and one of your own",
+          { names: joinList(roster.map((a) => rosterCardName(a))) },
+        )}
       >
         {roster.map((a) => {
           return (
@@ -150,7 +154,7 @@ function RosterStep() {
               <Avatar name={a.avatarSeed} size={40} />
               <div className="flex min-w-0 flex-col">
                 <h3 className="line-clamp-1 text-base font-medium tracking-tight">
-                  {displayAgentName(a)}
+                  {rosterCardName(a)}
                 </h3>
                 {a.example ? (
                   <span className="text-xs text-muted-foreground">
@@ -391,10 +395,10 @@ function RouteComponent() {
                   size="lg"
                 >
                   {complete.isPending
-                    ? "Saving…"
+                    ? t("Saving…")
                     : last
-                      ? "Get started"
-                      : "Continue"}
+                      ? t("Get started")
+                      : t("Continue")}
                 </Button>
                 {step !== 0 && (
                   <Button

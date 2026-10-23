@@ -2224,5 +2224,10 @@ export const zhCN: Record<string, string> = {
   // --- zh r4 (fix/zh-r4-display-names) ---
   "{count} person": "{count} 人",
   "{count} people": "{count} 人",
+  "{count} group": "{count} 个群组",
+  "{count} groups": "{count} 个群组",
   ", ": "、",
+  "Research Analyst": "研究分析师",
+  "Data Analyst": "数据分析师",
+  "Bots you can work with, such as {names}, and one of your own": "你可以合作的机器人，例如 {names}，以及你自己的机器人",
 };

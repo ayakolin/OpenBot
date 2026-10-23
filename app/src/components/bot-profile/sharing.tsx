@@ -227,7 +227,7 @@ function audienceSummary(current: TeamBot | undefined): string {
   if (current.audience === "team") return t("The whole team");
   const parts = [
     countLabel(current.people?.length ?? 0, "person", "people", ""),
-    countLabel(current.groups?.length ?? 0, t("group"), t("groups"), ""),
+    countLabel(current.groups?.length ?? 0, "group", "groups", ""),
   ].filter(Boolean);
   return parts.length ? joinList(parts) : t("Specific people or groups");
 }

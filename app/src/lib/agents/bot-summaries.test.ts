@@ -80,6 +80,18 @@ describe("joined parts translate in place", () => {
   });
 });
 
+describe("group counts", () => {
+  test("zh-CN uses one counter for both counts", () => {
+    expect(countLabel(1, "group", "groups", "", trZh)).toBe("1 个群组");
+    expect(countLabel(3, "group", "groups", "", trZh)).toBe("3 个群组");
+  });
+
+  test("English singular and plural", () => {
+    expect(countLabel(1, "group", "groups", "", trEn)).toBe("1 group");
+    expect(countLabel(3, "group", "groups", "", trEn)).toBe("3 groups");
+  });
+});
+
 describe("person counts", () => {
   test("zh-CN uses one counter for both counts", () => {
     expect(countLabel(1, "person", "people", "", trZh)).toBe("1 人");
@@ -119,6 +131,8 @@ describe("every key these rows use is translated", () => {
     "{count} rules",
     "{count} person",
     "{count} people",
+    "{count} group",
+    "{count} groups",
     "Nothing connected",
     "Nothing granted",
     "Not shared",
