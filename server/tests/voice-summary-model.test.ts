@@ -44,6 +44,23 @@ function summarizer(
   });
 }
 
+/** The instruction reaches Anthropic as `system` and the chat-completions providers as a message. */
+function systemInstruction(
+  provider: "openai" | "anthropic",
+  body: unknown,
+): string {
+  if (!body || typeof body !== "object") return "";
+  if (provider === "anthropic" && "system" in body)
+    return String(body.system ?? "");
+  if ("messages" in body && Array.isArray(body.messages))
+    return String(
+      body.messages.find(
+        (message: { role?: unknown }) => message?.role === "system",
+      )?.content ?? "",
+    );
+  return "";
+}
+
 test.each(["openai", "anthropic"] as const)(
   "voice summaries use the selected %s API credential and protocol, including rotation",
   async (provider) => {
@@ -109,6 +126,11 @@ test.each(["openai", "anthropic"] as const)(
         expect(request.body).toMatchObject({ model: "selected-model" });
         expect(JSON.stringify(request.body)).toContain("untrusted");
         expect(JSON.stringify(request.body)).toContain("Plan the launch.");
+        // The summary follows the language the user spoke, not the deployment's UI locale.
+        const system = systemInstruction(provider, request.body);
+        expect(system).toContain("dominant language of the user's words");
+        expect(system).toContain("do not translate");
+        expect(system).not.toMatch(/\bin Chinese\b|中文/);
       }
     } finally {
       await server.stop(true);
@@ -182,6 +204,13 @@ test.each(["claude", "chatgpt"] as const)(
         expect(request.tools).toEqual([]);
         expect(request.forwardedProps.openbotModelOnly).toBe(true);
         expect(JSON.stringify(request.context)).toContain("untrusted");
+        expect(JSON.stringify(request.context)).toContain(
+          "dominant language of the user's words",
+        );
+        expect(JSON.stringify(request.context)).toContain("do not translate");
+        expect(JSON.stringify(request.context)).not.toMatch(
+          /\bin Chinese\b|中文/,
+        );
         expect(JSON.stringify(request.messages)).toContain("Plan the launch.");
         expect(JSON.stringify(request)).not.toContain("synthetic-plan-token");
       }

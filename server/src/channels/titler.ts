@@ -8,7 +8,8 @@ import { oneLine } from "./text";
 /** Rules, not an example: a model copies an example's subject as readily as its shape. */
 const INSTRUCTION = [
   "You name conversations, like a title in a sidebar.",
-  "Answer with three to six words naming what the conversation is about.",
+  "Write the title in the language of the person's own words (the lines after 'Asked:'), not the language of any answer, and never translate it.",
+  "Answer with three to six words (or an equally short phrase in a language written without spaces) naming what the conversation is about.",
   "No quotation marks, no trailing period, no prefix such as 'Conversation about'.",
   "Name the subject itself, not the fact that somebody asked about it.",
 ].join(" ");
