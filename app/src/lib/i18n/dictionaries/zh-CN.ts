@@ -2232,6 +2232,7 @@ export const zhCN: Record<string, string> = {
   "Bots you can work with, such as {names}, and one of your own": "你可以合作的机器人，例如 {names}，以及你自己的机器人",
 
   // --- zh-gallery-harnesses (fix/zh-gallery-harnesses) ---
+  "sandboxed": "沙箱",
   "Anthropic's own agent loop, speaking AG-UI.": "Anthropic 自家的智能体循环，通过 AG-UI 通信。",
   "Google's agent kit. Gemini first, any model after.": "Google 的智能体工具包。优先 Gemini，也支持任意模型。",
   "Google's agentic harness. Plans, edits and runs things itself.": "Google 的智能体运行框架。自行规划、编辑并运行。",

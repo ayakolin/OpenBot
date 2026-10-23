@@ -25,6 +25,11 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { componentListQueryOptions } from "@/lib/components/queries";
+import {
+  componentDescription,
+  componentKindLabel,
+  componentTitle,
+} from "@/lib/i18n/component-text";
 import { t } from "@/lib/i18n";
 
 /**
@@ -129,12 +134,8 @@ function RouteComponent() {
   return (
     <PageShell
       backButton={back()}
-      description={
-        component.publishedDescription
-          ? t(component.publishedDescription)
-          : undefined
-      }
-      title={t(component.title)}
+      description={componentDescription(component) ?? undefined}
+      title={componentTitle(component)}
     >
       <div className="relative mt-8 aspect-[2/1] overflow-hidden rounded-lg border border-border bg-card">
         <div className="absolute inset-0">
@@ -148,7 +149,7 @@ function RouteComponent() {
       <PageSection title={t("Details")}>
         <PageRows>
           <FactRow icon={<IconTag />} label={t("Kind")}>
-            {t(component.kind)}
+            {componentKindLabel(component)}
           </FactRow>
           <Separator />
           <FactRow icon={<IconCode />} label={t("Called as")}>

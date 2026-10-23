@@ -10,6 +10,10 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { componentListQueryOptions } from "@/lib/components/queries";
+import {
+  componentDescription,
+  componentTitle,
+} from "@/lib/i18n/component-text";
 import { t } from "@/lib/i18n";
 
 /**
@@ -66,12 +70,10 @@ function RouteComponent() {
             >
               <div className="min-h-28 p-4">
                 <h4 className="line-clamp-1 font-medium text-sm">
-                  {t(component.title)}
+                  {componentTitle(component)}
                 </h4>
                 <p className="mt-2 line-clamp-2 text-muted-foreground text-xs">
-                  {component.publishedDescription
-                    ? t(component.publishedDescription)
-                    : null}
+                  {componentDescription(component)}
                 </p>
               </div>
               <div className="relative flex-1">
