@@ -34,6 +34,31 @@ describe("asking the model for a title", () => {
     expect(calls[0]?.body.model).toBe("gpt-4.1-mini");
   });
 
+  test("asks for the title in the language of the person's own words", async () => {
+    const { calls, fetchImpl } = respondWith({
+      choices: [{ message: { content: "差旅报销规则" } }],
+    });
+
+    await createChannelTitler({
+      model: "gpt-4.1-mini",
+      resolveApiKey: async () => "key-123",
+      environment: {},
+      fetchImpl,
+    })("Asked: 差旅报销的发票怎么算？\nAnswered: 需要行程单和发票。");
+
+    const messages = calls[0]?.body.messages as
+      | { role: string; content: string }[]
+      | undefined;
+    const system = messages?.find((message) => message.role === "system");
+    // The language follows the person's words, not the reply, and not the deployment's UI locale.
+    expect(system?.content).toContain("person's own words");
+    expect(system?.content).toContain("not the language of any answer");
+    expect(system?.content).toContain("never translate");
+    // Naming a language in the length rule primes the model toward that language.
+    expect(system?.content).not.toContain("Chinese");
+    expect(system?.content).not.toContain("中文");
+  });
+
   test("asks the endpoint OPENAI_BASE_URL names, not OpenAI", async () => {
     const { calls, fetchImpl } = respondWith({
       choices: [{ message: { content: "Travel receipt rules" } }],
