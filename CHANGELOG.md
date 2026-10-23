@@ -32,6 +32,19 @@ Newest first. `Unreleased` is what is on `main` and not yet tagged.
   `code_required` (below). A server and a computer must be upgraded together: an older computer has
   no `/sign-in/code`.
 
+### The embedded database is waited for, not raced
+
+With `EMBEDDED_POSTGRES=on`, a container could start its migrations while its own database was still
+starting up. The log showed it: `PostgresError: the database system is starting up`, then
+`s6-rc: warning: unable to start service migrate: command exited 1`, then a health check failing on
+`ECONNREFUSED` — the API never started because it waits on the migration. s6 counts the database
+service started when the process is spawned, not when the server answers, so the ordering it was
+supposed to give did not exist. The migration now waits for the database to accept connections
+before connecting, and says so once at the start, once every ten seconds while it waits, and once
+with how long it took. `MIGRATE_WAIT_TIMEOUT` raises the 60-second limit for a slow disk or a large
+database. It applies to the embedded database only; a Helm release migrates from a Job with its own
+wait (`migrations.waitForDatabaseSeconds`).
+
 ### A new desktop install starts its server again
 
 A desktop install of v0.2.0 stopped at start with `server stopped straight away (exit status: 1)` and

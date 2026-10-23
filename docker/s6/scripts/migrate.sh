@@ -7,6 +7,10 @@
 # difference between the container working and the operator reading a runbook.
 set -eu
 [ "${EMBEDDED_POSTGRES:-off}" = "on" ] || exit 0
+# s6 starts this service when `postgres` is spawned, which is seconds before it answers. Migrating
+# into that window fails with "the database system is starting up" and leaves the container with no
+# API at all, so wait for it first.
+/etc/s6-overlay/scripts/wait-for-postgres.sh
 cd /app/server
 export HOME=/home/apiuser
 # `scripts/migrate.ts`, not `drizzle-kit`. The CLI is a development dependency and needs esbuild to
