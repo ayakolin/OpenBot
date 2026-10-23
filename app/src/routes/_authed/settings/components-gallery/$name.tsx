@@ -25,13 +25,23 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { componentListQueryOptions } from "@/lib/components/queries";
+import {
+  componentDescription,
+  componentKindLabel,
+  componentTitle,
+} from "@/lib/i18n/component-text";
 import { t } from "@/lib/i18n";
 
-/** The same way back from every state this route can be in. */
-const BACK = {
-  label: "Components gallery",
-  linkProps: { to: "/settings/components-gallery" },
-} as const;
+/**
+ * The same way back from every state this route can be in.
+ *
+ * A function, not a constant: a module-level `t` reads whatever language was on screen at import
+ * time, which is the one thing `t` is written to avoid.
+ */
+const back = () => ({
+  label: t("Components gallery"),
+  linkProps: { to: "/settings/components-gallery" as const },
+});
 
 /**
  * One component, drawn as large as this column allows, and nothing to change.
@@ -77,7 +87,7 @@ function RouteComponent() {
 
   if (components.error) {
     return (
-      <PageShell backButton={BACK} title={t("Components gallery")}>
+      <PageShell backButton={back()} title={t("Components gallery")}>
         <p className="mt-8 text-destructive text-sm" role="alert">
           {t("Could not load components.")}
         </p>
@@ -96,7 +106,7 @@ function RouteComponent() {
   if (!component) {
     return (
       <PageShell
-        backButton={BACK}
+        backButton={back()}
         description={t("Nothing here answers to that name.")}
         title={t("No such component")}
       >
@@ -123,9 +133,9 @@ function RouteComponent() {
 
   return (
     <PageShell
-      backButton={BACK}
-      description={component.publishedDescription ?? undefined}
-      title={component.title}
+      backButton={back()}
+      description={componentDescription(component) ?? undefined}
+      title={componentTitle(component)}
     >
       <div className="relative mt-8 aspect-[2/1] overflow-hidden rounded-lg border border-border bg-card">
         <div className="absolute inset-0">
@@ -139,7 +149,7 @@ function RouteComponent() {
       <PageSection title={t("Details")}>
         <PageRows>
           <FactRow icon={<IconTag />} label={t("Kind")}>
-            {component.kind}
+            {componentKindLabel(component)}
           </FactRow>
           <Separator />
           <FactRow icon={<IconCode />} label={t("Called as")}>

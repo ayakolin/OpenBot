@@ -567,7 +567,7 @@ function AboutStep({
           maxLength={120}
           onChange={(event) => onTitle(event.target.value)}
           placeholder={
-            runsHere ? t("Finance Operations") : defaultTitle(runtime)
+            runsHere ? t("Finance Operations") : t(defaultTitle(runtime))
           }
           value={title}
         />
@@ -733,9 +733,10 @@ function RuntimeStep({
         >
           <HarnessMark id={harness.mark} name={harness.name} />
           <span className="min-w-0">
-            <span className="block font-medium text-sm">{harness.name}</span>
+            {/* Product names have no entry and fall through to the name itself. */}
+            <span className="block font-medium text-sm">{t(harness.name)}</span>
             <span className="block text-pretty text-muted-foreground text-xs">
-              {summaryFor(harness)}
+              {t(summaryFor(harness))}
             </span>
           </span>
         </button>
@@ -782,7 +783,7 @@ function EndpointStep({
         {chosen ? (
           <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-muted/50 py-1 pr-2.5 pl-1.5 text-sm">
             <HarnessMark id={chosen.mark} name={chosen.name} />
-            {chosen.name}
+            {t(chosen.name)}
           </span>
         ) : null}
         <h2 className="break-words font-semibold text-lg tracking-tight">
