@@ -73,7 +73,7 @@ export function HandoffPanel({ agentId }: { agentId: string }) {
         /* The current answer at a glance, so the list below is detail rather than homework. */
         grantable && total > 0 ? (
           <span className="text-muted-foreground text-sm tabular-nums">
-            {granted} of {total}
+            {t("{granted} of {total}", { granted, total })}
           </span>
         ) : null
       }

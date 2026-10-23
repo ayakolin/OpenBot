@@ -114,7 +114,7 @@ function ComputersPage() {
    * A list that could not be read. A refused stop, reset or update is said beside the buttons
    * instead, because the top of this page is a long scroll away from them.
    */
-  const problem = fleet.error ? "The computers could not be listed." : null;
+  const problem = fleet.error ? t("The computers could not be listed.") : null;
   const hostProblem = hostAccess.error
     ? hostAccess.error.message
     : requestGrant.error
@@ -551,7 +551,7 @@ function summaryFor(
     parts.push(`${active} read-only ${active === 1 ? "folder" : "folders"}`);
   if (waiting > 0)
     parts.push(`${waiting} pending ${waiting === 1 ? "request" : "requests"}`);
-  return parts.length > 0 ? parts.join(" · ") : "No folders approved.";
+  return parts.length > 0 ? parts.join(" · ") : t("No folders approved.");
 }
 
 function ownerLabel(grant: { ownerName?: string; ownerEmail?: string }) {

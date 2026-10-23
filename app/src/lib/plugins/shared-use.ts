@@ -4,6 +4,7 @@ import {
   queryOptions,
 } from "@tanstack/react-query";
 import { client } from "@/lib/client";
+import { joinAnd } from "@/lib/agents/bot-summaries";
 
 export type SharedAudience = "owner" | "people" | "team";
 export type ApprovalMember = { kind: "user" | "group"; value: string };
@@ -125,5 +126,5 @@ export function describeApproval(approval: SharedUseApproval): string {
       : []),
     ...(people ? [`${people} ${people === 1 ? "person" : "people"}`] : []),
   ];
-  return `${parts.join(" and ") || "Nobody named"}${outside}`;
+  return `${joinAnd(parts) || "Nobody named"}${outside}`;
 }

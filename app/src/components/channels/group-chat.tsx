@@ -19,6 +19,7 @@ import { newId } from "@/lib/new-id";
 import { ChannelAvatar } from "./avatar";
 import { Composer, toAgentOptions } from "./composer";
 import { TeamBotConsentCard } from "./team-bot-consent";
+import { joinAnd } from "@/lib/agents/bot-summaries";
 import { type Translate, t } from "@/lib/i18n";
 
 /** The empty-group prompt. `names` is the Bots' own names, joined; the rest is one translated sentence. */
@@ -104,7 +105,7 @@ export function GroupChat({ channelId }: { channelId: string }) {
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 py-6">
           {messages.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {sayTo(bots.map((bot) => bot.name).join(" and "))}
+              {sayTo(joinAnd(bots.map((bot) => bot.name)))}
             </p>
           ) : null}
           {messages.map((message) => (

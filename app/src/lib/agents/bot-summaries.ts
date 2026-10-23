@@ -25,6 +25,22 @@ export function joinList(parts: readonly string[], tr: Translate = t): string {
   return parts.join(tr(", "));
 }
 
+/**
+ * Names joined with the language's conjunction: "Ann and Bo", "Ann and Bo and Cy".
+ *
+ * FOLDED PAIRWISE rather than "all but the last, joined, then the conjunction". English has always
+ * put " and " between every pair on the screens that use this — `join(" and ")` was the call — and
+ * that rendered text must not change, so the conjunction is what the fold asks the dictionary for
+ * and the dictionary decides what it is: 和 in Chinese.
+ */
+export function joinAnd(parts: readonly string[], tr: Translate = t): string {
+  return parts.reduce(
+    (joined, part, index) =>
+      index === 0 ? part : tr("{a} and {b}", { a: joined, b: part }),
+    "",
+  );
+}
+
 export function accessSummary(
   skills: number,
   apps: number,
