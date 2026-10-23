@@ -330,23 +330,28 @@ export function PageDescription({
  */
 export function DenyDescription({ tr = t }: { tr?: Translate }) {
   return trNodes(
-    "Checked first, and a match ends it: nothing below is consulted and the Bot is told which rule refused it. Rules are CEL, and can ask about {toolName}, {intent}, {botId}, {actorId}, {pageUrl} and {pageHost}, the element being acted on, the {key} being pressed, the file being touched, the {command} being run, and {mcpServer}, {mcpTool} and {mcpEffect} for a call to somebody else&rsquo;s tools. {initiatorKind} says what started the run &mdash; {person}, {routine} or {handoff} &mdash; which {actorId} cannot, because a scheduled run carries its owner&rsquo;s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
+    "Checked first, and a match ends it: nothing below is consulted and the Bot is told which rule refused it. Rules are CEL, and can ask about {toolName}, {intent}, {botId}, {actorId}, {pageUrl} and {pageHost}, the element being acted on, the {key} being pressed, the file being touched, the {command} being run, and {mcpServer}, {mcpTool} and {mcpEffect} for a call to somebody else’s tools. {initiatorKind} says what started the run — {person}, {routine} or {handoff} — which {actorId} cannot, because a scheduled run carries its owner’s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
     {
-      toolName: <code>{tr("tool.name")}</code>,
-      intent: <code>{tr("intent")}</code>,
-      botId: <code>{tr("bot.id")}</code>,
-      actorId: <code>{tr("actor.id")}</code>,
-      pageUrl: <code>{tr("page.url")}</code>,
-      pageHost: <code>{tr("page.host")}</code>,
-      key: <code>{tr("key")}</code>,
-      command: <code>{tr("command")}</code>,
-      mcpServer: <code>{tr("mcp.server")}</code>,
-      mcpTool: <code>{tr("mcp.tool")}</code>,
-      mcpEffect: <code>{tr("mcp.effect")}</code>,
-      initiatorKind: <code>{tr("initiator.kind")}</code>,
-      person: <code>{tr("person")}</code>,
-      routine: <code>{tr("routine")}</code>,
-      handoff: <code>{tr("handoff")}</code>,
+      /*
+       * CEL identifiers are the language's own spelling, so they are never looked up: the old
+       * `tr("intent")` turned `intent` into 「意图」 and `handoff` into 「交接」 inside a <code>,
+       * which is a rule nobody can type.
+       */
+      toolName: <code>tool.name</code>,
+      intent: <code>intent</code>,
+      botId: <code>bot.id</code>,
+      actorId: <code>actor.id</code>,
+      pageUrl: <code>page.url</code>,
+      pageHost: <code>page.host</code>,
+      key: <code>key</code>,
+      command: <code>command</code>,
+      mcpServer: <code>mcp.server</code>,
+      mcpTool: <code>mcp.tool</code>,
+      mcpEffect: <code>mcp.effect</code>,
+      initiatorKind: <code>initiator.kind</code>,
+      person: <code>person</code>,
+      routine: <code>routine</code>,
+      handoff: <code>handoff</code>,
     },
     undefined,
     tr,
@@ -368,13 +373,16 @@ export function ChangeSummary({
           ? tr("Would refuse")
           : tr("Would now allow")}
       </span>{" "}
-      <code className="font-mono">{change.action}</code>
       {change.element?.name ? (
-        <>
-          {tr(" on “")}
-          {change.element.name}”
-        </>
-      ) : null}
+        trNodes(
+          "{action} on “{element}”",
+          { action: <code className="font-mono">{change.action}</code> },
+          { element: change.element.name },
+          tr,
+        )
+      ) : (
+        <code className="font-mono">{change.action}</code>
+      )}
       {change.command ? (
         <>
           {" "}

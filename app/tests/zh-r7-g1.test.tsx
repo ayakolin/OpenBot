@@ -48,9 +48,9 @@ test("en deny description keeps every seam of the old pieces", () => {
     "Checked first, and a match ends it: nothing below is consulted and the Bot is told which rule refused it. Rules are CEL, and can ask about " +
       "<code>tool.name</code>, <code>intent</code>, <code>bot.id</code>, <code>actor.id</code>, <code>page.url</code> and <code>page.host</code>, " +
       "the element being acted on, the <code>key</code> being pressed, the file being touched, the <code>command</code> being run, and " +
-      "<code>mcp.server</code>, <code>mcp.tool</code> and <code>mcp.effect</code> for a call to somebody else&amp;rsquo;s tools. " +
-      "<code>initiator.kind</code> says what started the run &amp;mdash; <code>person</code>, <code>routine</code> or <code>handoff</code> &amp;mdash; which <code>actor.id</code> " +
-      "cannot, because a scheduled run carries its owner&amp;rsquo;s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
+      "<code>mcp.server</code>, <code>mcp.tool</code> and <code>mcp.effect</code> for a call to somebody else’s tools. " +
+      "<code>initiator.kind</code> says what started the run — <code>person</code>, <code>routine</code> or <code>handoff</code> — which <code>actor.id</code> " +
+      "cannot, because a scheduled run carries its owner’s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
   );
 });
 
@@ -65,7 +65,7 @@ test("zh deny description: no stray space between Chinese, space kept next to La
   expect(markup).toContain("<code>initiator.kind</code> 标明");
   expect(markup).toContain("<code>actor.id</code> 无法做到");
   expect(markup).toContain("规则使用 CEL 编写");
-  expect(markup).toContain("<code>意图</code>、<code>bot.id</code>");
+  expect(markup).toContain("<code>intent</code>、<code>bot.id</code>");
 });
 
 const change = {

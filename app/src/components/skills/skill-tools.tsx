@@ -154,7 +154,7 @@ export function SkillTools({
                 type="button"
                 variant={held.has(role.ref) ? "default" : "outline"}
               >
-                {role.label}
+                {t(role.label)}
               </Button>
             ))}
           </div>

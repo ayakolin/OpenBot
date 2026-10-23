@@ -55,12 +55,17 @@ import {
 import { queryClient } from "@/query-client";
 import { type Translate, t } from "@/lib/i18n";
 
-/** Where a suggestion came from. The app's name is data; the fallback is a translated phrase. */
+/**
+ * Where a suggestion came from. The app's name is data; the fallback is a translated phrase.
+ *
+ * The test is on the data, not on the phrase: `""` is a suggestion with no app rather than an app
+ * called nothing, and it must not reach `{app}` and render "From " with the name missing.
+ */
 export function suggestionSource(
   sourceApp: string | null | undefined,
   tr: Translate = t,
 ): string {
-  return sourceApp
+  return sourceApp != null && sourceApp.trim() !== ""
     ? tr("From {app}", { app: sourceApp })
     : tr("From a connected app");
 }

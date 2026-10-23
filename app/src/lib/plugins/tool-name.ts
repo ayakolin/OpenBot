@@ -2,6 +2,7 @@ import {
   RESEARCH_ROLE_LABELS,
   researchRoleOfTool,
 } from "@openbot/shared/research";
+import { t } from "@/lib/i18n";
 
 /**
  * A tool call, named the way the person watching would name it.
@@ -35,7 +36,7 @@ export function readToolName(name: string): ToolName {
    * their answer. Which provider is granted is an administrator's fact, on the Bot's access page.
    */
   const role = researchRoleOfTool(server, tool);
-  if (role) return { label: RESEARCH_ROLE_LABELS[role] };
+  if (role) return { label: t(RESEARCH_ROLE_LABELS[role]) };
   const label = humanise(tool);
 
   /*

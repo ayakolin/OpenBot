@@ -79,10 +79,6 @@ export function AccessSections({ agent }: { agent: AgentProfile }) {
   );
 }
 
-/**
- * Your own skills, one switch each. Only on your own Bot: the server lets a person put their own
- * skill on a Bot they own, and neither half alone is enough.
- */
 /** One sentence with the link set inside it, so Chinese gets no space where English has one. */
 export function noSkillsSentence(
   link: ReactNode,
@@ -96,6 +92,10 @@ export function noSkillsSentence(
   );
 }
 
+/**
+ * Your own skills, one switch each. Only on your own Bot: the server lets a person put their own
+ * skill on a Bot they own, and neither half alone is enough.
+ */
 function YourSkills({ agentId }: { agentId: string }) {
   const me = useQuery(currentUserQueryOptions()).data;
   const page = useQuery(pluginsPageQueryOptions());
