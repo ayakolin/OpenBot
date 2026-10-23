@@ -150,7 +150,7 @@ function RosterRows({
       {agents.map((agent, index) => {
         const state = byId.get(agent.id);
         const summary = state
-          ? [state.paused ? "Paused" : "", attentionSummary(state)]
+          ? [state.paused ? t("Paused") : "", attentionSummary(state)]
               .filter(Boolean)
               .join(" · ")
           : "";

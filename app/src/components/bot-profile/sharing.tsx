@@ -54,7 +54,7 @@ import {
   unpublishTeamBotMutationOptions,
 } from "@/lib/team-bots";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { t, type Translate } from "@/lib/i18n";
 
 const list = (value: string) =>
   value
@@ -103,12 +103,12 @@ export function SharingSections({ agent }: { agent: AgentProfile }) {
                   {published.audience === "team"
                     ? t("To the whole team")
                     : t("To {targets}", {
-                        targets: [
+                        targets: joinList([
                           ...(published.people ?? []),
                           ...(published.groups ?? []).map((group) =>
                             t("group {group}", { group }),
                           ),
-                        ].join(", "),
+                        ]),
                       })}
                 </ItemTitle>
                 <ItemDescription>
@@ -237,6 +237,15 @@ const AUDIENCES = {
   people: "Specific people or groups",
 } as const;
 
+/** Audience choices with translated labels, computed per call so the language is current. */
+export function audienceItems(
+  tr: Translate = t,
+): { value: keyof typeof AUDIENCES; label: string }[] {
+  return (Object.keys(AUDIENCES) as (keyof typeof AUDIENCES)[]).map(
+    (value) => ({ value, label: tr(AUDIENCES[value]) }),
+  );
+}
+
 /**
  * Who a Bot is published to: the whole team, or named people and groups. Mounted only while open,
  * so each opening starts from the current answer rather than from an abandoned edit.
@@ -252,6 +261,7 @@ function PublishDialog({
 }) {
   const formId = useId();
   const publish = useMutation(publishTeamBotMutationOptions(queryClient));
+  const audiences = audienceItems();
   const [audience, setAudience] = useState<"team" | "people">(
     current?.audience ?? "team",
   );
@@ -294,7 +304,7 @@ function PublishDialog({
                   {t("Published to")}
                 </FieldLabel>
                 <Select
-                  items={AUDIENCES}
+                  items={audiences}
                   onValueChange={(value) => {
                     if (value === "team" || value === "people") {
                       setAudience(value);
@@ -306,13 +316,11 @@ function PublishDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.keys(AUDIENCES) as (keyof typeof AUDIENCES)[]).map(
-                      (value) => (
-                        <SelectItem key={value} value={value}>
-                          {t(AUDIENCES[value])}
-                        </SelectItem>
-                      ),
-                    )}
+                    {audiences.map(({ value, label }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </Field>

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { joinList } from "@/lib/agents/bot-summaries";
 import type { AgentProfile } from "@/lib/agents/queries";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { setPluginGrantMutationOptions } from "@/lib/plugins/mutations";
@@ -110,7 +111,7 @@ function YourSkills({ agentId }: { agentId: string }) {
           <Link className="underline underline-offset-4" to="/skills">
             {t("Write one")}
           </Link>
-          .
+          {t(".")}
         </PageEmpty>
       ) : (
         <PageRows>
@@ -201,7 +202,7 @@ function Granted({ agentId }: { agentId: string }) {
                 <ItemContent>
                   <ItemTitle>{connectorName(key)}</ItemTitle>
                   <ItemDescription>
-                    {labels.slice(0, 4).join(", ")}
+                    {joinList(labels.slice(0, 4))}
                     {labels.length > 4
                       ? t(" and {count} more", { count: labels.length - 4 })
                       : ""}

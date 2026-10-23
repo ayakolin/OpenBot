@@ -28,7 +28,7 @@ function MemoryPage() {
             >
               {t("Settings → Memory")}
             </Link>
-            .
+            {t(".")}
           </p>
           <MemorySources agentId={agent.id} />
           <ProactiveResearchSettings agentId={agent.id} />

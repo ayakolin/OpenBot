@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
+import { countLabel, joinList } from "@/lib/agents/bot-summaries";
 import {
   type BotAttention,
   botAttentionQueryOptions,
 } from "@/lib/bot-lifecycle/queries";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /** Questions, approvals and stalled hand-offs: the things only the person can move forward. */
 export function needsInput(bot: BotAttention): number {
@@ -12,18 +13,14 @@ export function needsInput(bot: BotAttention): number {
 }
 
 /** What the badge says, in words, for the row's accessible name and its tooltip. */
-export function attentionSummary(bot: BotAttention): string {
-  const parts: string[] = [];
-  if (bot.questions)
-    parts.push(`${bot.questions} question${bot.questions === 1 ? "" : "s"}`);
-  if (bot.approvals)
-    parts.push(`${bot.approvals} approval${bot.approvals === 1 ? "" : "s"}`);
-  if (bot.handoffs)
-    parts.push(
-      `${bot.handoffs} stalled hand-off${bot.handoffs === 1 ? "" : "s"}`,
-    );
-  if (bot.unread) parts.push(`${bot.unread} unread`);
-  return parts.join(", ");
+export function attentionSummary(bot: BotAttention, tr: Translate = t): string {
+  const parts = [
+    countLabel(bot.questions, "question", "questions", "", tr),
+    countLabel(bot.approvals, "approval", "approvals", "", tr),
+    countLabel(bot.handoffs, "stalled hand-off", "stalled hand-offs", "", tr),
+    countLabel(bot.unread, "unread", "unread", "", tr),
+  ].filter(Boolean);
+  return joinList(parts, tr);
 }
 
 /**
