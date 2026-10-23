@@ -118,6 +118,7 @@ and the fix would not be available.
 | `DATABASE_URL` | PostgreSQL with the `vector` extension. Not needed with `EMBEDDED_POSTGRES=on` |
 | an identity provider | `GOOGLE_OAUTH_*`, `MICROSOFT_OAUTH_*` or `OKTA_OAUTH_*`, with `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET` and `INITIAL_ADMIN_EMAILS`. See the README |
 | `EMBEDDED_POSTGRES` | `on` to run the database inside the container. Off by default |
+| `MIGRATE_WAIT_TIMEOUT` | Seconds the migration waits for the database to accept connections, 60 by default. Only consulted with `EMBEDDED_POSTGRES=on`; a database that is still starting up is waited for rather than failed on |
 | `KEY_ENCRYPTION_KEY` | base64 32 bytes. `openssl rand -base64 32`. The example key is refused in production |
 | `INTELLIGENCE_API_URL`, `INTELLIGENCE_GATEWAY_WS_URL`, `INTELLIGENCE_API_KEY` | CopilotKit Intelligence. A free plan is available and it can be self-hosted |
 | `COPILOTKIT_LICENSE_TOKEN` | optional. Managed Intelligence issues none; set it for a self-hosted Intelligence, which needs the same licence on its own deployment too |
@@ -153,7 +154,12 @@ never missing on a laptop. The app does not depend on any of them, but sign-in c
 ## Migrations
 
 With `EMBEDDED_POSTGRES=on` they run at start and there is nothing to do. There is exactly one
-process and no deploy pipeline, so the alternative would be a runbook.
+process and no deploy pipeline, so the alternative would be a runbook. The embedded database is
+started as a supervised service, and s6 counts a service started when the process is spawned rather
+than when the server answers, so the migration waits for the database to accept connections before
+it connects: up to `MIGRATE_WAIT_TIMEOUT` seconds (60 by default), one log line when it starts
+waiting, one every ten seconds after that, and one when it is ready. A container whose database takes
+longer than that is one to raise the timeout on, not one to restart.
 
 With an external database, they are a release step, not a start step. Two replicas starting together
 would race, and a failed migration should stop a deploy rather than leave a half-migrated database
