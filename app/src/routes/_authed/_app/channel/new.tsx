@@ -117,7 +117,7 @@ function RouteComponent() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="h-12 border-b border-border sticky top-0 flex flex-row px-2 items-center">
+      <div className="h-[50px] border-b border-border sticky top-0 flex flex-row px-2 items-center">
         <SidebarToggle className="mr-1" />
         <span className="text-sm text-muted-foreground">{t("To:")}</span>
         <Combobox

@@ -49,7 +49,7 @@ export function CommandOutput({
         </p>
       ) : null}
       {failed ? (
-        <p className="text-amber-600 text-xs dark:text-amber-500">
+        <p className="text-warning text-xs">
           {t("Exit code")} {exitCode}.
         </p>
       ) : null}

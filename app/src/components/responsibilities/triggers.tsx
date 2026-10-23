@@ -362,7 +362,7 @@ function TriggerRow({
               <CopyButton value={trigger.address} label={t("Copy address")} />
             </div>
           ) : (
-            <p className="text-amber-600 text-xs dark:text-amber-500">
+            <p className="text-warning text-xs">
               {t(
                 "Inbound email is not configured on this deployment (OPENBOT_INBOUND_EMAIL_DOMAIN and OPENBOT_INBOUND_EMAIL_SNS_TOPIC_ARNS), so this address cannot receive mail yet.",
               )}
@@ -416,11 +416,7 @@ function TriggerRow({
             }}
           >
             <span
-              className={
-                trigger.hasSecret
-                  ? "text-xs"
-                  : "text-amber-600 text-xs dark:text-amber-500"
-              }
+              className={trigger.hasSecret ? "text-xs" : "text-warning text-xs"}
             >
               {trigger.hasSecret
                 ? t("Signing secret stored")

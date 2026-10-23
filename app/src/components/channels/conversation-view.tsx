@@ -434,7 +434,8 @@ export function ConversationView({
           {...(stopped ? { stopped } : {})}
         />
       </div>
-      <div className="max-w-2xl mx-auto w-full px-0 pb-4 shrink-0">
+      {/* Grok's input dock: `8px max(24px, ...) 18px` around a 700px column. */}
+      <div className="max-w-[748px] mx-auto w-full px-6 pt-2 pb-[18px] shrink-0">
         {notice}
         <Composer
           agents={agents}

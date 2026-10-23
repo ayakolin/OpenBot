@@ -182,8 +182,8 @@ function RouteComponent() {
               <span
                 className={
                   tool.effect === "write"
-                    ? t("text-amber-600 text-xs dark:text-amber-500")
-                    : t("text-muted-foreground text-xs")
+                    ? "text-warning text-xs"
+                    : "text-muted-foreground text-xs"
                 }
               >
                 {tool.effect === "write" ? "changes things" : "reads"}

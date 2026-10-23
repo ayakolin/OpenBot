@@ -61,7 +61,7 @@ export function NoWorkerNotice({
 }) {
   return (
     <>
-      <span className="font-medium text-amber-600 dark:text-amber-500">
+      <span className="font-medium text-warning">
         {tr("Nothing is running these.")}
       </span>
       {tr(" ")}
@@ -116,15 +116,15 @@ function lastRunLabel(lastRun: RoutineRecord["lastRun"]): {
   if (lastRun.status === "skipped") {
     return {
       text: `Skipped ${when}`,
-      className: "text-amber-600 dark:text-amber-500",
-      dot: "bg-amber-500",
+      className: "text-warning",
+      dot: "bg-warning",
     };
   }
   if (lastRun.status === "succeeded") {
     return {
       text: `Ran ${when}`,
       className: "text-muted-foreground",
-      dot: "bg-emerald-500",
+      dot: "bg-success",
     };
   }
   // An outcome this DTO doesn't recognise degrades to a neutral label rather than an invented
@@ -169,7 +169,7 @@ const RUN_STATUS: Record<
     dot: "animate-pulse bg-muted-foreground",
     className: "",
   },
-  succeeded: { text: "Succeeded", dot: "bg-emerald-500", className: "" },
+  succeeded: { text: "Succeeded", dot: "bg-success", className: "" },
   failed: {
     text: "Failed",
     dot: "bg-destructive",
@@ -177,10 +177,10 @@ const RUN_STATUS: Record<
   },
   skipped: {
     text: "Skipped",
-    dot: "bg-amber-500",
-    className: "text-amber-600 dark:text-amber-500",
+    dot: "bg-warning",
+    className: "text-warning",
   },
-  waiting: { text: "Waiting for you", dot: "bg-sky-500", className: "" },
+  waiting: { text: "Waiting for you", dot: "bg-secondary", className: "" },
 };
 
 /** Every firing of one routine, newest first, each linking to the thread it ran in. */
@@ -392,8 +392,8 @@ export function RoutinesList({
                          * A stamp in the past is a firing the sweep has not picked up, and "Next 5
                          * hours ago" is nonsense. Said as what it is: due, and visibly waiting.
                          */
-                        <Chip className="text-amber-600 dark:text-amber-500">
-                          <span className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+                        <Chip className="text-warning">
+                          <span className="size-1.5 animate-pulse rounded-full bg-warning" />
                           {t("Due")}
                         </Chip>
                       ) : (

@@ -487,7 +487,7 @@ export function ComputerView({
 
         {/* The request reason appears above the always-available ownership controls. */}
         {!driving && !settled && control?.requested ? (
-          <div className="flex items-start justify-between gap-3 border-t bg-amber-500/10 px-3 py-2 text-sm">
+          <div className="flex items-start justify-between gap-3 border-t bg-warning/10 px-3 py-2 text-sm">
             <span>
               <strong className="font-medium">
                 {t("The assistant needs you.")}

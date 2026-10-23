@@ -14,81 +14,117 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * THE TOKEN LAYER MIRRORS GROK BOT'S `--sand-*` PALETTE.
+ *
+ * Every value below is taken from the shipped Grok Bot theme rather than chosen by eye, so the two
+ * applications agree on what "a border" or "muted text" means instead of merely looking similar:
+ *
+ *   background  #fcfcfc / #181818   (their --cursor-bg-editor → --cursor-pane: the pane a
+ *                                     conversation sits in)
+ *   chrome      #f7f7f7 / #141414   (their --cursor-chrome, used for the sidebar and title bars —
+ *                                     one step BELOW the pane in both themes, which is why the dark
+ *                                     page is #181818 and the sidebar #141414)
+ *   elevated    #ffffff / #292929   (their settings rows: `--cursor-bg-tertiary`, an 8% wash of the
+ *                                     foreground over the pane, which resolves to exactly #292929 in
+ *                                     the dark theme and to a white panel in the light one)
+ *   text         #141414 / #fcfcfc, then 60%/40%/25% of it for secondary, tertiary, quaternary
+ *   borders      10% / 15% / 30% of the foreground — weak, default, strong
+ *   accent       #1084fe in both themes, which is their --cursor-accent
+ *
+ * `--bubble-user` and `--bubble-agent` are separate tokens because Grok's two bubbles are not
+ * `primary` and `muted`: a person's bubble is near-black in the light theme and mid-grey in the dark
+ * one, and a Bot's is a translucent grey in both. Mapping them onto `primary` would invert the
+ * person's bubble in dark mode, which is the one thing the transcript must never do.
+ *
+ * `--input-surface` is the fill behind the composer: their `--cursor-bg-input-surface`, which is a
+ * 6% tint of the foreground rather than an opaque colour, so it reads as one step above whatever
+ * it is drawn on in either theme.
+ */
 html {
   font-size: 15px;
 }
 
 :root {
   color-scheme: light;
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --success: oklch(0.6 0.118 184.704);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.55rem;
-  --sidebar: oklch(0.97 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.5 0 0);
-  --sidebar-accent: oklch(0.95 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #fcfcfc;
+  --foreground: #141414;
+  --card: #ffffff;
+  --card-foreground: #141414;
+  --popover: #ffffff;
+  --popover-foreground: #141414;
+  --primary: #070707;
+  --primary-foreground: #fcfcfc;
+  --secondary: #77777717;
+  --secondary-foreground: #141414;
+  --muted: #77777717;
+  --muted-foreground: #14141466;
+  --accent: #77777717;
+  --accent-foreground: #141414;
+  --destructive: #c21d2e;
+  --success: #009957;
+  --warning: #c27400;
+  --border: #1414141a;
+  --input: #14141426;
+  --ring: #14141466;
+  --bubble-user: #070707;
+  --bubble-user-foreground: #fcfcfc;
+  --bubble-agent: #eeeeee;
+  --input-surface: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --chart-1: #1084fe;
+  --chart-2: #c24e00;
+  --chart-3: #9159fe;
+  --chart-4: #009957;
+  --chart-5: #ff309b;
+  --radius: 0.5rem;
+  --sidebar: #f7f7f7;
+  --sidebar-foreground: #141414;
+  --sidebar-primary: #070707;
+  --sidebar-primary-foreground: #fcfcfc;
+  --sidebar-accent: #77777717;
+  --sidebar-accent-foreground: #141414;
+  --sidebar-border: #1414141a;
+  --sidebar-ring: #14141466;
 }
 
 .dark {
   color-scheme: dark;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --success: oklch(0.704 0.14 182.503);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #181818;
+  --foreground: #fcfcfc;
+  --card: #292929;
+  --card-foreground: #fcfcfc;
+  --popover: #282828;
+  --popover-foreground: #fcfcfc;
+  --primary: #fafafa;
+  --primary-foreground: #141414;
+  --secondary: #7777772c;
+  --secondary-foreground: #fcfcfc;
+  --muted: #7777772c;
+  --muted-foreground: #fcfcfc66;
+  --accent: #7777772c;
+  --accent-foreground: #fcfcfc;
+  --destructive: #ff5667;
+  --success: #38d591;
+  --warning: #ffaf38;
+  --border: #fcfcfc1a;
+  --input: #fcfcfc26;
+  --ring: #fcfcfc66;
+  --bubble-user: #5a5a5a;
+  --bubble-user-foreground: #fcfcfc;
+  --bubble-agent: #262626;
+  --chart-1: #1084fe;
+  --chart-2: #c24e00;
+  --chart-3: #9159fe;
+  --chart-4: #009957;
+  --chart-5: #ff309b;
+  --sidebar: #141414;
+  --sidebar-foreground: #fcfcfc;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #141414;
+  --sidebar-accent: #7777772c;
+  --sidebar-accent-foreground: #fcfcfc;
+  --sidebar-border: #fcfcfc1a;
+  --sidebar-ring: #fcfcfc66;
 }
 
 * {
@@ -103,6 +139,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 /*
@@ -140,6 +177,7 @@ body {
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -154,6 +192,16 @@ body {
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-bubble-user: var(--bubble-user);
+  --color-bubble-user-foreground: var(--bubble-user-foreground);
+  --color-bubble-agent: var(--bubble-agent);
+  --color-input-surface: var(--input-surface);
+  /*
+   * Grok's radius ladder, expressed through the one number shadcn multiplies. At 8px this yields
+   * 4.8 / 6.4 / 8 / 11.2 / 14.4 / 17.6, against their 4 / 6 / 8 / 12 / 14 / 18: the same ladder
+   * within a rounding error, and the composer (16) and bubble (18) are written as explicit values
+   * because they are the two places where the difference is visible.
+   */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -174,8 +222,13 @@ body {
     @apply font-sans;
   }
 
+  /*
+   * An overlay scrollbar, like the one the desktop app draws: a narrow thumb over the surface
+   * rather than a track with a gutter, so a transcript does not lose 15px of measure to it.
+   */
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -183,13 +236,18 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 5px;
+    background: color-mix(in srgb, var(--foreground) 14%, transparent);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--foreground) 24%, transparent);
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-color: color-mix(in srgb, var(--foreground) 14%, transparent)
+      transparent;
   }
 }
 

@@ -215,15 +215,17 @@ test("message emphasis updates mounted rows from the account preferences cache",
   const view = renderSidebar();
   const agent = await view.findByText("Recent conversation");
   const thread = view.getByText("New conversation");
-  expect(thread.className).toContain("text-[0.9rem]");
+  // The emphasis is an attribute now, so this asserts the choice rather than the class it compiles to.
+  expect(thread.dataset.emphasis).toBe("primary");
+  expect(agent.dataset.emphasis).toBe("secondary");
   act(() =>
     clients[0]?.setQueryData(userPreferencesQueryOptions("user").queryKey, {
       messageListEmphasis: "agent",
       selfHostBannerDismissed: false,
     }),
   );
-  await waitFor(() => expect(agent.className).toContain("text-[0.9rem]"));
-  expect(thread.className).toContain("text-muted-foreground");
+  await waitFor(() => expect(agent.dataset.emphasis).toBe("primary"));
+  expect(thread.dataset.emphasis).toBe("secondary");
 });
 
 test("scrolling requests the cursor once, appends older rows, and stops at the final page", async () => {

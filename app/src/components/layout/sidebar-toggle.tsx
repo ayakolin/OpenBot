@@ -117,7 +117,7 @@ export function SidebarToggle({ className }: { className?: string }) {
  */
 export function SidebarToggleBar() {
   return (
-    <div className="h-12 shrink-0 flex items-center px-3">
+    <div className="h-[50px] shrink-0 flex items-center px-3">
       <SidebarToggle />
     </div>
   );

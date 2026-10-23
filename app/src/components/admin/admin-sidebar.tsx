@@ -141,7 +141,7 @@ export function AdminSidebar({
        * parent, which in the app sidebar is a flex row holding a second control and here is not, so
        * the same class produces two different heights.
        */}
-      <SidebarHeader className="h-12 p-2">
+      <SidebarHeader className="h-[50px] px-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -168,7 +168,7 @@ export function AdminSidebar({
                   <Link
                     {...adminLinkOptions}
                     activeOptions={{ exact: true }}
-                    activeProps={{ className: "bg-foreground/5" }}
+                    activeProps={{ className: "bg-sidebar-accent" }}
                     {...props}
                   >
                     {t("Overview")}
@@ -188,7 +188,7 @@ export function AdminSidebar({
                     render={(props) => (
                       <Link
                         {...item.linkOptions}
-                        activeProps={{ className: "bg-foreground/5" }}
+                        activeProps={{ className: "bg-sidebar-accent" }}
                         {...props}
                       >
                         <item.icon className="mr-2 h-4 w-4" />

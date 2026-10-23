@@ -118,9 +118,9 @@ export const Channel = memo(function Channel({
             }
             params={{ channelId }}
             type="button"
-            className="flex flex-row py-2 px-2 gap-2 items-center w-full hover:bg-foreground/5 rounded-lg [contain-intrinsic-size:auto_3.25rem] [content-visibility:auto]"
+            className="flex flex-row min-h-[58px] py-2 px-2 gap-2 items-center w-full hover:bg-sidebar-accent rounded-[10px] [contain-intrinsic-size:auto_3.25rem] [content-visibility:auto]"
             activeProps={{
-              className: "bg-foreground/5",
+              className: "bg-sidebar-accent",
             }}
           >
             <ChannelItemContent

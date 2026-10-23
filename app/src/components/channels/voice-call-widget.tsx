@@ -252,7 +252,7 @@ export function VoiceCallWidget({
               ref={hangup}
               variant="destructive"
               size="icon"
-              className="size-12 rounded-full bg-rose-500 text-white hover:bg-rose-600 dark:bg-rose-500 dark:hover:bg-rose-600"
+              className="size-12 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={session.end}
               aria-label={t("End voice call")}
               title={t("End call")}

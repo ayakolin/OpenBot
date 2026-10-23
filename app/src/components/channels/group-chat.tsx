@@ -180,7 +180,7 @@ function GroupLine({
               {name}
             </MessageHeader>
           )}
-          <Bubble align={mine ? "end" : "start"} variant="muted">
+          <Bubble align={mine ? "end" : "start"} variant="user">
             <BubbleContent>
               <span className="whitespace-pre-wrap">{message.text}</span>
             </BubbleContent>

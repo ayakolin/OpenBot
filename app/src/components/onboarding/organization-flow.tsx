@@ -32,7 +32,7 @@ const SIGN_IN: Node[] = [
   {
     label: "Google",
     icon: IconBrandGoogle,
-    tone: "bg-sky-500/15 text-sky-600 dark:text-sky-400",
+    tone: "bg-secondary text-muted-foreground",
   },
   {
     label: "Microsoft",
@@ -42,7 +42,7 @@ const SIGN_IN: Node[] = [
   {
     label: "Okta",
     icon: IconKey,
-    tone: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400",
+    tone: "bg-secondary text-muted-foreground",
   },
 ];
 
@@ -51,17 +51,17 @@ const OUTCOMES: Node[] = [
   {
     label: "Your rules",
     icon: IconShieldCheck,
-    tone: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+    tone: "bg-success/15 text-success",
   },
   {
     label: "Team Bots",
     icon: IconRobot,
-    tone: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+    tone: "bg-warning/15 text-warning",
   },
   {
     label: "Audit trail",
     icon: IconListCheck,
-    tone: "bg-violet-500/15 text-violet-600 dark:text-violet-400",
+    tone: "bg-secondary text-muted-foreground",
   },
 ];
 

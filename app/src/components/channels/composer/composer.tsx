@@ -115,6 +115,12 @@ function stagedModality(attachment: Attachment) {
 }
 
 const MAX_HEIGHT_PX = 220;
+/*
+ * Grok's prompt field is `min-height: 48px` (`.sand-prompt-field` in their conversation view.css).
+ * The hero branch was leaving this to the editor's own 80px default, which drew a box nearly twice
+ * as tall as theirs with the placeholder stranded at the top of it.
+ */
+const HERO_MIN_HEIGHT_PX = 48;
 /**
  * Tracks the compact `text-sm` line box so PromptArea stays vertically centered in one row.
  */
@@ -1503,7 +1509,13 @@ export function Composer({
              * started it 42px in from the frame's left edge with nothing under it. The strip is
              * its own row across the top now, and the three controls keep their row below it.
              */
-            "flex min-h-14 flex-col rounded-2xl border border-border bg-card px-3 py-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50",
+            /*
+             * GROK'S PROMPT SHELL: a 16px frame on the input surface, not on the card colour.
+             * The surface is what separates the box somebody types in from the transcript above
+             * it; painting it `bg-card` made it the same white as the page in the light theme and
+             * the same near-black in the dark one, so the only thing drawing it was its border.
+             */
+            "flex min-h-14 flex-col rounded-[16px] border border-border bg-input-surface px-3 py-3 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50",
             className,
           )}
           onSubmit={handleFormSubmit}
@@ -1583,7 +1595,7 @@ export function Composer({
     // The same `containerRef`, on the wrapper this branch already had: the paste listener is scoped
     // to whatever holds the ref, so a branch without it can be pasted into and nothing happens.
     <div
-      className={cn("flex w-xl flex-col", className)}
+      className={cn("flex w-full max-w-[700px] flex-col", className)}
       ref={containerRef}
       {...dropZone}
     >
@@ -1591,7 +1603,7 @@ export function Composer({
       {tooManyStagedNotice}
       <form
         aria-busy={isBusy}
-        className="overflow-hidden rounded-2xl border border-border bg-card"
+        className="overflow-hidden rounded-[16px] border border-border bg-input-surface"
         onSubmit={handleFormSubmit}
       >
         <DictationSurface
@@ -1616,6 +1628,7 @@ export function Composer({
               )}
               disabled={disabled}
               maxHeight={MAX_HEIGHT_PX}
+              minHeight={HERO_MIN_HEIGHT_PX}
               onChange={handleChange}
               onImagePaste={canAttach ? stagePastedImage : undefined}
               onSubmit={submitDraft}

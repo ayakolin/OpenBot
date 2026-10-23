@@ -15,8 +15,11 @@ import {
  * `defaultOpen` to true). Driving it as controlled state is a dozen lines, and three copies of a
  * dozen lines is three chances for one shell to forget the preference the other two remember.
  *
- * `width` is what actually differs between the shells. The app's roster earns 340px because its
- * rows are two-line message previews; admin and settings hold short nav labels and earn 300px.
+ * `width` is what actually differs between the shells. All three now use the desktop app's 280px:
+ * its roster rows are two-line message previews, and at 280px a preview truncates at roughly the
+ * same character count it does there. The shells used to disagree — 340px for the app, 300px for
+ * admin and settings — which put the roster's own rows on a different measure from the nav labels
+ * beside them.
  */
 export function SidebarShell({
   children,

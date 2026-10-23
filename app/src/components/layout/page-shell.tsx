@@ -78,7 +78,7 @@ export function PageShell({
   return (
     <>
       {bar ? (
-        <div className="max-w-7xl w-full h-14 flex items-center gap-1 px-3">
+        <div className="max-w-7xl w-full h-[50px] flex items-center gap-1 px-3">
           {showToggle ? <SidebarToggle /> : null}
           {!!backButton && (
             <Button
@@ -122,7 +122,16 @@ export function PageShell({
         >
           <header className="flex flex-col gap-2">
             <div className="flex flex-row items-center justify-between gap-4">
-              <h1 className="font-bold text-2xl">{title}</h1>
+              {/*
+               * THE DESKTOP APP'S TITLE SCALE. A settings page there leads with a 17px semibold line
+               * (`--sand-font-size-xl`), not the 24px bold one this drew: at 24px the heading was
+               * the largest thing on a screen whose actual subject is a list of rows, and every
+               * section under it had to be loud to compete. `text-lg` is 16.9px at this app's 15px
+               * root, which is the same size.
+               */}
+              <h1 className="font-semibold text-lg tracking-[-0.015em]">
+                {title}
+              </h1>
               {action}
             </div>
             {description ? (
@@ -159,10 +168,17 @@ export function PageSection({
   title?: string;
 }) {
   return (
-    <section className={cn("mt-12", className)}>
+    <section className={cn("mt-8", className)}>
       {title ? (
-        <div className="flex min-h-8 flex-row items-center justify-between gap-4">
-          <h2 className="font-bold text-lg">{title}</h2>
+        <div className="flex min-h-7 flex-row items-center justify-between gap-4">
+          {/*
+           * A SECTION LABEL, NOT A SECOND HEADING. Grok draws these as 11px secondary text above
+           * a card — the words "Routing" and "Account" in its settings are the same size as the
+           * row descriptions, and the card below is what carries the weight.
+           */}
+          <h2 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+            {title}
+          </h2>
           {action}
         </div>
       ) : null}
@@ -198,7 +214,7 @@ export function PageRows({
      */
     <div
       className={cn(
-        "mt-4 overflow-hidden rounded-lg border border-border bg-card dark:border-transparent",
+        "mt-3 overflow-hidden rounded-[10px] border border-border bg-card",
         "[&_[data-slot=item]]:rounded-none",
         className,
       )}

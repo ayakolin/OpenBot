@@ -16,7 +16,7 @@ export function AgentCard({
 }) {
   if (appearance === "artwork") {
     return (
-      <div className="relative h-[180px] w-[144px] overflow-hidden rounded-2xl bg-foreground/10">
+      <div className="relative h-[180px] w-[144px] overflow-hidden rounded-[14px] bg-foreground/10">
         <div
           aria-hidden="true"
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -37,7 +37,7 @@ export function AgentCard({
   }
 
   return (
-    <div className="relative flex h-[160px] w-full min-w-0 flex-col gap-2 overflow-hidden rounded-2xl border border-border bg-card p-3 dark:border-transparent">
+    <div className="relative flex h-[160px] w-full min-w-0 flex-col gap-2 overflow-hidden rounded-[14px] border border-border bg-card p-3">
       <div aria-hidden="true" className="mb-1 flex shrink-0">
         <AbstractAvatar name={agent.name} seed={agent.avatarSeed} size={28} />
       </div>

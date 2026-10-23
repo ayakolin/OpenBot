@@ -2,7 +2,19 @@ import { IconPinFilled } from "@tabler/icons-react";
 import { ChannelAvatar } from "@/components/channels/avatar";
 import type { MessageListEmphasis } from "@/lib/settings/message-list";
 
-/** Shared by live conversations and the appearance preference previews. */
+/**
+ * A roster row's two lines, shared by live conversations and the appearance preference previews.
+ *
+ * THE SIZES ARE THE DESKTOP APP'S. Its roster draws a name at `--cursor-font-size-base` (13px) and
+ * a preview at `--cursor-font-size-xs` (11px); `text-sm` and `text-xs` land on 13.1 and 11.25 here
+ * because this app's root is 15px, which is the same pair within a rounding error and needs no
+ * arbitrary values. The arbitrary `text-[0.9rem]` these replaced resolved to 13.5px — a size that
+ * existed nowhere in the design and made the two lines 2px apart rather than 2.
+ *
+ * `data-emphasis` is what says which line is the large one, rather than a caller or a test having
+ * to read a class list to find out. The preference screen offers exactly this choice, and the
+ * attribute is the choice itself; the classes are only how it is drawn.
+ */
 export function ChannelItemContent({
   participantIds,
   name,
@@ -26,11 +38,14 @@ export function ChannelItemContent({
   pinned?: boolean;
   revealing?: boolean;
 }) {
-  const primaryText = `text-[0.9rem] leading-5 tracking-[-1%] ${unread ? "font-semibold" : "font-medium"}`;
-  const secondaryText = "text-[12px] leading-4 text-muted-foreground";
+  const line = (isPrimary: boolean) =>
+    isPrimary
+      ? "text-sm leading-5 font-medium"
+      : "text-xs leading-4 text-muted-foreground";
+  const namePrimary = emphasis === "agent";
 
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-2">
+    <div className="flex min-w-0 flex-1 items-center gap-2.5">
       <div className="shrink-0">
         <ChannelAvatar
           participantIds={participantIds}
@@ -41,12 +56,13 @@ export function ChannelItemContent({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span
-            className={`min-w-0 flex-1 truncate ${emphasis === "agent" ? primaryText : secondaryText}`}
+            className={`min-w-0 flex-1 truncate ${line(namePrimary)} ${unread ? "font-semibold" : ""}`}
+            data-emphasis={namePrimary ? "primary" : "secondary"}
             title={name}
           >
             {name}
           </span>
-          <span className="shrink-0 whitespace-nowrap text-[12px] leading-4 text-muted-foreground/70">
+          <span className="shrink-0 whitespace-nowrap text-xs leading-4 text-muted-foreground/70">
             {lastMessageAt}
           </span>
           {unread ? (
@@ -57,7 +73,8 @@ export function ChannelItemContent({
           ) : null}
         </div>
         <div
-          className={`mt-px truncate ${emphasis === "thread" ? primaryText : secondaryText}`}
+          className={`mt-px truncate ${line(!namePrimary)}`}
+          data-emphasis={namePrimary ? "secondary" : "primary"}
           title={title}
         >
           {displayedTitle}

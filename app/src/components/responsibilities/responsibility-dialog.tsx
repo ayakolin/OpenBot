@@ -407,7 +407,7 @@ function runStatusClass(status: string) {
   return status === "failed"
     ? "text-destructive"
     : status === "succeeded"
-      ? "text-emerald-600 dark:text-emerald-500"
+      ? "text-success"
       : "text-muted-foreground";
 }
 

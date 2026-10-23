@@ -67,9 +67,7 @@ export function SharedAppNotice({
           </p>
         ) : app.covered ? null : (
           <div className="flex flex-wrap items-center gap-2" key={app.serverId}>
-            <p className="text-amber-700 dark:text-amber-400">
-              {callsRefused(app.title)}
-            </p>
+            <p className="text-warning">{callsRefused(app.title)}</p>
             <Button
               aria-label={t("Request approval for {name}", { name: app.title })}
               disabled={ask.isPending}

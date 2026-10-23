@@ -267,7 +267,7 @@ function CredentialsPage() {
             >
               {([kind, provider, keyId]) =>
                 liveCredentialFor(credentials.data, kind, provider, keyId) ? (
-                  <p className="text-amber-600 text-sm dark:text-amber-500">
+                  <p className="text-warning text-sm">
                     {t(
                       "This key already holds a live credential. Saving replaces it, and the one it replaces is revoked.",
                     )}

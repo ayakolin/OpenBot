@@ -216,7 +216,7 @@ function StartedBy({
   if (event.initiatorKind === "routine") {
     return (
       <span
-        className="font-medium text-amber-600 dark:text-amber-500"
+        className="font-medium text-warning"
         title={event.initiatorId ?? undefined}
       >
         {t("A routine")}
@@ -226,7 +226,7 @@ function StartedBy({
   if (event.initiatorKind === "handoff") {
     return (
       <span
-        className="font-medium text-amber-600 dark:text-amber-500"
+        className="font-medium text-warning"
         title={event.initiatorId ?? undefined}
       >
         {event.initiatorId
@@ -241,7 +241,7 @@ function StartedBy({
   ) {
     return (
       <span
-        className="font-medium text-amber-600 dark:text-amber-500"
+        className="font-medium text-warning"
         title={event.initiatorId ?? undefined}
       >
         {event.initiatorKind === "memory"
@@ -389,7 +389,7 @@ function Row({
             refused
               ? "font-medium text-destructive"
               : failed
-                ? "font-medium text-amber-600 dark:text-amber-500"
+                ? "font-medium text-warning"
                 : "text-muted-foreground"
           }
         >

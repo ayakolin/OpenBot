@@ -60,7 +60,6 @@ import {
 } from "@/lib/settings/message-list";
 import { BotsNavBadge } from "../bot-profile/attention";
 import { Button } from "../ui/button";
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
 import { Channel } from "./channel";
 import { ChannelPagination } from "./channel-pagination";
 import { t } from "@/lib/i18n";
@@ -245,7 +244,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="h-12 p-2">
+      <SidebarHeader className="h-[50px] px-3">
         <SidebarMenu>
           <SidebarMenuItem className="flex flex-row gap-1.5">
             <SidebarMenuButton
@@ -264,7 +263,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   {...props}
                   to="/channel/new"
                   activeProps={{
-                    className: "bg-foreground/5",
+                    className: "bg-sidebar-accent",
                   }}
                 />
               )}
@@ -276,9 +275,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent ref={scrollRoot} className="scroll-fade-b">
         <SidebarMenu>
-          <SidebarGroup className="gap-px">
+          {/* Grok's list inset: 4px top, 12px sides, 24px bottom — the same 12px the header uses. */}
+          <SidebarGroup className="gap-px px-3 pt-1 pb-6">
             <SidebarMenuItem>
-              <InputGroup className="bg-background text-sm rounded-lg h-9">
+              <InputGroup className="bg-background text-sm rounded-lg h-8">
                 <InputGroupInput
                   aria-label={t("Search channels")}
                   onChange={(event) => setSearch(event.target.value)}
@@ -297,42 +297,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
              * the box has to say so and quote it back — told "you don't have channels yet" while
              * holding a typo, a person reads their conversations as gone.
              */}
+            {/*
+             * A LINE OF TEXT, NOT A DASHED BOX. The desktop app says "nothing here" in 11px
+             * tertiary text at the top of the list it would have filled (`--sand-agents-section__empty`:
+             * 30px tall, 8px inset). A 40dvh dashed rectangle draws the absence as an event and
+             * pushes the roster's own footer 300px down the screen.
+             */}
             {searching && visibleChannels.length === 0 ? (
-              <div className="py-4">
-                <Empty className="border border-dashed min-h-[40dvh]">
-                  <EmptyHeader>
-                    <EmptyTitle>
-                      {channels.hasNextPage
-                        ? t("No loaded channels match your search")
-                        : t("No channels match your search")}
-                    </EmptyTitle>
-                    <EmptyDescription className="text-pretty">
-                      {channels.hasNextPage
-                        ? t(
-                            "Load older conversations to search more of your history.",
-                          )
-                        : t(
-                            "Nothing here is named “{query}”, and nobody has said it recently either.",
-                            { query: search.trim() },
-                          )}
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
-              </div>
+              <p className="px-2 py-1.5 text-muted-foreground text-xs">
+                {channels.hasNextPage
+                  ? t("No loaded channels match your search")
+                  : t(
+                      "Nothing here is named “{query}”, and nobody has said it recently either.",
+                      { query: search.trim() },
+                    )}
+              </p>
             ) : null}
             {!searching && channels.data?.length === 0 ? (
-              <div className="py-4">
-                <Empty className="border border-dashed min-h-[40dvh]">
-                  <EmptyHeader>
-                    <EmptyTitle>{t("You don't have channels yet")}</EmptyTitle>
-                    <EmptyDescription className="text-pretty">
-                      {t(
-                        "Start talking to agents and your channels will appear here.",
-                      )}
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
-              </div>
+              <p className="px-2 py-1.5 text-muted-foreground text-xs">
+                {t(
+                  "Start talking to agents and your channels will appear here.",
+                )}
+              </p>
             ) : null}
             <AnimatePresence initial={false}>
               {visibleChannels.map((channel) => (
@@ -356,12 +342,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu className="gap-px">
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="hover:bg-foreground/5 h-10"
+              className="hover:bg-sidebar-accent h-9"
               render={(props) => (
                 <Link
                   {...props}
                   to="/bots"
-                  activeProps={{ className: "bg-foreground/5" }}
+                  activeProps={{ className: "bg-sidebar-accent" }}
                 />
               )}
             >
@@ -376,13 +362,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             {/* Beside Bots rather than inside Admin: writing a skill is something anybody does. */}
             <SidebarMenuButton
-              className="hover:bg-foreground/5 h-10"
+              className="hover:bg-sidebar-accent h-9"
               render={(props) => (
                 <Link
                   {...props}
                   to="/skills"
                   activeProps={{
-                    className: "bg-foreground/5",
+                    className: "bg-sidebar-accent",
                   }}
                 />
               )}
@@ -397,7 +383,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
-                  <SidebarMenuButton className="hover:bg-foreground/5 h-10" />
+                  <SidebarMenuButton className="hover:bg-sidebar-accent h-9" />
                 }
               >
                 <UserAvatar />

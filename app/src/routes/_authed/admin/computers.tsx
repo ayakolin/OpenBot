@@ -149,7 +149,7 @@ function ComputersPage() {
       ) : null}
 
       {isolation === "shared" ? (
-        <p className="mt-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
+        <p className="mt-4 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-sm">
           <SharedComputerNotice />
         </p>
       ) : isolation === "per-bot" ? (
@@ -409,7 +409,7 @@ function HostFoldersSection({
       ) : null}
 
       {!connected && !loading ? (
-        <p className="mb-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
+        <p className="mb-3 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-sm">
           {t(
             "The desktop app is offline. Folders can only be approved from the desktop app, and command access stays unavailable while it is offline.",
           )}
@@ -526,7 +526,7 @@ function FolderGrantList({
       ))}
       {botPending.map((request) => (
         <div
-          className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm"
+          className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-sm"
           key={request.operationId}
         >
           {pendingLabel(request)} {t("from")} {ownerLabel(request)}

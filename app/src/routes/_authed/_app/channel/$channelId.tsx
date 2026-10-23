@@ -95,9 +95,10 @@ function RouteComponent() {
       }
     >
       <div className="flex flex-col">
-        <div className="min-h-12 border-b border-border sticky top-0 flex flex-row flex-wrap items-center justify-between px-3 py-2 gap-2">
+        <div className="min-h-[51px] border-b border-border sticky top-0 flex flex-row flex-wrap items-center justify-between px-4 gap-2">
           {/* Keyed on the displayed name so cold channel loads animate the resolved name, not the id. */}
-          <div className="flex min-w-0 items-center gap-1.5">
+          {/* Grok's identity block: 28px avatar, 9px gap, 5px/7px padding inside a 51px bar. */}
+          <div className="flex min-w-0 items-center gap-2.5 py-[5px]">
             <SidebarToggle />
             <motion.div
               animate={{ opacity: 1 }}
@@ -111,7 +112,7 @@ function RouteComponent() {
             >
               <ChannelAvatar
                 participantIds={channel.data?.agentIds ?? []}
-                size={22}
+                size={28}
               />
             </motion.div>
             <motion.span

@@ -379,11 +379,7 @@ function StepStatus({ step, active }: { step: StepDetails; active: boolean }) {
   if (step.refused)
     return <span className="shrink-0 text-destructive">{t("Blocked")}</span>;
   if (step.failed)
-    return (
-      <span className="shrink-0 text-amber-600 dark:text-amber-500">
-        {t("Didn't work")}
-      </span>
-    );
+    return <span className="shrink-0 text-warning">{t("Didn't work")}</span>;
   return null;
 }
 

@@ -59,17 +59,17 @@ function RouteComponent() {
       <SidebarToggleBar />
       <div className="flex-1 flex flex-col items-center justify-center w-full p-4 mt-8">
         <div className="flex flex-col items-center">
-          <h2 className="text-sm uppercase text-muted-foreground font-medium tracking-tight text-center">
+          <p className="text-muted-foreground text-xs font-medium uppercase tracking-[0.08em] text-center">
             {appConfig.brand.productName}
-          </h2>
-          <h1 className="text-2xl font-bold tracking-tight mt-1.5 text-center">
+          </p>
+          <h1 className="text-xl font-semibold tracking-[-0.02em] mt-1 text-center">
             {t("Start a new channel")}
           </h1>
         </div>
         <div className="mt-8 w-full flex flex-col items-center">
           <Composer
             agents={toAgentOptions(agents)}
-            className="w-full max-w-2xl"
+            className="w-full max-w-[700px]"
             disabled={!fallback}
             onSubmit={async (draft) => {
               // A channel is pinned to one coworker for the life of its thread, so the coworker is
@@ -108,13 +108,13 @@ function RouteComponent() {
           {fallback ? (
             // Said out loud: a message that silently reaches somebody you did not choose is the
             // kind of surprise that costs trust the first time it happens.
-            <p className="mt-2 w-full max-w-2xl text-xs text-muted-foreground text-center">
+            <p className="mt-2 w-full max-w-[700px] text-xs text-muted-foreground text-center">
               <FallbackRouteHint />
             </p>
           ) : null}
           {error ? (
             <p
-              className="mt-2 w-full max-w-2xl text-sm text-destructive"
+              className="mt-2 w-full max-w-[700px] text-sm text-destructive"
               role="alert"
             >
               {error}
@@ -128,7 +128,7 @@ function RouteComponent() {
             // true when the query has never once returned successfully, so this alert can only
             // ever claim a load failure while that is actually what happened.
             <p
-              className="mt-2 w-full max-w-2xl text-sm text-destructive"
+              className="mt-2 w-full max-w-[700px] text-sm text-destructive"
               role="alert"
             >
               {t(
@@ -147,7 +147,7 @@ function RouteComponent() {
          * the fifth public Bot squeezed all five — the same failure `/agents` had just been fixed
          * for, still sitting here.
          */}
-        <div className="mt-10 w-full max-w-2xl">
+        <div className="mt-10 w-full max-w-[700px]">
           {/*
            * The heading is repeated in each arm rather than hoisted above this conditional:
            * `CarouselPrevious`/`CarouselNext` read the carousel's own context, so they must stay
@@ -159,7 +159,7 @@ function RouteComponent() {
            */}
           {loading ? (
             <>
-              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
+              <h2 className="font-semibold text-sm">{t("Explore agents")}</h2>
               <Skeleton className="mt-4 h-[180px]" />
             </>
           ) : explore?.length ? (
@@ -171,7 +171,10 @@ function RouteComponent() {
               aria-labelledby="explore-agents-heading"
             >
               <div className="flex flex-row items-center justify-between gap-4">
-                <h2 id="explore-agents-heading" className="font-bold text-lg">
+                <h2
+                  id="explore-agents-heading"
+                  className="font-semibold text-sm"
+                >
                   {t("Explore agents")}
                 </h2>
                 {/*
@@ -206,7 +209,7 @@ function RouteComponent() {
             // card there would say the opposite of what a populated composer beside it (still
             // working off that same, successfully loaded `agents`) proves.
             <>
-              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
+              <h2 className="font-semibold text-sm">{t("Explore agents")}</h2>
               <Empty className="mt-4 h-[180px] border border-dashed border-destructive">
                 <EmptyHeader>
                   <EmptyTitle className="text-destructive">
@@ -220,7 +223,7 @@ function RouteComponent() {
             // when it failed but `agents` is defined — a loaded, empty slice either way. Same
             // plain copy for both: an empty roster is a fact, not an error.
             <>
-              <h2 className="font-bold text-lg">{t("Explore agents")}</h2>
+              <h2 className="font-semibold text-sm">{t("Explore agents")}</h2>
               <Empty className="mt-4 h-[180px] border border-dashed">
                 <EmptyHeader>
                   <EmptyTitle className="text-muted-foreground">

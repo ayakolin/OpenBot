@@ -874,7 +874,7 @@ function RouteComponent() {
                           {/* Decorative: the word beside it already says which. */}
                           <span
                             aria-hidden="true"
-                            className="size-1.5 rounded-full bg-emerald-500"
+                            className="size-1.5 rounded-full bg-success"
                           />
                           <span className="text-muted-foreground text-xs">
                             {t("Connected")}
@@ -1085,8 +1085,8 @@ function RouteComponent() {
                       <span
                         className={
                           tool.effect === "write"
-                            ? t("text-amber-600 text-xs dark:text-amber-500")
-                            : t("text-muted-foreground text-xs")
+                            ? "text-warning text-xs"
+                            : "text-muted-foreground text-xs"
                         }
                       >
                         {tool.effect === "write" ? "changes things" : "reads"}
@@ -1427,7 +1427,7 @@ function RouteComponent() {
                   >
                     <div className="mb-1 flex items-center justify-between">
                       <p
-                        className="font-medium text-amber-600 text-sm dark:text-amber-500"
+                        className="font-medium text-warning text-sm"
                         id="grant-writes-heading"
                       >
                         {t("Changes things")}

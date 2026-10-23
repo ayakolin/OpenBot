@@ -90,7 +90,7 @@ export function SettingsSidebar({
   return (
     <Sidebar {...props}>
       {/* Matched to the app sidebar's header, as Admin's is. See admin-sidebar.tsx. */}
-      <SidebarHeader className="h-12 p-2">
+      <SidebarHeader className="h-[50px] px-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -118,7 +118,7 @@ export function SettingsSidebar({
                     <Link
                       {...option.linkOptions}
                       activeOptions={{ exact: option.exact ?? false }}
-                      activeProps={{ className: "bg-foreground/5" }}
+                      activeProps={{ className: "bg-sidebar-accent" }}
                       {...props}
                     >
                       <option.icon className="mr-2 h-4 w-4" />

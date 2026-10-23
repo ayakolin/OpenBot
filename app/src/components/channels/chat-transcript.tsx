@@ -335,7 +335,7 @@ function Queued({
          * message sent by mistake rather than as a file waiting its turn.
          */}
         {text ? (
-          <Bubble align="end" className="opacity-60" variant="muted">
+          <Bubble align="end" className="opacity-60" variant="user">
             <BubbleContent>
               {/* Shown exactly as typed, for the same reason a sent message is. */}
               <span className="whitespace-pre-wrap">{text}</span>
@@ -685,7 +685,7 @@ const TranscriptMessage = memo(function TranscriptMessage({
           */}
           <Bubble
             align={align}
-            variant={isUser ? "muted" : "ghost"}
+            variant={isUser ? "user" : "ghost"}
             className={isUser ? undefined : "w-full"}
           >
             <BubbleContent className={isUser ? undefined : "w-full"}>
@@ -1629,7 +1629,15 @@ export function ChatTranscript({
         <MessageScrollerViewport ref={viewportRef}>
           <MessageScrollerContent
             aria-busy={busy}
-            className="mx-auto w-full max-w-2xl px-4 py-6"
+            /*
+             * 690px is the desktop app's transcript measure: `max(30px, calc((100% - 690px) / 2))`
+             * as horizontal padding around a 690px column. Written here as the same arithmetic —
+             * 750px box less 30px of padding a side — because `max()` on the padding and a cap on
+             * the column are not the same thing: `max-w-2xl` resolved to 630px here, since this
+             * app's root font size is 15px, which made the transcript narrower than the 700px
+             * composer under it.
+             */
+            className="mx-auto w-full max-w-[750px] px-[30px] py-7"
             spacerClassName="order-2"
           >
             {/*

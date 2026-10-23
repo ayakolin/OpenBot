@@ -77,7 +77,7 @@ export function DetailPanel({
             className="gap-0"
             style={{ width: `min(${detailWidth}px, 100vw)`, maxWidth: "100vw" }}
           >
-            <SheetTitle className="h-12 shrink-0 px-4 pr-12 flex items-center">
+            <SheetTitle className="h-[50px] shrink-0 px-4 pr-12 flex items-center">
               {title ?? t("Details")}
             </SheetTitle>
             <div className="flex-1 min-h-0 overflow-y-auto">
@@ -101,7 +101,7 @@ export function DetailPanel({
             style={{ width: detailWidth }}
           >
             {/* Rendered for the whole animation, so the way out is available immediately. */}
-            <div className="h-12 shrink-0 sticky top-0 flex flex-row items-center justify-between px-2 gap-2">
+            <div className="h-[50px] shrink-0 sticky top-0 flex flex-row items-center justify-between px-2 gap-2">
               <div className="flex min-w-0 w-full items-center gap-1.5">
                 {title}
               </div>
