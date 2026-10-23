@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { connectAccountMutationOptions } from "@/lib/plugins/mutations";
 import {
@@ -8,7 +8,36 @@ import {
   personalConnections,
 } from "@/lib/plugins/queries";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** The app is connected with a key, so the way forward is a link to where it is entered. */
+export function needsKeySentence(
+  title: string,
+  link: (label: string) => ReactNode,
+  tr: Translate = t,
+): ReactNode {
+  return trNodes(
+    "{title} is connected with a key you hold rather than by visiting a page. {link}, then ask again.",
+    { link: link(tr("Enter it on {title}'s page", { title })) },
+    { title },
+    tr,
+  );
+}
+
+/** The sign-in tab was blocked, so the same address is offered as a link. */
+export function blockedSentence(
+  title: string,
+  link: (label: string) => ReactNode,
+  tr: Translate = t,
+): ReactNode {
+  return trNodes(
+    "This browser blocked the tab. {link}.",
+    { link: link(tr("Open {title}'s sign-in", { title })) },
+    undefined,
+    tr,
+  );
+}
 
 /**
  * The app a Bot needed, offered where the person is reading, instead of the name of a screen.
@@ -125,19 +154,15 @@ export function ConnectAppCard({
         </p>
       ) : needsKey ? (
         <p className="text-sm" role="status">
-          {title}{" "}
-          {t(
-            "is connected with a key you hold rather than by visiting a page.",
-          )}{" "}
-          <Link
-            className="underline underline-offset-2"
-            params={{ key: serverId }}
-            to="/settings/connected-accounts/$key"
-          >
-            {t("Enter it on")} {title}
-            {t("'s page")}
-          </Link>
-          {t(", then ask again.")}
+          {needsKeySentence(title, (label) => (
+            <Link
+              className="underline underline-offset-2"
+              params={{ key: serverId }}
+              to="/settings/connected-accounts/$key"
+            >
+              {label}
+            </Link>
+          ))}
         </p>
       ) : (
         <div className="flex flex-wrap items-center gap-3">
@@ -152,17 +177,16 @@ export function ConnectAppCard({
           ) : null}
           {blockedUrl ? (
             <p className="text-sm" role="status">
-              {t("This browser blocked the tab.")}{" "}
-              <a
-                className="underline underline-offset-2"
-                href={blockedUrl}
-                rel="noreferrer"
-                target="_blank"
-              >
-                {t("Open")} {title}
-                {t("'s sign-in")}
-              </a>
-              .
+              {blockedSentence(title, (label) => (
+                <a
+                  className="underline underline-offset-2"
+                  href={blockedUrl}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {label}
+                </a>
+              ))}
             </p>
           ) : null}
           {connect.isError ? (

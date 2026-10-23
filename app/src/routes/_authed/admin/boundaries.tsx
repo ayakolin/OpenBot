@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { PageSection, PageShell } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,14 @@ import { saveActionPolicyMutationOptions } from "@/lib/computers/mutations";
 import {
   type ActionPolicy,
   actionPolicyQueryOptions,
+  type DryRunChange,
   type DryRunReport,
   dryRunActionPolicy,
   type PolicyMode,
 } from "@/lib/computers/queries";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 /**
  * CEL computer-action boundary editor. Rules are shown as the gateway evaluates them, and denied
@@ -136,15 +138,13 @@ function BoundariesPage() {
   return (
     <PageShell
       description={
-        <>
-          {t(
-            "What every Bot may and may not do with its computer. Rules are checked on every action before it happens, and a refusal is recorded in",
-          )}{" "}
-          <Link className="underline" to="/admin/audit">
-            {t("Audit")}
-          </Link>{" "}
-          {t("with the rule that refused it.")}
-        </>
+        <PageDescription
+          audit={
+            <Link className="underline" to="/admin/audit">
+              {t("Audit")}
+            </Link>
+          }
+        />
       }
       title={t("Boundaries")}
     >
@@ -180,33 +180,7 @@ function BoundariesPage() {
         </p>
       </PageSection>
 
-      <PageSection
-        description={
-          <>
-            {t(
-              "Checked first, and a match ends it: nothing below is consulted and the Bot is told which rule refused it. Rules are CEL, and can ask about",
-            )}{" "}
-            <code>{t("tool.name")}</code>, <code>{t("intent")}</code>,{" "}
-            <code>{t("bot.id")}</code>, <code>{t("actor.id")}</code>,{" "}
-            <code>{t("page.url")}</code> {t("and")}{" "}
-            <code>{t("page.host")}</code>, the element being acted on, the{" "}
-            <code>{t("key")}</code>{" "}
-            {t("being pressed, the file being touched, the")}{" "}
-            <code>{t("command")}</code> {t("being run, and")}{" "}
-            <code>{t("mcp.server")}</code>, <code>{t("mcp.tool")}</code>{" "}
-            {t("and")} <code>{t("mcp.effect")}</code>{" "}
-            {t("for a call to somebody else&rsquo;s tools.")}{" "}
-            <code>{t("initiator.kind")}</code>{" "}
-            {t("says what started the run &mdash;")} <code>{t("person")}</code>,{" "}
-            <code>{t("routine")}</code> or <code>{t("handoff")}</code>{" "}
-            {t("&mdash; which")} <code>{t("actor.id")}</code>{" "}
-            {t(
-              "cannot, because a scheduled run carries its owner&rsquo;s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
-            )}
-          </>
-        }
-        title={t("It may never")}
-      >
+      <PageSection description={<DenyDescription />} title={t("It may never")}>
         {policy.deny.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
             {t("No rules. Every action is allowed and recorded.")}
@@ -334,6 +308,89 @@ function BoundariesPage() {
   );
 }
 
+/** Where the Audit link sits is the translation's to decide, so it is a placeholder in one sentence. */
+export function PageDescription({
+  audit,
+  tr = t,
+}: {
+  audit: ReactNode;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "What every Bot may and may not do with its computer. Rules are checked on every action before it happens, and a refusal is recorded in {audit} with the rule that refused it.",
+    { audit },
+    undefined,
+    tr,
+  );
+}
+
+/**
+ * The attributes a deny rule can ask about, as one sentence. The identifiers stay in <code>; the
+ * words between them are translated whole, so no language has to put its seams where English does.
+ */
+export function DenyDescription({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "Checked first, and a match ends it: nothing below is consulted and the Bot is told which rule refused it. Rules are CEL, and can ask about {toolName}, {intent}, {botId}, {actorId}, {pageUrl} and {pageHost}, the element being acted on, the {key} being pressed, the file being touched, the {command} being run, and {mcpServer}, {mcpTool} and {mcpEffect} for a call to somebody else&rsquo;s tools. {initiatorKind} says what started the run &mdash; {person}, {routine} or {handoff} &mdash; which {actorId} cannot, because a scheduled run carries its owner&rsquo;s authority while nobody is watching. A rule that cannot be evaluated counts as a match, so a mistyped deny refuses rather than quietly permitting what it was meant to forbid.",
+    {
+      toolName: <code>{tr("tool.name")}</code>,
+      intent: <code>{tr("intent")}</code>,
+      botId: <code>{tr("bot.id")}</code>,
+      actorId: <code>{tr("actor.id")}</code>,
+      pageUrl: <code>{tr("page.url")}</code>,
+      pageHost: <code>{tr("page.host")}</code>,
+      key: <code>{tr("key")}</code>,
+      command: <code>{tr("command")}</code>,
+      mcpServer: <code>{tr("mcp.server")}</code>,
+      mcpTool: <code>{tr("mcp.tool")}</code>,
+      mcpEffect: <code>{tr("mcp.effect")}</code>,
+      initiatorKind: <code>{tr("initiator.kind")}</code>,
+      person: <code>{tr("person")}</code>,
+      routine: <code>{tr("routine")}</code>,
+      handoff: <code>{tr("handoff")}</code>,
+    },
+    undefined,
+    tr,
+  );
+}
+
+/** One action the tested rule would have decided differently. */
+export function ChangeSummary({
+  change,
+  tr = t,
+}: {
+  change: DryRunChange;
+  tr?: Translate;
+}) {
+  return (
+    <p className="text-xs">
+      <span className="font-medium">
+        {change.would === "refused"
+          ? tr("Would refuse")
+          : tr("Would now allow")}
+      </span>{" "}
+      <code className="font-mono">{change.action}</code>
+      {change.element?.name ? (
+        <>
+          {tr(" on “")}
+          {change.element.name}”
+        </>
+      ) : null}
+      {change.command ? (
+        <>
+          {" "}
+          {tr("running")} <code className="font-mono">{change.command}</code>
+        </>
+      ) : null}
+      {change.file ? (
+        <>
+          {" "}
+          {tr("touching")} {change.file}
+        </>
+      ) : null}
+    </p>
+  );
+}
+
 /**
  * What the tested rule would have done to actions already on the trail.
  *
@@ -362,34 +419,7 @@ function DryRunResult({ report }: { report: DryRunReport }) {
         <ul className="mt-2 divide-y divide-border rounded-md border border-border">
           {report.changes.map((change) => (
             <li className="px-3 py-2" key={change.id}>
-              <p className="text-xs">
-                <span className="font-medium">
-                  {change.would === "refused"
-                    ? t("Would refuse")
-                    : t("Would now allow")}
-                </span>{" "}
-                <code className="font-mono">{change.action}</code>
-                {change.element?.name ? (
-                  <>
-                    {" "}
-                    {t("on “")}
-                    {change.element.name}”
-                  </>
-                ) : null}
-                {change.command ? (
-                  <>
-                    {" "}
-                    {t("running")}{" "}
-                    <code className="font-mono">{change.command}</code>
-                  </>
-                ) : null}
-                {change.file ? (
-                  <>
-                    {" "}
-                    {t("touching")} {change.file}
-                  </>
-                ) : null}
-              </p>
+              <ChangeSummary change={change} />
               <p className="mt-0.5 text-muted-foreground text-xs">
                 {change.bot}
                 {change.page ? <> · {change.page}</> : null} ·{" "}

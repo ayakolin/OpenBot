@@ -10,7 +10,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { type SkillFormValues, skillFormSchema } from "@/lib/skills/form";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** The help under the command field: one sentence, with the command's shape set in a <code>. */
+export function CommandHelp({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "What you type after a slash. {command}",
+    {
+      command: (
+        <code>
+          /{"{"}
+          {tr("command")}
+          {"}"}
+        </code>
+      ),
+    },
+    undefined,
+    tr,
+  );
+}
+
+/** The help under the summary field: one sentence, with the slash set in a <code>. */
+export function SummaryHelp({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "Shown beside the command in this list and in the {slash} menu. Optional.",
+    { slash: <code>/</code> },
+    undefined,
+    tr,
+  );
+}
 
 /**
  * The four things a person decides about a skill: what they type, what it is called, what it is
@@ -94,14 +123,7 @@ export function SkillFields({
                     {slugLocked ? (
                       "A command cannot be changed. To rename a skill, write a new one and delete this."
                     ) : (
-                      <>
-                        {t("What you type after a slash.")}{" "}
-                        <code>
-                          /{"{"}
-                          {t("command")}
-                          {"}"}
-                        </code>
-                      </>
+                      <CommandHelp />
                     )}
                   </p>
                 )}
@@ -156,8 +178,7 @@ export function SkillFields({
                   <FieldError errors={field.state.meta.errors} />
                 ) : (
                   <p className="text-muted-foreground text-xs">
-                    {t("Shown beside the command in this list and in the")}{" "}
-                    <code>/</code> {t("menu. Optional.")}
+                    <SummaryHelp />
                   </p>
                 )}
               </Field>

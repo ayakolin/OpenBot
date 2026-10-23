@@ -1,7 +1,7 @@
 import { IconApps, IconBox, IconChevronRight } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { HandoffPanel } from "@/components/agents/handoff-panel";
 import {
   PageEmpty,
@@ -29,7 +29,8 @@ import {
 } from "@/lib/plugins/queries";
 import { readToolName } from "@/lib/plugins/tool-name";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 /** "google-drive" as "Google Drive": the connector key, said the way a person would. */
 function connectorName(key: string): string {
@@ -82,6 +83,19 @@ export function AccessSections({ agent }: { agent: AgentProfile }) {
  * Your own skills, one switch each. Only on your own Bot: the server lets a person put their own
  * skill on a Bot they own, and neither half alone is enough.
  */
+/** One sentence with the link set inside it, so Chinese gets no space where English has one. */
+export function noSkillsSentence(
+  link: ReactNode,
+  tr: Translate = t,
+): ReactNode {
+  return trNodes(
+    "You have not written a skill yet. {link}.",
+    { link },
+    undefined,
+    tr,
+  );
+}
+
 function YourSkills({ agentId }: { agentId: string }) {
   const me = useQuery(currentUserQueryOptions()).data;
   const page = useQuery(pluginsPageQueryOptions());
@@ -107,11 +121,11 @@ function YourSkills({ agentId }: { agentId: string }) {
         </p>
       ) : skills.length === 0 ? (
         <PageEmpty>
-          {t("You have not written a skill yet.")}{" "}
-          <Link className="underline underline-offset-4" to="/skills">
-            {t("Write one")}
-          </Link>
-          {t(".")}
+          {noSkillsSentence(
+            <Link className="underline underline-offset-4" to="/skills">
+              {t("Write one")}
+            </Link>,
+          )}
         </PageEmpty>
       ) : (
         <PageRows>

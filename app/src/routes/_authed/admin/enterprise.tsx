@@ -69,7 +69,7 @@ import {
   type NetworkPolicy,
 } from "@/lib/enterprise/queries";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authed/admin/enterprise")({
   component: EnterprisePage,
@@ -644,6 +644,34 @@ function EnterpriseSections({
   );
 }
 
+/** The run and person counts are placeholders in one translation, not seams between four pieces. */
+export function modelUsageSummary(
+  runs: number,
+  people: number,
+  tr: Translate = t,
+): string {
+  return tr(
+    people === 1
+      ? "{runs} runs by {people} person in 30 days"
+      : "{runs} runs by {people} people in 30 days",
+    { runs, people },
+  );
+}
+
+/** The allowlist help: one sentence with the default hosts and the count of the rest set in it. */
+export function allowlistHelp(
+  defaultDestinations: string[],
+  tr: Translate = t,
+): string {
+  return tr(
+    "One per line. A domain covers its subdomains; *.name covers only subdomains. An IP range may name ports. Defaults are {defaults} and {more} more package and source hosts.",
+    {
+      defaults: defaultDestinations.slice(0, 4).join(", "),
+      more: defaultDestinations.length - 4,
+    },
+  );
+}
+
 function ModelUsage() {
   const usage = useQuery(modelUsageQueryOptions(30));
   if (usage.isPending) return null;
@@ -671,8 +699,7 @@ function ModelUsage() {
             <ItemContent>
               <ItemTitle>{row.model}</ItemTitle>
               <ItemDescription>
-                {row.runs} {t("runs by")} {row.people}{" "}
-                {row.people === 1 ? t("person") : t("people")} {t("in 30 days")}
+                {modelUsageSummary(row.runs, row.people)}
                 {row.refused > 0 ? ` · ${row.refused} off the allowlist` : ""} ·{" "}
                 {row.source}
               </ItemDescription>
@@ -985,12 +1012,7 @@ function NetworkDialog({
                 value={rules}
               />
               <p className="text-muted-foreground text-xs">
-                {t(
-                  "One per line. A domain covers its subdomains; *.name covers only subdomains. An IP range may name ports. Defaults are",
-                )}{" "}
-                {data.defaultDestinations.slice(0, 4).join(", ")} {t("and")}{" "}
-                {data.defaultDestinations.length - 4}{" "}
-                {t("more package and source hosts.")}
+                {allowlistHelp(data.defaultDestinations)}
               </p>
             </div>
             {initial.scopeKind === "organization" ? (

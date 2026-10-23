@@ -5,7 +5,23 @@ import {
   botSharedAppsQueryOptions,
   requestSharedUseMutationOptions,
 } from "@/lib/plugins/shared-use";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** What saving does for a shared app, with the app's title a placeholder in one sentence. */
+export function savingApproves(app: string, tr: Translate = t): string {
+  return tr(
+    "Saving also approves the shared {app} account for whoever can reach this Bot.",
+    { app },
+  );
+}
+
+/** Why a shared app's calls are refused for now, with the app's title a placeholder. */
+export function callsRefused(app: string, tr: Translate = t): string {
+  return tr(
+    "{app} calls from this Bot are refused until an administrator approves who can reach it.",
+    { app },
+  );
+}
 
 /**
  * What changing who can reach a Bot means for the shared accounts it uses, said BEFORE the change.
@@ -33,10 +49,7 @@ export function SharedAppNotice({
     return (
       <div className="space-y-1 text-sm">
         {apps.map((app) => (
-          <p key={app.serverId}>
-            {t("Saving also approves the shared")} {app.title}{" "}
-            {t("account for whoever can reach this Bot.")}
-          </p>
+          <p key={app.serverId}>{savingApproves(app.title)}</p>
         ))}
       </div>
     );
@@ -55,10 +68,7 @@ export function SharedAppNotice({
         ) : app.covered ? null : (
           <div className="flex flex-wrap items-center gap-2" key={app.serverId}>
             <p className="text-amber-700 dark:text-amber-400">
-              {app.title}{" "}
-              {t(
-                "calls from this Bot are refused until an administrator approves who can reach it.",
-              )}
+              {callsRefused(app.title)}
             </p>
             <Button
               aria-label={t("Request approval for {name}", { name: app.title })}

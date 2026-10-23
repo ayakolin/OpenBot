@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import {
   PageEmpty,
   PageRows,
@@ -16,7 +16,40 @@ import {
 } from "@/lib/approvals";
 import { queryClient } from "@/query-client";
 import { RuleForm, RuleRow } from "./rules";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** The sentence under "Rules": one translation with the link set in it, then the team notice. */
+export function RulesIntro({
+  link,
+  rulesOff,
+  tr = t,
+}: {
+  link: ReactNode;
+  rulesOff: boolean;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {trNodes(
+        'The strictest matching rule wins, so an "ask" rule beats an "allow" one. Rules for every Bot are in {link}.',
+        { link },
+        undefined,
+        tr,
+      )}
+      {rulesOff ? (
+        <>
+          {tr(" ")}
+          {tr(
+            "Your team has switched personal rules off, so they are kept but do not apply.",
+          )}
+        </>
+      ) : (
+        ""
+      )}
+    </>
+  );
+}
 
 /**
  * The person's approval rules for one Bot, and the team rules that reach it, locked, as one card of
@@ -46,23 +79,17 @@ export function BotApprovalRules({ agentId }: { agentId: string }) {
   return (
     <PageSection
       description={
-        <>
-          {t(
-            'The strictest matching rule wins, so an "ask" rule beats an "allow" one. Rules for every Bot are in',
-          )}{" "}
-          <Link
-            className="underline underline-offset-4"
-            to="/settings/approvals"
-          >
-            {t("Settings → Approvals")}
-          </Link>
-          .
-          {rulesOff
-            ? t(
-                " Your team has switched personal rules off, so they are kept but do not apply.",
-              )
-            : ""}
-        </>
+        <RulesIntro
+          link={
+            <Link
+              className="underline underline-offset-4"
+              to="/settings/approvals"
+            >
+              {t("Settings → Approvals")}
+            </Link>
+          }
+          rulesOff={rulesOff}
+        />
       }
       title={t("Rules")}
     >

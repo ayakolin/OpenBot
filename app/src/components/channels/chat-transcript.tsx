@@ -79,7 +79,7 @@ import { TeamBotConsentCard } from "./team-bot-consent";
 import { ToolRenderBoundary } from "./tool-boundary";
 import { ToolLine } from "./tool-line";
 import { VoiceChatCard } from "./voice-chat-card";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 type ChatTranscriptProps = {
   busy?: boolean;
@@ -570,6 +570,23 @@ function describeTrigger(trigger: string): string {
   return `${source} · ${type}`;
 }
 
+/** "Responsibility ran." then its trigger; the space between the two is English's alone. */
+export function ResponsibilityRan({
+  trigger,
+  tr = t,
+}: {
+  trigger: string;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      <span className="font-medium">{tr("Responsibility ran.")}</span>
+      {tr(" ")}
+      {tr("Trigger:")} {describeTrigger(trigger)}
+    </>
+  );
+}
+
 /**
  * A responsibility's turn, drawn as the event it is.
  *
@@ -591,8 +608,7 @@ function ResponsibilityFiring({
       <IconClock aria-hidden className="size-4 shrink-0 translate-y-0.5" />
       <div className="min-w-0">
         <p>
-          <span className="font-medium">{t("Responsibility ran.")}</span>{" "}
-          {t("Trigger:")} {describeTrigger(turn.trigger)}
+          <ResponsibilityRan trigger={turn.trigger} />
         </p>
         <p className="whitespace-pre-wrap">{turn.instruction}</p>
         <details className="group mt-1">

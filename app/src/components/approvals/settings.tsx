@@ -1,7 +1,7 @@
 import { IconEyeCheck, IconHandStop, IconTerminal2 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import {
   PageEmpty,
   PageRows,
@@ -29,7 +29,56 @@ import { agentListQueryOptions } from "@/lib/agents/queries";
 import { currentUserQueryOptions } from "@/lib/auth/queries";
 import { queryClient } from "@/query-client";
 import { HOST_LABELS, LabelSelect, RuleForm, RuleRow } from "./rules";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** For an administrator: where the team-wide settings live, as one sentence with the link set in it. */
+export function AdminApprovalsHint({
+  link,
+  tr = t,
+}: {
+  link: ReactNode;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "Team settings and shared account requests are in {link}.",
+    { link },
+    undefined,
+    tr,
+  );
+}
+
+/** The sentence under "Rules for every Bot": one translation with the link set in it, then the team notice. */
+export function EveryBotRulesIntro({
+  link,
+  rulesOff,
+  tr = t,
+}: {
+  link: ReactNode;
+  rulesOff: boolean;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {trNodes(
+        'The strictest matching rule wins, so an "ask" rule beats an "allow" one. Team rules are locked. Changing a password, security settings and payments are always handed to you. Rules for a single Bot are on {link}.',
+        { link },
+        undefined,
+        tr,
+      )}
+      {rulesOff ? (
+        <>
+          {tr(" ")}
+          {tr(
+            "Your team has switched personal rules off, so they are kept but do not apply.",
+          )}
+        </>
+      ) : (
+        ""
+      )}
+    </>
+  );
+}
 
 /**
  * The person's own approval settings: whether their Bots ask before changing things, and the rules
@@ -81,11 +130,16 @@ export function ApprovalSettings() {
       ) : null}
       {me?.role === "admin" ? (
         <p className="mt-6 text-muted-foreground text-sm">
-          {t("Team settings and shared account requests are in")}{" "}
-          <Link className="underline underline-offset-4" to="/admin/approvals">
-            {t("Admin → Approvals")}
-          </Link>
-          .
+          <AdminApprovalsHint
+            link={
+              <Link
+                className="underline underline-offset-4"
+                to="/admin/approvals"
+              >
+                {t("Admin → Approvals")}
+              </Link>
+            }
+          />
         </p>
       ) : null}
       <PageSection title={t("Before a Bot acts")}>
@@ -184,20 +238,14 @@ export function ApprovalSettings() {
       </PageSection>
       <PageSection
         description={
-          <>
-            {t(
-              'The strictest matching rule wins, so an "ask" rule beats an "allow" one. Team rules are locked. Changing a password, security settings and payments are always handed to you. Rules for a single Bot are on',
-            )}{" "}
-            <Link className="underline underline-offset-4" to="/bots">
-              {t("that Bot's page")}
-            </Link>
-            .
-            {rulesOff
-              ? t(
-                  " Your team has switched personal rules off, so they are kept but do not apply.",
-                )
-              : ""}
-          </>
+          <EveryBotRulesIntro
+            link={
+              <Link className="underline underline-offset-4" to="/bots">
+                {t("that Bot's page")}
+              </Link>
+            }
+            rulesOff={rulesOff}
+          />
         }
         title={t("Rules for every Bot")}
       >

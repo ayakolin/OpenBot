@@ -18,7 +18,7 @@ import {
 import { auditEventsQueryOptions, auditExportUrl } from "@/lib/audit/queries";
 import { silenceOf } from "@/lib/audit/silence";
 import { client } from "@/lib/client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /**
  * Read surface for policy, computer, component, MCP, and credential audit events.
@@ -62,6 +62,14 @@ const FILTERS = [
     search: "?initiatorKind=routine,handoff,responsibility,memory",
   },
 ] as const;
+
+/** The count is a placeholder inside one translation, so the language decides how it sits in the words. */
+export function exportCappedSentence(count: number, tr: Translate = t): string {
+  return tr(
+    "The file holds the newest {count} events, not all of them. Narrow the filter or the dates to export the rest.",
+    { count: count.toLocaleString() },
+  );
+}
 
 function AuditPage() {
   const [search, setSearch] = useState<string>(FILTERS[0].search);
@@ -163,10 +171,7 @@ function AuditPage() {
         ) : null}
         {exportCapped ? (
           <p className="mt-4 text-muted-foreground text-sm" role="status">
-            {t("The file holds the newest")} {exportCapped.toLocaleString()}{" "}
-            {t(
-              "events, not all of them. Narrow the filter or the dates to export the rest.",
-            )}
+            {exportCappedSentence(exportCapped)}
           </p>
         ) : null}
         {events.isPending ? null : events.isError ? (

@@ -21,11 +21,22 @@ import {
 } from "@/lib/channels/route";
 import { useStartChannel } from "@/lib/channels/start";
 import { appConfig } from "@/lib/generated/application-config";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 export const Route = createFileRoute("/_authed/_app/")({
   component: RouteComponent,
 });
+
+/** Says who a message goes to when nobody is named, with the @ set in a <code>. */
+export function FallbackRouteHint({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "Sent to the coworker it is for. Type {at} to choose one yourself.",
+    { at: <code>@</code> },
+    undefined,
+    tr,
+  );
+}
 
 function RouteComponent() {
   const {
@@ -98,8 +109,7 @@ function RouteComponent() {
             // Said out loud: a message that silently reaches somebody you did not choose is the
             // kind of surprise that costs trust the first time it happens.
             <p className="mt-2 w-full max-w-2xl text-xs text-muted-foreground text-center">
-              {t("Sent to the coworker it is for. Type")} <code>@</code>{" "}
-              {t("to choose one yourself.")}
+              <FallbackRouteHint />
             </p>
           ) : null}
           {error ? (

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { SkillFields } from "@/components/skills/skill-fields";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ import {
 } from "@/lib/plugins/mutations";
 import { routineKeys } from "@/lib/routines/queries";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /** Seconds left before the server stops a recording, ticking once a second. */
 function useSecondsLeft(expiresAt: string | undefined) {
@@ -48,6 +48,65 @@ const SCHEDULES = [
   { label: "Every Monday at 09:00", cron: "0 9 * * 1" },
   { label: "Every hour", cron: "0 * * * *" },
 ] as const;
+
+/**
+ * The confirmation after a recording is scheduled: one sentence, then the two things to do next.
+ * The space before the link is English's; a Chinese sentence ends in 。 and needs none.
+ */
+export function ScheduledNotice({
+  slug,
+  time,
+  link,
+  button,
+  tr = t,
+}: {
+  slug: string;
+  time: string;
+  link: ReactNode;
+  button: ReactNode;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {tr("Scheduled. /{slug} next runs {time}.", { slug, time })}
+      {tr(" ")}
+      {link} {button}
+    </>
+  );
+}
+
+/** The line above the controls while a recording runs. */
+export function activeSummary(
+  title: string,
+  count: number,
+  tr: Translate = t,
+): string {
+  return tr("Recording {title} · {count} steps", { title, count });
+}
+
+/** A finished recording's title and step count, with a note when the server cut it off. */
+export function FinishedSummary({
+  title,
+  count,
+  reachedTimeLimit,
+  tr = t,
+}: {
+  title: string;
+  count: number;
+  reachedTimeLimit: boolean;
+  tr?: Translate;
+}) {
+  return (
+    <>
+      {tr("{title} · {count} steps", { title, count })}
+      {reachedTimeLimit && (
+        <span className="text-xs text-muted-foreground">
+          {tr(" · stopped at the ten-minute limit")}
+        </span>
+      )}
+    </>
+  );
+}
 
 /** Save the demonstrated path as a routine that reruns the published skill. */
 function ScheduleSkill({
@@ -84,15 +143,20 @@ function ScheduleSkill({
   if (scheduled)
     return (
       <p className="w-full text-xs">
-        {t("Scheduled. /")}
-        {recording.skillSlug} {t("next runs")}{" "}
-        {new Date(scheduled.nextRunAt).toLocaleString()}.{" "}
-        <Link to="/routines" className="underline">
-          {t("See routines")}
-        </Link>{" "}
-        <button type="button" className="underline" onClick={onDone}>
-          {t("Close")}
-        </button>
+        <ScheduledNotice
+          slug={recording.skillSlug ?? ""}
+          time={new Date(scheduled.nextRunAt).toLocaleString()}
+          link={
+            <Link to="/routines" className="underline">
+              {t("See routines")}
+            </Link>
+          }
+          button={
+            <button type="button" className="underline" onClick={onDone}>
+              {t("Close")}
+            </button>
+          }
+        />
       </p>
     );
   return (
@@ -264,8 +328,7 @@ export function DemonstrationRecorder({
       {active ? (
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm">
-            {t("Recording")} {active.title} · {active.actions.length}{" "}
-            {t("steps")}
+            {activeSummary(active.title, active.actions.length)}
           </span>
           {secondsLeft !== null && (
             <span
@@ -345,13 +408,11 @@ export function DemonstrationRecorder({
             className="flex flex-wrap items-center justify-between gap-2 border-t pt-2 text-sm"
           >
             <span>
-              {recording.title} · {recording.actions.length} {t("steps")}
-              {recording.reachedTimeLimit && (
-                <span className="text-xs text-muted-foreground">
-                  {" "}
-                  {t("· stopped at the ten-minute limit")}
-                </span>
-              )}
+              <FinishedSummary
+                title={recording.title}
+                count={recording.actions.length}
+                reachedTimeLimit={recording.reachedTimeLimit}
+              />
             </span>
             <div className="flex gap-2">
               {recording.status === "published" && recording.skillSlug ? (

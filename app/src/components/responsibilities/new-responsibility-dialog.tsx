@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useId, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,7 +34,8 @@ import {
   type ResponsibilityRecord,
 } from "@/lib/responsibilities";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 type Source = "none" | ResponsibilityRecord["subscriptions"][number]["source"];
 
@@ -46,6 +47,22 @@ const SOURCES = {
   connector: "Connected app",
   schedule: "Schedule",
 } as const satisfies Partial<Record<Source, string>>;
+
+/** Where a GitHub trigger's repositories come from, as one sentence with the link set in it. */
+export function GithubEventsHint({
+  link,
+  tr = t,
+}: {
+  link: ReactNode;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "Events come from the repositories you connected in {link}.",
+    { link },
+    undefined,
+    tr,
+  );
+}
 
 /**
  * A new responsibility: where it runs, what it is for, and what — if anything — starts it on its
@@ -257,11 +274,13 @@ export function NewResponsibilityDialog({
                   </Select>
                   {source === "github" && (
                     <FieldDescription>
-                      {t("Events come from the repositories you connected in")}{" "}
-                      <Link to="/settings/connected-accounts">
-                        {t("Settings → Connected accounts")}
-                      </Link>
-                      .
+                      <GithubEventsHint
+                        link={
+                          <Link to="/settings/connected-accounts">
+                            {t("Settings → Connected accounts")}
+                          </Link>
+                        }
+                      />
                     </FieldDescription>
                   )}
                 </Field>

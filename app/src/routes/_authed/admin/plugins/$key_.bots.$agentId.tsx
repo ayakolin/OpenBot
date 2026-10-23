@@ -47,7 +47,7 @@ import {
   type SharedUseApproval,
   sharedUseKeys,
 } from "@/lib/plugins/shared-use";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /**
  * One Bot and one app: every action the app offers, and which of them this Bot holds.
@@ -86,6 +86,22 @@ export const Route = createFileRoute(
  */
 export function readOnlyRefs(tools: PluginTool[]): string[] {
   return tools.filter((tool) => tool.effect === "read").map((tool) => tool.ref);
+}
+
+/**
+ * One sentence with the Bot's name and the app's title set in it. The names are placeholders in a
+ * single translation, not seams between four, so a language that writes no spaces between words
+ * is not handed one by the join.
+ */
+export function sharedGrantTitle(
+  botName: string,
+  appTitle: string,
+  tr: Translate = t,
+): string {
+  return tr("Let {bot} use the shared {app} account?", {
+    bot: botName,
+    app: appTitle,
+  });
 }
 
 function RouteComponent() {
@@ -514,10 +530,7 @@ function RouteComponent() {
           >
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>
-                  {t("Let")} {botName} {t("use the shared")} {appTitle}{" "}
-                  {t("account?")}
-                </DialogTitle>
+                <DialogTitle>{sharedGrantTitle(botName, appTitle)}</DialogTitle>
               </DialogHeader>
               <DialogBody className="mt-4">
                 <SharedApprovalFields onChange={setApproval} value={approval} />

@@ -43,7 +43,20 @@ import {
   type ResetPlan,
 } from "@/lib/bot-lifecycle/queries";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+
+/** What a reset deletes: the Bot's name is a placeholder in one sentence, not a seam between two. */
+export function resetWarning(name: string, tr: Translate = t): string {
+  return tr(
+    "This deletes what {name} has with you, and only with you. Nobody else's conversations or data are touched. It cannot be undone.",
+    { name },
+  );
+}
+
+/** Shown once a reset has finished. */
+export function resetDone(name: string, tr: Translate = t): string {
+  return tr("Done. {name} starts fresh with you.", { name });
+}
 
 /** Each count the notice lists, in the words the person reads, skipping the kinds with nothing. */
 function resetLines(plan: ResetPlan): string[] {
@@ -86,10 +99,7 @@ function ResetDialog({
             {t("Reset")} {displayAgentName(agent)}?
           </DialogTitle>
           <DialogDescription>
-            {t("This deletes what")} {displayAgentName(agent)}{" "}
-            {t(
-              "has with you, and only with you. Nobody else's conversations or data are touched. It cannot be undone.",
-            )}
+            {resetWarning(displayAgentName(agent))}
           </DialogDescription>
         </DialogHeader>
         <DialogBody className="mt-4 overflow-y-auto">
@@ -98,10 +108,7 @@ function ResetDialog({
               {t("Could not count what a reset would delete.")}
             </p>
           ) : reset.isSuccess ? (
-            <p className="text-sm">
-              {t("Done.")} {displayAgentName(agent)}{" "}
-              {t("starts fresh with you.")}
-            </p>
+            <p className="text-sm">{resetDone(displayAgentName(agent))}</p>
           ) : (
             <div className="grid gap-2 text-sm">
               {lines.length === 0 ? (

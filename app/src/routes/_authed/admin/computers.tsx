@@ -37,11 +37,52 @@ import {
   type HostAccessPendingOperation,
 } from "@/lib/computers/host-access";
 import { computerFleetQueryOptions } from "@/lib/computers/queries";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
 
 export const Route = createFileRoute("/_authed/admin/computers")({
   component: ComputersPage,
 });
+
+/**
+ * The warning over a shared computer, set as one sentence: the bold lead, the explanation and the
+ * variable name are placeholders inside one translation, so no `{" "}` seam lands between two
+ * Chinese pieces.
+ */
+export function SharedComputerNotice({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "{lead} They share its logins, its files and its session, so a Bot can reach what another signed into. Set {variable} to give each Bot its own.",
+    {
+      lead: (
+        <span className="font-medium">
+          {tr("Every Bot is sharing one computer.")}
+        </span>
+      ),
+      variable: <code>{tr("COMPUTER_SUPERVISOR_URL")}</code>,
+    },
+    undefined,
+    tr,
+  );
+}
+
+/** What Stop, Reset and Update computer each do, as one paragraph with the three names set in it. */
+export function ComputerActionsLegend({ tr = t }: { tr?: Translate }) {
+  return trNodes(
+    "{stop} closes the browser and keeps its logins: the next thing the Bot does starts it again where it left off. {reset} deletes the profile, so the Bot is signed out of everything and starts clean. {update} appears when a computer runs an older image than this deployment, and moves it onto the new one with its files and sign-ins kept. All three are recorded in {audit}.",
+    {
+      stop: <strong>{tr("Stop")}</strong>,
+      reset: <strong>{tr("Reset")}</strong>,
+      update: <strong>{tr("Update computer")}</strong>,
+      audit: (
+        <Link className="underline" to="/admin/audit">
+          {tr("Audit")}
+        </Link>
+      ),
+    },
+    undefined,
+    tr,
+  );
+}
 
 function ComputersPage() {
   /** Bot id currently running a stop/reset request. */
@@ -109,14 +150,7 @@ function ComputersPage() {
 
       {isolation === "shared" ? (
         <p className="mt-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
-          <span className="font-medium">
-            {t("Every Bot is sharing one computer.")}
-          </span>{" "}
-          {t(
-            "They share its logins, its files and its session, so a Bot can reach what another signed into. Set",
-          )}{" "}
-          <code>{t("COMPUTER_SUPERVISOR_URL")}</code>{" "}
-          {t("to give each Bot its own.")}
+          <SharedComputerNotice />
         </p>
       ) : isolation === "per-bot" ? (
         <p className="mt-4 rounded-md border border-border bg-muted/40 px-3 py-2 text-muted-foreground text-sm">
@@ -313,22 +347,7 @@ function ComputersPage() {
       </Dialog>
 
       <p className="mt-4 text-muted-foreground text-sm">
-        <strong>{t("Stop")}</strong>{" "}
-        {t(
-          "closes the browser and keeps its logins: the next thing the Bot does starts it again where it left off.",
-        )}{" "}
-        <strong>{t("Reset")}</strong>{" "}
-        {t(
-          "deletes the profile, so the Bot is signed out of everything and starts clean.",
-        )}{" "}
-        <strong>{t("Update computer")}</strong>{" "}
-        {t(
-          "appears when a computer runs an older image than this deployment, and moves it onto the new one with its files and sign-ins kept. All three are recorded in",
-        )}{" "}
-        <Link className="underline" to="/admin/audit">
-          {t("Audit")}
-        </Link>
-        .
+        <ComputerActionsLegend />
       </p>
     </PageShell>
   );

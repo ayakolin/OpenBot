@@ -4,7 +4,24 @@ import { SkillAgents } from "@/components/skills/skill-agents";
 import { SkillFields } from "@/components/skills/skill-fields";
 import { saveSkillMutationOptions } from "@/lib/plugins/mutations";
 import { pluginsPageQueryOptions } from "@/lib/plugins/queries";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
+import { trNodes } from "@/lib/i18n/nodes";
+
+/** When an edit takes effect, with the skill's command set in a <code>. */
+export function EditSkillNote({
+  slug,
+  tr = t,
+}: {
+  slug: string;
+  tr?: Translate;
+}) {
+  return trNodes(
+    "Changes apply the next time {command} is used. Agents already carrying it keep it.",
+    { command: <code>/{slug}</code> },
+    undefined,
+    tr,
+  );
+}
 
 /**
  * Editing a skill, in the same panel that writes one.
@@ -66,8 +83,7 @@ export function EditSkill({ slug }: { slug: string }) {
       <header>
         <h1 className="text-2xl font-semibold">{t("Edit skill")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {t("Changes apply the next time")} <code>/{skill.slug}</code>{" "}
-          {t("is used. Agents already carrying it keep it.")}
+          <EditSkillNote slug={skill.slug} />
         </p>
       </header>
 
