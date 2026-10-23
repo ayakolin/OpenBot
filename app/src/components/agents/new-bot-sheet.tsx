@@ -7,7 +7,7 @@ import {
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 import { HarnessMark } from "@/components/agents/harness-mark";
 import AgentOrb from "@/components/agents/orb/agent-orb";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ import {
 import { isComposing } from "@/lib/composing";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/query-client";
-import { t } from "@/lib/i18n";
+import { type Translate, t } from "@/lib/i18n";
 
 /**
  * Where a new Bot is made: a wide sheet floating in from the right, so the roster it is being added
@@ -835,11 +835,32 @@ function EndpointStep({
             value={secret}
           />
           <FieldDescription>
-            {t("Sent as an")} <code>{t("Authorization")}</code>{" "}
-            {t("header on every run, and kept in the credential vault.")}
+            <KeyHelp />
           </FieldDescription>
         </Field>
       </FieldGroup>
     </div>
   );
+}
+
+/** Stands in for the header name while the sentence is translated, so the name is never translated. */
+const HEADER_SENTINEL = "\uE000header\uE000";
+
+/**
+ * The help under the key field: one sentence, translated whole, with the literal header name
+ * `Authorization` set in a <code> element where the sentence puts it. Word order differs between
+ * languages, so the name is a placeholder inside one translation rather than a seam between three.
+ */
+export function KeyHelp({ tr = t }: { tr?: Translate }): ReactNode {
+  const parts = tr(
+    "Sent as an {header} header on every run, and kept in the credential vault.",
+    { header: HEADER_SENTINEL },
+  ).split(HEADER_SENTINEL);
+  return parts.map((part, index) => (
+    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed split of one string, never reordered
+    <Fragment key={index}>
+      {index > 0 && <code>Authorization</code>}
+      {part}
+    </Fragment>
+  ));
 }

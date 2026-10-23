@@ -2251,4 +2251,14 @@ export const zhCN: Record<string, string> = {
   "Assistant": "助手",
   "Published in the playground.": "已在演练场发布。",
   "This build cannot draw this.": "此构建无法绘制此项。",
+  // --- zh-r6-leftovers (fix/zh-r6-leftovers) ---
+  "{count} question": "{count} 个问题",
+  "{count} questions": "{count} 个问题",
+  "{count} approval": "{count} 项审批",
+  "{count} approvals": "{count} 项审批",
+  "{count} stalled hand-off": "{count} 个停滞的交接",
+  "{count} stalled hand-offs": "{count} 个停滞的交接",
+  "{count} unread": "{count} 条未读",
+  "Sent as an {header} header on every run, and kept in the credential vault.": "每次运行时都会作为 {header} 标头发送，并保存在凭据保险库中。",
+  ".": "。",
 };
